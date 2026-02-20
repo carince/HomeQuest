@@ -5,7 +5,7 @@ mkdir -p bin
 
 # Compile all Java files
 echo "Compiling Java files..."
-javac -d bin -sourcepath src/main/java src/main/java/com/homequest/*.java src/main/java/com/homequest/model/*.java src/main/java/com/homequest/transaction/*.java src/main/java/com/homequest/util/*.java
+javac -d bin -sourcepath src/main/java src/main/java/com/homequest/*.java src/main/java/com/homequest/model/*.java src/main/java/com/homequest/transaction/*.java src/main/java/com/homequest/util/*.java src/main/java/com/homequest/controller/*.java
 
 if [ $? -eq 0 ]; then
     echo "✓ Compilation successful!"

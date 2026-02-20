@@ -9,51 +9,73 @@ top to bottom direction
 
 title HomeQuest Real Estate Management System
 
-class HomeQuest <<Main Application>> {
+class HomeQuest <<Main Coordinator>> {
     - Scanner input
     - List<User> users
     - List<Property> properties
     - List<Agent> agents
     - List<Buyer> buyers
     - List<Owner> owners
-    - Agent currentAgent
-    - Buyer currentBuyer
-    - Owner currentOwner
+    - AgentController agentController
+    - OwnerController ownerController
+    - BuyerController buyerController
     --
     - void initializeSampleData()
     + void displayHeader()
     + void displayMainMenu()
-    + void displayAgentMenu()
-    + void displayOwnerMenu()
-    + void displayBuyerMenu()
-    + void loginAsAgent()
-    + void loginAsOwner()
-    + void loginAsBuyer()
-    + void agentWorkspace()
-    + void ownerWorkspace()
-    + void buyerWorkspace()
-    + void viewAgentListings()
-    + void processSaleAsAgent()
-    + void viewAllBuyers()
-    + void viewOwnerProperties()
-    + void addNewProperty()
-    + void viewAllAgents()
-    + void assignPropertyToAgent()
-    + void viewPropertySalesStatus()
-    + void browseAvailableProperties()
-    + void purchasePropertyAsBuyer()
-    + void viewMyPurchaseHistory()
-    + void checkWalletBalance()
-    + void addFundsToWallet()
-    + void viewAllProperties()
-    + void viewAllUsers()
-    + void createNewBuyer()
-    + void purchaseProperty()
-    + void viewBuyerHistory()
-    + void financialCalculator()
-    + void processPayment(Property, Buyer, Agent)
     + void run()
     + {static} void main(String[] args)
+}
+
+class AgentController <<Workspace Controller>> {
+    - Scanner input
+    - List<Agent> agents
+    - List<Buyer> buyers
+    - Agent currentAgent
+    --
+    + void loginAsAgent()
+    + void agentWorkspace()
+    - void displayAgentMenu()
+    - void viewAgentListings()
+    - void processSaleAsAgent()
+    - void viewAllBuyers()
+    - void financialCalculator()
+    - void processPayment(Property, Buyer, Agent)
+}
+
+class OwnerController <<Workspace Controller>> {
+    - Scanner input
+    - List<Owner> owners
+    - List<Agent> agents
+    - List<Property> properties
+    - Owner currentOwner
+    --
+    + void loginAsOwner()
+    + void ownerWorkspace()
+    - void displayOwnerMenu()
+    - void viewOwnerProperties()
+    - void addNewProperty()
+    - void viewAllAgents()
+    - void assignPropertyToAgent()
+    - void viewPropertySalesStatus()
+}
+
+class BuyerController <<Workspace Controller>> {
+    - Scanner input
+    - List<Buyer> buyers
+    - List<Property> properties
+    - Buyer currentBuyer
+    --
+    + void loginAsBuyer()
+    + void buyerWorkspace()
+    - void displayBuyerMenu()
+    - void browseAvailableProperties()
+    - void purchasePropertyAsBuyer()
+    - void viewMyPurchaseHistory()
+    - void checkWalletBalance()
+    - void addFundsToWallet()
+    - void financialCalculator()
+    - void processPayment(Property, Buyer, Agent)
 }
 
 class FinancialEngine {
@@ -221,11 +243,27 @@ class PagIbig {
     + String toString()
 }
 
+HomeQuest "1" --> "1" AgentController
+HomeQuest "1" --> "1" OwnerController
+HomeQuest "1" --> "1" BuyerController
 HomeQuest "1" --> "1..*" User
 HomeQuest "1" --> "0..*" Property
-HomeQuest "1" --> "0..*" Transaction
-HomeQuest ..> FinancialEngine
-HomeQuest ..> PropertyStatus
+
+AgentController "1" --> "0..*" Agent
+AgentController "1" --> "0..*" Buyer
+AgentController ..> Transaction
+AgentController ..> Property
+AgentController ..> FinancialEngine
+
+OwnerController "1" --> "0..*" Owner
+OwnerController "1" --> "0..*" Agent
+OwnerController "1" --> "0..*" Property
+OwnerController ..> PropertyStatus
+
+BuyerController "1" --> "0..*" Buyer
+BuyerController "1" --> "0..*" Property
+BuyerController ..> Transaction
+BuyerController ..> FinancialEngine
 
 User <|-- Agent
 User <|-- Buyer
