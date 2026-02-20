@@ -1,0 +1,259 @@
+@startuml HomeQuest System
+!theme vibrant
+skinparam groupInheritance 2
+skinparam linetype ortho
+skinparam nodesep 60
+skinparam ranksep 80
+skinparam classAttributeIconSize 0
+top to bottom direction
+
+title HomeQuest Real Estate Management System
+
+class HomeQuest <<Main Application>> {
+    - Scanner input
+    - List<User> users
+    - List<Property> properties
+    - List<Agent> agents
+    - List<Buyer> buyers
+    - List<Owner> owners
+    - Agent currentAgent
+    - Buyer currentBuyer
+    - Owner currentOwner
+    --
+    - void initializeSampleData()
+    + void displayHeader()
+    + void displayMainMenu()
+    + void displayAgentMenu()
+    + void displayOwnerMenu()
+    + void displayBuyerMenu()
+    + void loginAsAgent()
+    + void loginAsOwner()
+    + void loginAsBuyer()
+    + void agentWorkspace()
+    + void ownerWorkspace()
+    + void buyerWorkspace()
+    + void viewAgentListings()
+    + void processSaleAsAgent()
+    + void viewAllBuyers()
+    + void viewOwnerProperties()
+    + void addNewProperty()
+    + void viewAllAgents()
+    + void assignPropertyToAgent()
+    + void viewPropertySalesStatus()
+    + void browseAvailableProperties()
+    + void purchasePropertyAsBuyer()
+    + void viewMyPurchaseHistory()
+    + void checkWalletBalance()
+    + void addFundsToWallet()
+    + void viewAllProperties()
+    + void viewAllUsers()
+    + void createNewBuyer()
+    + void purchaseProperty()
+    + void viewBuyerHistory()
+    + void financialCalculator()
+    + void processPayment(Property, Buyer, Agent)
+    + void run()
+    + {static} void main(String[] args)
+}
+
+class FinancialEngine {
+    + {static} VAT_RATE: 0.12
+    + {static} HOUSE_VAT_THRESHOLD: 3,600,000
+    + {static} RESERVATION_FEE: 25,000
+    + {static} BANK_RATE: 0.07
+    --
+    + {static} double calculateVAT(double price, boolean isLot)
+    + {static} double computeOtherCharges(double netPrice)
+    + {static} double getMonthlyAmortization(double principal, int years)
+}
+
+enum PropertyStatus {
+    AVAILABLE
+    RESERVED
+    SOLD
+}
+
+class PaymentSchedule {
+    - List<Double> payments
+    - List<String> dueDates
+    --
+    + void addPayment(double amount, String dueDate)
+    + List<Double> getPayments()
+    + List<String> getDueDates()
+}
+
+abstract class User {
+    # String name
+    --
+    + String getName()
+    + void setName(String name)
+    + String toString()
+}
+
+class Agent {
+    - String licenseNumber
+    - List<Property> listings
+    --
+    + String getLicenseNumber()
+    + void setLicenseNumber(String licenseNumber)
+    + List<Property> getListings()
+    + void addListing(Property property)
+    + void removeListing(Property property)
+    + String toString()
+}
+
+class Buyer {
+    - double walletBalance
+    - List<Transaction> purchaseHistory
+    --
+    + double getWalletBalance()
+    + void setWalletBalance(double walletBalance)
+    + void addFunds(double amount)
+    + boolean deductFunds(double amount)
+    + List<Transaction> getPurchaseHistory()
+    + void addTransaction(Transaction transaction)
+    + String toString()
+}
+
+class Owner {
+    - List<Property> properties
+    --
+    + List<Property> getProperties()
+    + void addProperty(Property property)
+    + void removeProperty(Property property)
+    + String toString()
+}
+
+abstract class Property {
+    # String blockLot
+    # double lotArea
+    # double basePrice
+    # PropertyStatus status
+    --
+    + String getBlockLot()
+    + double getLotArea()
+    + double getBasePrice()
+    + PropertyStatus getStatus()
+    + void setStatus(PropertyStatus status)
+    + {abstract} double getTCP()
+    + String toString()
+}
+
+class HouseAndLot {
+    - String modelName
+    - double floorArea
+    --
+    + String getModelName()
+    + double getFloorArea()
+    + double getTCP()
+    + String toString()
+}
+
+abstract class Transaction {
+    # FinancialEngine engine
+    # String transactionID
+    # Property targetProperty
+    # Buyer client
+    # PaymentSchedule schedule
+    --
+    + String getTransactionID()
+    + Property getTargetProperty()
+    + Buyer getClient()
+    + PaymentSchedule getSchedule()
+    + {abstract} void finalizeTransaction()
+    + String toString()
+}
+
+abstract class CashPayment {
+    # double totalAmount
+    --
+    + double getTotalAmount()
+    + void finalize()
+    + void finalizeTransaction()
+}
+
+class Check {
+    - Buyer signedBy
+    - Agent receivedBy
+    --
+    + Buyer getSignedBy()
+    + Agent getReceivedBy()
+    + void finalizeTransaction()
+    + String toString()
+}
+
+class Spot {
+    - Buyer signedBy
+    - Agent receivedBy
+    --
+    + Buyer getSignedBy()
+    + Agent getReceivedBy()
+    + void finalizeTransaction()
+    + String toString()
+}
+
+abstract class InstallmentPayment {
+    # int termMonths
+    # double monthlyInstallment
+    # double finalLumpsum
+    --
+    + int getTermMonths()
+    + double getMonthlyInstallment()
+    + double getFinalLumpsum()
+    + void finalize()
+    + void finalizeTransaction()
+}
+
+class Bank {
+    - String name
+    --
+    + String getName()
+    + void setName(String name)
+    + void finalizeTransaction()
+    + String toString()
+}
+
+class PagIbig {
+    - String name
+    --
+    + String getName()
+    + void finalizeTransaction()
+    + String toString()
+}
+
+HomeQuest "1" --> "1..*" User
+HomeQuest "1" --> "0..*" Property
+HomeQuest "1" --> "0..*" Transaction
+HomeQuest ..> FinancialEngine
+HomeQuest ..> PropertyStatus
+
+User <|-- Agent
+User <|-- Buyer
+User <|-- Owner
+
+Agent "1" o-- "0..*" Property
+Owner "1" o-- "0..*" Property
+
+Property <|-- HouseAndLot
+Property ..> PropertyStatus
+Property ..> FinancialEngine
+
+Transaction <|-- CashPayment
+Transaction <|-- InstallmentPayment
+Transaction o-- Property
+Transaction o-- Buyer
+Transaction ..> FinancialEngine
+Transaction o-- PaymentSchedule
+
+CashPayment <|-- Check
+CashPayment <|-- Spot
+
+InstallmentPayment <|-- Bank
+InstallmentPayment <|-- PagIbig
+
+Check o-- Agent
+Spot o-- Agent
+
+Buyer "1" o-- "0..*" Transaction
+
+@enduml
