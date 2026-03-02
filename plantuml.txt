@@ -1,297 +1,211 @@
-@startuml HomeQuest System
+@startuml HomeQuest
 !theme vibrant
-skinparam groupInheritance 2
 skinparam linetype ortho
-skinparam nodesep 60
-skinparam ranksep 80
 skinparam classAttributeIconSize 0
+skinparam groupInheritance 2
 top to bottom direction
 
 title HomeQuest Real Estate Management System
 
-class HomeQuest <<Main Coordinator>> {
-    - Scanner input
-    - List<User> users
-    - List<Property> properties
-    - List<Agent> agents
-    - List<Buyer> buyers
-    - List<Owner> owners
-    - AgentController agentController
-    - OwnerController ownerController
-    - BuyerController buyerController
-    --
-    - void initializeSampleData()
-    + void displayHeader()
-    + void displayMainMenu()
-    + void run()
-    + {static} void main(String[] args)
-}
-
-class AgentController <<Workspace Controller>> {
-    - Scanner input
-    - List<Agent> agents
-    - List<Buyer> buyers
-    - Agent currentAgent
-    --
-    + void loginAsAgent()
-    + void agentWorkspace()
-    - void displayAgentMenu()
-    - void viewAgentListings()
-    - void processSaleAsAgent()
-    - void viewAllBuyers()
-    - void financialCalculator()
-    - void processPayment(Property, Buyer, Agent)
-}
-
-class OwnerController <<Workspace Controller>> {
-    - Scanner input
-    - List<Owner> owners
-    - List<Agent> agents
-    - List<Property> properties
-    - Owner currentOwner
-    --
-    + void loginAsOwner()
-    + void ownerWorkspace()
-    - void displayOwnerMenu()
-    - void viewOwnerProperties()
-    - void addNewProperty()
-    - void viewAllAgents()
-    - void assignPropertyToAgent()
-    - void viewPropertySalesStatus()
-}
-
-class BuyerController <<Workspace Controller>> {
-    - Scanner input
-    - List<Buyer> buyers
-    - List<Property> properties
-    - Buyer currentBuyer
-    --
-    + void loginAsBuyer()
-    + void buyerWorkspace()
-    - void displayBuyerMenu()
-    - void browseAvailableProperties()
-    - void purchasePropertyAsBuyer()
-    - void viewMyPurchaseHistory()
-    - void checkWalletBalance()
-    - void addFundsToWallet()
-    - void financialCalculator()
-    - void processPayment(Property, Buyer, Agent)
-}
-
-class FinancialEngine {
-    + {static} VAT_RATE: 0.12
-    + {static} HOUSE_VAT_THRESHOLD: 3,600,000
-    + {static} RESERVATION_FEE: 25,000
-    + {static} BANK_RATE: 0.07
-    --
-    + {static} double calculateVAT(double price, boolean isLot)
-    + {static} double computeOtherCharges(double netPrice)
-    + {static} double getMonthlyAmortization(double principal, int years)
-}
-
-enum PropertyStatus {
-    AVAILABLE
-    RESERVED
-    SOLD
-}
-
-class PaymentSchedule {
-    - List<Double> payments
-    - List<String> dueDates
-    --
-    + void addPayment(double amount, String dueDate)
-    + List<Double> getPayments()
-    + List<String> getDueDates()
-}
-
-abstract class User {
-    # String name
-    --
-    + String getName()
-    + void setName(String name)
-    + String toString()
+class HomeQuest {
+- Scanner input
+- List<Property> properties
+- Agent agent
+- Buyer buyer
+- Owner owner
++ HomeQuest()
+- initializeSampleData()
++ viewAllProperties()
++ run()
++ {static} main(String[] args)
 }
 
 class Agent {
-    - String licenseNumber
-    - List<Property> listings
-    --
-    + String getLicenseNumber()
-    + void setLicenseNumber(String licenseNumber)
-    + List<Property> getListings()
-    + void addListing(Property property)
-    + void removeListing(Property property)
-    + String toString()
+- String name
+- String licenseNumber
+- List<Property> listings
++ Agent(String, String)
++ getName(): String
++ setName(String)
++ getLicenseNumber(): String
++ setLicenseNumber(String)
++ getListings(): List<Property>
++ addListing(Property)
++ removeListing(Property)
++ workspace(Scanner, List<Property>, Buyer)
+
 }
 
 class Buyer {
-    - double walletBalance
-    - List<Transaction> purchaseHistory
-    --
-    + double getWalletBalance()
-    + void setWalletBalance(double walletBalance)
-    + void addFunds(double amount)
-    + boolean deductFunds(double amount)
-    + List<Transaction> getPurchaseHistory()
-    + void addTransaction(Transaction transaction)
-    + String toString()
+- String name
+- double walletBalance
+- List<Transaction> purchaseHistory
++ Buyer(String, double)
++ getName(): String
++ setName(String)
++ getWalletBalance(): double
++ setWalletBalance(double)
++ addFunds(double)
++ deductFunds(double): boolean
++ getPurchaseHistory(): List<Transaction>
++ addTransaction(Transaction)
++ workspace(Scanner, List<Property>, Agent)
+
 }
 
 class Owner {
-    - List<Property> properties
-    --
-    + List<Property> getProperties()
-    + void addProperty(Property property)
-    + void removeProperty(Property property)
-    + String toString()
+- String name
+- List<Property> properties
++ Owner(String)
++ getName(): String
++ setName(String)
++ getProperties(): List<Property>
++ addProperty(Property)
++ removeProperty(Property)
++ workspace(Scanner, List<Property>, Agent)
+
 }
 
 abstract class Property {
-    # String blockLot
-    # double lotArea
-    # double basePrice
-    # PropertyStatus status
-    --
-    + String getBlockLot()
-    + double getLotArea()
-    + double getBasePrice()
-    + PropertyStatus getStatus()
-    + void setStatus(PropertyStatus status)
-    + {abstract} double getTCP()
-    + String toString()
+# String blockLot
+# double lotArea
+# double basePrice
+# PropertyStatus status
++ Property(String, double, double)
++ getBlockLot(): String
++ setBlockLot(String)
++ getLotArea(): double
++ setLotArea(double)
++ getBasePrice(): double
++ setBasePrice(double)
++ getStatus(): PropertyStatus
++ setStatus(PropertyStatus)
++ {abstract} getTCP(): double
+
 }
 
 class HouseAndLot {
-    - String modelName
-    - double floorArea
-    --
-    + String getModelName()
-    + double getFloorArea()
-    + double getTCP()
-    + String toString()
+- String modelName
+- double floorArea
++ HouseAndLot(String, double, double, String, double)
++ getModelName(): String
++ setModelName(String)
++ getFloorArea(): double
++ setFloorArea(double)
++ getTCP(): double
+
 }
 
 abstract class Transaction {
-    # FinancialEngine engine
-    # String transactionID
-    # Property targetProperty
-    # Buyer client
-    # PaymentSchedule schedule
-    --
-    + String getTransactionID()
-    + Property getTargetProperty()
-    + Buyer getClient()
-    + PaymentSchedule getSchedule()
-    + {abstract} void finalizeTransaction()
-    + String toString()
-}
+# String transactionID
+# Property targetProperty
+# Buyer client
+# List<Double> payments
+# List<String> dueDates
++ Transaction(Property, Buyer)
++ getTransactionID(): String
++ getTargetProperty(): Property
++ getClient(): Buyer
++ getPayments(): List<Double>
++ getDueDates(): List<String>
++ addPayment(double, String)
++ {abstract} finalizeTransaction()
 
-abstract class CashPayment {
-    # double totalAmount
-    --
-    + double getTotalAmount()
-    + void finalize()
-    + void finalizeTransaction()
-}
-
-class Check {
-    - Buyer signedBy
-    - Agent receivedBy
-    --
-    + Buyer getSignedBy()
-    + Agent getReceivedBy()
-    + void finalizeTransaction()
-    + String toString()
 }
 
 class Spot {
-    - Buyer signedBy
-    - Agent receivedBy
-    --
-    + Buyer getSignedBy()
-    + Agent getReceivedBy()
-    + void finalizeTransaction()
-    + String toString()
+- Buyer signedBy
+- Agent receivedBy
+- double totalAmount
++ Spot(Property, Buyer, Agent)
++ getSignedBy(): Buyer
++ getReceivedBy(): Agent
++ getTotalAmount(): double
++ finalizeTransaction()
+
 }
 
-abstract class InstallmentPayment {
-    # int termMonths
-    # double monthlyInstallment
-    # double finalLumpsum
-    --
-    + int getTermMonths()
-    + double getMonthlyInstallment()
-    + double getFinalLumpsum()
-    + void finalize()
-    + void finalizeTransaction()
+class Check {
+- Buyer signedBy
+- Agent receivedBy
+- double totalAmount
++ Check(Property, Buyer, Agent)
++ getSignedBy(): Buyer
++ getReceivedBy(): Agent
++ getTotalAmount(): double
++ finalizeTransaction()
+
 }
 
 class Bank {
-    - String name
-    --
-    + String getName()
-    + void setName(String name)
-    + void finalizeTransaction()
-    + String toString()
+- {static} RESERVATION_FEE: double = 25000
+- {static} BANK_RATE: double = 0.07
+- String name
+- int termMonths
+- double monthlyInstallment
++ Bank(Property, Buyer, int, String)
++ getName(): String
++ setName(String)
++ getTermMonths(): int
++ getMonthlyInstallment(): double
++ finalizeTransaction()
+
 }
 
 class PagIbig {
-    - String name
-    --
-    + String getName()
-    + void finalizeTransaction()
-    + String toString()
+- {static} RESERVATION_FEE: double = 25000
+- {static} BANK_RATE: double = 0.07
+- String name
+- int termMonths
+- double monthlyInstallment
++ PagIbig(Property, Buyer, int)
++ getName(): String
++ getTermMonths(): int
++ getMonthlyInstallment(): double
++ finalizeTransaction()
+
 }
 
-HomeQuest "1" --> "1" AgentController
-HomeQuest "1" --> "1" OwnerController
-HomeQuest "1" --> "1" BuyerController
-HomeQuest "1" --> "1..*" User
-HomeQuest "1" --> "0..*" Property
+class FinancialEngine {
++ {static} VAT_RATE: double = 0.12
++ {static} HOUSE_VAT_THRESHOLD: double = 3600000
++ {static} RESERVATION_FEE: double = 25000
++ {static} BANK_RATE: double = 0.07
++ {static} calculateVAT(double, boolean): double
++ {static} computeOtherCharges(double): double
++ {static} getMonthlyAmortization(double, int): double
+}
 
-AgentController "1" --> "0..*" Agent
-AgentController "1" --> "0..*" Buyer
-AgentController ..> Transaction
-AgentController ..> Property
-AgentController ..> FinancialEngine
+enum PropertyStatus {
+AVAILABLE
+RESERVED
+SOLD
+}
 
-OwnerController "1" --> "0..*" Owner
-OwnerController "1" --> "0..*" Agent
-OwnerController "1" --> "0..*" Property
-OwnerController ..> PropertyStatus
+HomeQuest "1" --> "1" Agent : manages
+HomeQuest "1" --> "1" Buyer : manages
+HomeQuest "1" --> "1" Owner : manages
+HomeQuest "1" --> "*" Property : tracks
 
-BuyerController "1" --> "0..*" Buyer
-BuyerController "1" --> "0..*" Property
-BuyerController ..> Transaction
-BuyerController ..> FinancialEngine
-
-User <|-- Agent
-User <|-- Buyer
-User <|-- Owner
-
-Agent "1" o-- "0..*" Property
-Owner "1" o-- "0..*" Property
+Agent "1" o-- "*" Property : lists
+Buyer "1" o-- "*" Transaction : history
+Owner "1" o-- "*" Property : owns
 
 Property <|-- HouseAndLot
-Property ..> PropertyStatus
-Property ..> FinancialEngine
+Property ..> PropertyStatus : uses
+Property ..> FinancialEngine : uses
 
-Transaction <|-- CashPayment
-Transaction <|-- InstallmentPayment
-Transaction o-- Property
-Transaction o-- Buyer
-Transaction ..> FinancialEngine
-Transaction o-- PaymentSchedule
+Transaction <|-- Spot
+Transaction <|-- Check
+Transaction <|-- Bank
+Transaction <|-- PagIbig
 
-CashPayment <|-- Check
-CashPayment <|-- Spot
+Transaction "1" --> "1" Property : targets
+Transaction "1" --> "1" Buyer : for
 
-InstallmentPayment <|-- Bank
-InstallmentPayment <|-- PagIbig
+Spot "1" --> "1" Agent : receivedBy
+Check "1" --> "1" Agent : receivedBy
 
-Check o-- Agent
-Spot o-- Agent
-
-Buyer "1" o-- "0..*" Transaction
+HouseAndLot ..> FinancialEngine : uses
 
 @enduml

@@ -1,1 +1,100 @@
-package com.homequest;import com.homequest.controller.*;import com.homequest.model.*;import com.homequest.util.*;import java.util.ArrayList;import java.util.List;import java.util.Scanner;public class HomeQuest {    private Scanner input;    private List<User> users;    private List<Property> properties;    private List<Agent> agents;    private List<Buyer> buyers;    private List<Owner> owners;        private AgentController agentController;    private OwnerController ownerController;    private BuyerController buyerController;        public HomeQuest() {        this.input = new Scanner(System.in);        this.users = new ArrayList<>();        this.properties = new ArrayList<>();        this.agents = new ArrayList<>();        this.buyers = new ArrayList<>();        this.owners = new ArrayList<>();                initializeSampleData();                this.agentController = new AgentController(input, agents, buyers, properties);        this.ownerController = new OwnerController(input, owners, agents, properties);        this.buyerController = new BuyerController(input, buyers, agents, properties, users);    }        private void initializeSampleData() {        Agent agent1 = new Agent("Maria Santos", "LIC-2024-001");        Agent agent2 = new Agent("Juan dela Cruz", "LIC-2024-002");        agents.add(agent1);        agents.add(agent2);        users.add(agent1);        users.add(agent2);                Owner owner1 = new Owner("ABC Development Corp");        Owner owner2 = new Owner("XYZ Realty Inc");        owners.add(owner1);        owners.add(owner2);        users.add(owner1);        users.add(owner2);                Buyer buyer1 = new Buyer("Pedro Reyes", 5_000_000);        Buyer buyer2 = new Buyer("Ana Lopez", 8_000_000);        buyers.add(buyer1);        buyers.add(buyer2);        users.add(buyer1);        users.add(buyer2);                HouseAndLot prop1 = new HouseAndLot("B1L5", 120, 2_500_000, "Camella Classic", 80);        HouseAndLot prop2 = new HouseAndLot("B2L10", 150, 4_200_000, "Vista Grande", 120);        HouseAndLot prop3 = new HouseAndLot("B3L7", 100, 1_800_000, "Urban Deca Homes", 50);                properties.add(prop1);        properties.add(prop2);        properties.add(prop3);                agent1.addListing(prop1);        agent1.addListing(prop2);        agent2.addListing(prop3);                owner1.addProperty(prop1);        owner1.addProperty(prop2);        owner2.addProperty(prop3);    }        public void displayHeader() {        System.out.println("\n╔════════════════════════════════════════╗");        System.out.println("║         🏠 HOMEQUEST SYSTEM 🏠        ║");        System.out.println("║    Real Estate Management Platform    ║");        System.out.println("╚════════════════════════════════════════╝");    }        public void displayMainMenu() {        System.out.println("\n┌────────────────────────────────────────┐");        System.out.println("│         ROLE SELECTION                 │");        System.out.println("├────────────────────────────────────────┤");        System.out.println("│ 1. Login as Agent                      │");        System.out.println("│ 2. Login as Owner                      │");        System.out.println("│ 3. Login as Buyer                      │");        System.out.println("│ 4. View All Properties (Guest)         │");        System.out.println("│ 5. Financial Calculator (Guest)        │");        System.out.println("│ 0. Exit                                │");        System.out.println("└────────────────────────────────────────┘");        System.out.print("Enter your choice: ");    }        public void viewAllProperties() {        System.out.println("\n═══════════════════════════════════════════════════════════════");        System.out.println("                    AVAILABLE PROPERTIES");        System.out.println("═══════════════════════════════════════════════════════════════");                if (properties.isEmpty()) {            System.out.println("No properties available.");        } else {            for (int i = 0; i < properties.size(); i++) {                System.out.println("\n[" + (i + 1) + "] " + properties.get(i));            }        }        System.out.println("\n═══════════════════════════════════════════════════════════════");    }        public void financialCalculator() {        System.out.println("\n┌────────────────────────────────────────┐");        System.out.println("│      FINANCIAL CALCULATOR              │");        System.out.println("└────────────────────────────────────────┘");                System.out.print("Enter base price (₱): ");        double basePrice = input.nextDouble();        input.nextLine();                System.out.print("Is this a lot only? (y/n): ");        String isLotStr = input.nextLine();        boolean isLot = isLotStr.equalsIgnoreCase("y");                double vat = FinancialEngine.calculateVAT(basePrice, isLot);        double otherCharges = FinancialEngine.computeOtherCharges(basePrice);        double tcp = basePrice + vat + otherCharges;                System.out.println("\n═══════════════════════════════════════════════════════════════");        System.out.println("                    FINANCIAL BREAKDOWN");        System.out.println("═══════════════════════════════════════════════════════════════");        System.out.println("Base Price:        ₱" + String.format("%,15.2f", basePrice));        System.out.println("VAT (12%):         ₱" + String.format("%,15.2f", vat));        System.out.println("Other Charges:     ₱" + String.format("%,15.2f", otherCharges));        System.out.println("───────────────────────────────────────────────────────────────");        System.out.println("Total (TCP):       ₱" + String.format("%,15.2f", tcp));        System.out.println("═══════════════════════════════════════════════════════════════");                System.out.print("\nCalculate monthly amortization? (y/n): ");        String calcAmort = input.nextLine();                if (calcAmort.equalsIgnoreCase("y")) {            System.out.print("Enter loan term (years): ");            int years = input.nextInt();            input.nextLine();                        double monthlyPayment = FinancialEngine.getMonthlyAmortization(tcp - FinancialEngine.RESERVATION_FEE, years);                        System.out.println("\n───────────────────────────────────────────────────────────────");            System.out.println("LOAN DETAILS:");            System.out.println("Reservation Fee:   ₱" + String.format("%,15.2f", FinancialEngine.RESERVATION_FEE));            System.out.println("Loan Amount:       ₱" + String.format("%,15.2f", (tcp - FinancialEngine.RESERVATION_FEE)));            System.out.println("Interest Rate:     " + (FinancialEngine.BANK_RATE * 100) + "% per annum");            System.out.println("Term:              " + years + " years (" + (years * 12) + " months)");            System.out.println("───────────────────────────────────────────────────────────────");            System.out.println("Monthly Payment:   ₱" + String.format("%,15.2f", monthlyPayment));            System.out.println("═══════════════════════════════════════════════════════════════");        }    }        public void run() {        displayHeader();                boolean running = true;        while (running) {            displayMainMenu();                        try {                int choice = input.nextInt();                input.nextLine();                                switch (choice) {                    case 1:                        agentController.loginAsAgent();                        break;                    case 2:                        ownerController.loginAsOwner();                        break;                    case 3:                        buyerController.loginAsBuyer();                        break;                    case 4:                        viewAllProperties();                        break;                    case 5:                        financialCalculator();                        break;                    case 0:                        System.out.println("\n╔════════════════════════════════════════╗");                        System.out.println("║  Thank you for using HomeQuest! 🏠    ║");                        System.out.println("╚════════════════════════════════════════╝\n");                        running = false;                        break;                    default:                        System.out.println("\n✗ Invalid choice. Please try again.");                }            } catch (Exception e) {                System.out.println("\n✗ Invalid input. Please try again.");                input.nextLine();            }        }                input.close();    }        public static void main(String[] args) {        HomeQuest app = new HomeQuest();        app.run();    }}
+package com.homequest;
+
+import com.homequest.model.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class HomeQuest {
+    private Scanner input;
+    private List<Property> properties;
+    private Agent agent;
+    private Buyer buyer;
+    private Owner owner;
+
+    public HomeQuest() {
+        this.input = new Scanner(System.in);
+        this.properties = new ArrayList<>();
+        initializeSampleData();
+    }
+
+    private void initializeSampleData() {
+        agent = new Agent("Maria Santos", "LIC-2024-001");
+        owner = new Owner("ABC Development Corp");
+        buyer = new Buyer("Pedro Reyes", 5_000_000);
+
+        HouseAndLot prop1 = new HouseAndLot("B1L5", 120, 2_500_000, "Camella Classic", 80);
+        HouseAndLot prop2 = new HouseAndLot("B2L10", 150, 4_200_000, "Vista Grande", 120);
+        HouseAndLot prop3 = new HouseAndLot("B3L7", 100, 1_800_000, "Urban Deca Homes", 50);
+        properties.add(prop1);
+        properties.add(prop2);
+        properties.add(prop3);
+
+        agent.addListing(prop1);
+        agent.addListing(prop2);
+        agent.addListing(prop3);
+
+        owner.addProperty(prop1);
+        owner.addProperty(prop2);
+        owner.addProperty(prop3);
+    }
+
+    public void viewAllProperties() {
+        System.out.println("\n--- ALL PROPERTIES ---");
+        if (properties.isEmpty()) {
+            System.out.println("No properties available.");
+        } else {
+            for (int i = 0; i < properties.size(); i++) {
+                System.out.println("[" + (i + 1) + "] " + properties.get(i));
+            }
+        }
+    }
+
+    public void run() {
+        System.out.println("\n=== HOMEQUEST SYSTEM ===");
+        boolean running = true;
+        while (running) {
+            System.out.println("\n--- MAIN MENU ---");
+            System.out.println("1. Login as Agent");
+            System.out.println("2. Login as Owner");
+            System.out.println("3. Login as Buyer");
+            System.out.println("4. View All Properties");
+            System.out.println("0. Exit");
+            System.out.print("Choice: ");
+            try {
+                int choice = input.nextInt();
+                input.nextLine();
+                switch (choice) {
+                    case 1:
+                        agent.workspace(input, properties, buyer);
+                        break;
+                    case 2:
+                        owner.workspace(input, properties, agent);
+                        break;
+                    case 3:
+                        buyer.workspace(input, properties, agent);
+                        break;
+                    case 4:
+                        viewAllProperties();
+                        break;
+                    case 0:
+                        System.out.println("\nThank you for using HomeQuest!");
+                        running = false;
+                        break;
+                    default:
+                        System.out.println("Invalid choice.");
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid input.");
+                input.nextLine();
+            }
+        }
+        input.close();
+    }
+
+    public static void main(String[] args) {
+        HomeQuest app = new HomeQuest();
+        app.run();
+    }
+}

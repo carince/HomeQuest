@@ -14,12 +14,11 @@ public abstract class InstallmentPayment extends Transaction {
         super(targetProperty, client);
         this.termMonths = termYears * 12;
         
-        // Calculate with reservation fee deducted
         double tcp = targetProperty.getTCP();
         double principal = tcp - FinancialEngine.RESERVATION_FEE;
         
         this.monthlyInstallment = FinancialEngine.getMonthlyAmortization(principal, termYears);
-        this.finalLumpsum = 0; // Can be customized by subclasses
+        this.finalLumpsum = 0;
     }
     
     public int getTermMonths() {
@@ -34,11 +33,7 @@ public abstract class InstallmentPayment extends Transaction {
         return finalLumpsum;
     }
     
-    /**
-     * Finalize the installment payment
-     */
     public void finalize() {
-        // Pay reservation fee first
         if (client.deductFunds(FinancialEngine.RESERVATION_FEE)) {
             targetProperty.setStatus(PropertyStatus.RESERVED);
             client.addTransaction(this);

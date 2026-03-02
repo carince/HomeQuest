@@ -16,9 +16,6 @@ public abstract class CashPayment extends Transaction {
         return totalAmount;
     }
     
-    /**
-     * Finalize the cash payment
-     */
     public void finalize() {
         if (client.deductFunds(totalAmount)) {
             targetProperty.setStatus(PropertyStatus.SOLD);
