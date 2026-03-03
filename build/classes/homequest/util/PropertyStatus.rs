@@ -1,0 +1,1 @@
+com.homequest.util.PropertyStatus
