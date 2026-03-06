@@ -52,8 +52,6 @@ public class Workspace extends javax.swing.JFrame {
         UserName = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(600, 500));
-        setPreferredSize(new java.awt.Dimension(600, 500));
         setResizable(false);
         setSize(new java.awt.Dimension(600, 500));
 
@@ -63,11 +61,9 @@ public class Workspace extends javax.swing.JFrame {
         HeaderLabel.setText("HomeQuest");
         Header.add(HeaderLabel, new java.awt.GridBagConstraints());
 
-        Content.setMinimumSize(new java.awt.Dimension(562, 279));
-        Content.setPreferredSize(new java.awt.Dimension(563, 279));
         java.awt.GridBagLayout ContentLayout = new java.awt.GridBagLayout();
         ContentLayout.columnWidths = new int[] {0, 5, 0};
-        ContentLayout.rowHeights = new int[] {0, 5, 0, 5, 0};
+        ContentLayout.rowHeights = new int[] {0, 5, 0};
         ContentLayout.columnWeights = new double[] {0.0};
         ContentLayout.rowWeights = new double[] {0.0};
         Content.setLayout(ContentLayout);
@@ -75,31 +71,31 @@ public class Workspace extends javax.swing.JFrame {
         ButtonWrapper.setLayout(new java.awt.GridLayout(4, 1, 0, 20));
 
         jButton1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton1.setText("Browse Available Properties");
+        jButton1.setText("View All My Properties");
         ButtonWrapper.add(jButton1);
 
         jButton2.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton2.setText("Purchase Property/s");
+        jButton2.setText("Add New Property");
         ButtonWrapper.add(jButton2);
 
         jButton3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton3.setText("View Purchase History");
+        jButton3.setText("View All Agents");
         ButtonWrapper.add(jButton3);
 
         jButton4.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton4.setText("Wallet Balance");
+        jButton4.setText("Assign Property to Agent");
         ButtonWrapper.add(jButton4);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         Content.add(ButtonWrapper, gridBagConstraints);
 
         ButtonWrapper2.setLayout(new java.awt.GridLayout(1, 2, 20, 0));
 
-        jButton5.setText("Financial Calculator");
+        jButton5.setText("View Property Sale Status");
         ButtonWrapper2.add(jButton5);
 
         Logout.setText("Logout");
@@ -127,13 +123,13 @@ public class Workspace extends javax.swing.JFrame {
 
         UserType.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         UserType.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        UserType.setText("Buyer");
+        UserType.setText("Owner");
         UserInfo.add(UserType, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 199, 30));
 
         UserName.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         UserName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        UserName.setText("Buyer Name Here");
-        UserInfo.add(UserName, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 150, -1, 30));
+        UserName.setText("Owner Name Here");
+        UserInfo.add(UserName, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, -1, 30));
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -146,10 +142,10 @@ public class Workspace extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(Content, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
+                    .addComponent(Content, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(Header, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );

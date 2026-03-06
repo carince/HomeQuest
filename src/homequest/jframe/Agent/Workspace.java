@@ -39,9 +39,7 @@ public class Workspace extends javax.swing.JFrame {
         Content = new javax.swing.JPanel();
         ButtonWrapper = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
         ButtonWrapper2 = new javax.swing.JPanel();
         jButton5 = new javax.swing.JButton();
         Logout = new javax.swing.JButton();
@@ -73,17 +71,9 @@ public class Workspace extends javax.swing.JFrame {
         jButton1.setText("View All My Listings");
         ButtonWrapper.add(jButton1);
 
-        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton2.setText("View Available Properties");
-        ButtonWrapper.add(jButton2);
-
         jButton3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jButton3.setText("Process Sale Transaction");
         ButtonWrapper.add(jButton3);
-
-        jButton4.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton4.setText("View All Buyers");
-        ButtonWrapper.add(jButton4);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
@@ -196,9 +186,7 @@ public class Workspace extends javax.swing.JFrame {
     private javax.swing.JLabel UserName;
     private javax.swing.JLabel UserType;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     // End of variables declaration//GEN-END:variables
 }

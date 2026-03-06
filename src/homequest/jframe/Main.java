@@ -45,7 +45,6 @@ public class Main extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTree1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(600, 500));
         setResizable(false);
         setSize(new java.awt.Dimension(600, 500));
 
@@ -79,7 +78,7 @@ public class Main extends javax.swing.JFrame {
         gridBagConstraints.ipadx = 220;
         gridBagConstraints.ipady = 251;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 4, 10);
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         Content.add(UserWrapper, gridBagConstraints);
 
         ButtonWrapper.setLayout(new java.awt.GridLayout(1, 2, 20, 20));
@@ -96,7 +95,7 @@ public class Main extends javax.swing.JFrame {
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.ipadx = 142;
         gridBagConstraints.ipady = 17;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 10, 0);
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         Content.add(ButtonWrapper, gridBagConstraints);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

@@ -2,27 +2,33 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package homequest.jframe.Buyer;
+package homequest.jframe.Agent;
 
+import homequest.jframe.Owner.*;
 import homequest.jframe.Agent.*;
 import homequest.jframe.*;
+import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.Image;
 import javax.swing.ImageIcon;
-
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 /**
  *
  * @author crnc
  */
-public class Workspace extends javax.swing.JFrame {
-    
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Workspace.class.getName());
+public class ProcessTransaction extends javax.swing.JFrame {
+
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ProcessTransaction.class.getName());
 
     /**
      * Creates new form Main
      */
-    public Workspace() {
+    public ProcessTransaction() {
         initComponents();
+        concatDummyCode();
     }
 
     /**
@@ -38,13 +44,9 @@ public class Workspace extends javax.swing.JFrame {
         Header = new javax.swing.JPanel();
         HeaderLabel = new javax.swing.JLabel();
         Content = new javax.swing.JPanel();
+        ScrollWrapper = new javax.swing.JScrollPane();
         ButtonWrapper = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        ButtonWrapper2 = new javax.swing.JPanel();
-        jButton5 = new javax.swing.JButton();
+        Return = new javax.swing.JButton();
         Logout = new javax.swing.JButton();
         UserInfo = new javax.swing.JPanel();
         UserIcon = new javax.swing.JLabel();
@@ -52,7 +54,6 @@ public class Workspace extends javax.swing.JFrame {
         UserName = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(600, 500));
         setResizable(false);
         setSize(new java.awt.Dimension(600, 500));
 
@@ -62,54 +63,38 @@ public class Workspace extends javax.swing.JFrame {
         HeaderLabel.setText("HomeQuest");
         Header.add(HeaderLabel, new java.awt.GridBagConstraints());
 
-        Content.setMinimumSize(new java.awt.Dimension(562, 279));
-        Content.setPreferredSize(new java.awt.Dimension(563, 279));
         java.awt.GridBagLayout ContentLayout = new java.awt.GridBagLayout();
         ContentLayout.columnWidths = new int[] {0, 5, 0};
-        ContentLayout.rowHeights = new int[] {0, 5, 0, 5, 0};
+        ContentLayout.rowHeights = new int[] {0, 5, 0};
         ContentLayout.columnWeights = new double[] {0.0};
         ContentLayout.rowWeights = new double[] {0.0};
         Content.setLayout(ContentLayout);
 
-        ButtonWrapper.setLayout(new java.awt.GridLayout(4, 1, 0, 20));
-
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton1.setText("Browse Available Properties");
-        ButtonWrapper.add(jButton1);
-
-        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton2.setText("Purchase Property/s");
-        ButtonWrapper.add(jButton2);
-
-        jButton3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton3.setText("View Purchase History");
-        ButtonWrapper.add(jButton3);
-
-        jButton4.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton4.setText("Wallet Balance");
-        ButtonWrapper.add(jButton4);
-
+        ScrollWrapper.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        ScrollWrapper.setHorizontalScrollBar(null);
+        ScrollWrapper.setMinimumSize(new java.awt.Dimension(350, 300));
+        ScrollWrapper.setName(""); // NOI18N
+        ScrollWrapper.setPreferredSize(new java.awt.Dimension(400, 400));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-        Content.add(ButtonWrapper, gridBagConstraints);
+        Content.add(ScrollWrapper, gridBagConstraints);
 
-        ButtonWrapper2.setLayout(new java.awt.GridLayout(1, 2, 20, 0));
+        ButtonWrapper.setLayout(new java.awt.GridLayout(1, 2, 20, 0));
 
-        jButton5.setText("Financial Calculator");
-        ButtonWrapper2.add(jButton5);
+        Return.setText("Return");
+        Return.addActionListener(this::ReturnActionPerformed);
+        ButtonWrapper.add(Return);
 
         Logout.setText("Logout");
-        ButtonWrapper2.add(Logout);
+        ButtonWrapper.add(Logout);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-        Content.add(ButtonWrapper2, gridBagConstraints);
+        Content.add(ButtonWrapper, gridBagConstraints);
 
         UserInfo.setMaximumSize(new java.awt.Dimension(199, 96));
         UserInfo.setMinimumSize(new java.awt.Dimension(199, 196));
@@ -126,13 +111,13 @@ public class Workspace extends javax.swing.JFrame {
 
         UserType.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         UserType.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        UserType.setText("Buyer");
+        UserType.setText("Agent");
         UserInfo.add(UserType, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 199, 30));
 
         UserName.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         UserName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        UserName.setText("Buyer Name Here");
-        UserInfo.add(UserName, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 150, -1, 30));
+        UserName.setText("Agent Name Here");
+        UserInfo.add(UserName, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, -1, 30));
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -145,7 +130,7 @@ public class Workspace extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(Content, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
@@ -164,6 +149,10 @@ public class Workspace extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void ReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ReturnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -187,24 +176,54 @@ public class Workspace extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new Workspace().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new ProcessTransaction().setVisible(true));
     }
+
+    public void concatDummyCode() {
+        JPanel container = new JPanel();
+        container.setLayout(new javax.swing.BoxLayout(container, javax.swing.BoxLayout.Y_AXIS));
+
+        for (int i = 0; i < 10; i++) {
+            JPanel panel = new JPanel();
+            panel.setBackground(java.awt.Color.lightGray);
+            panel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+            panel.setLayout(new FlowLayout(FlowLayout.LEADING, 20, 0));
+            panel.setPreferredSize(new java.awt.Dimension(400, 80));
+
+            UserIcon = new javax.swing.JLabel();
+            ImageIcon originalIcon = new ImageIcon(getClass().getResource("/homequest/jframe/pfp.jpg"));
+            Image scaledImage = originalIcon.getImage().getScaledInstance(50, 50, Image.SCALE_FAST);
+            UserIcon.setIcon(new ImageIcon(scaledImage));
+            panel.add(UserIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 50, 50));
+
+            JLabel label = new JLabel("<html>#" + (i + 1) + "<br>Wants to buy: Property " + (i + 1) + "<br>Buyer Name: Lorem Ipsum</html>");
+            label.setFont(new java.awt.Font("Segoe UI", 0, 12));
+            panel.add(label, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 5, -1, -1));
+
+            // 2. Add the individual property panel to the container
+            container.add(panel);
+        }
+
+        // 3. IMPORTANT: Set the container as the viewport view
+        ScrollWrapper.setViewportView(container);
+
+        // 4. Refresh the UI
+        ScrollWrapper.revalidate();
+        ScrollWrapper.repaint();
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel ButtonWrapper;
-    private javax.swing.JPanel ButtonWrapper2;
     private javax.swing.JPanel Content;
     private javax.swing.JPanel Header;
     private javax.swing.JLabel HeaderLabel;
     private javax.swing.JButton Logout;
+    private javax.swing.JButton Return;
+    private javax.swing.JScrollPane ScrollWrapper;
     private javax.swing.JLabel UserIcon;
     private javax.swing.JPanel UserInfo;
     private javax.swing.JLabel UserName;
     private javax.swing.JLabel UserType;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     // End of variables declaration//GEN-END:variables
 }
