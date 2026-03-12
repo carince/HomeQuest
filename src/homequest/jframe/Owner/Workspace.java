@@ -23,6 +23,139 @@ public class Workspace extends javax.swing.JFrame {
      */
     public Workspace() {
         initComponents();
+        loadUserData();
+        setupEventHandlers();
+    }
+
+    private void loadUserData() {
+        homequest.model.Owner owner = homequest.HomeQuest.getOwner();
+        UserName.setText(owner.getName());
+    }
+
+    private void setupEventHandlers() {
+        jButton1.addActionListener(e -> openViewProperties());
+        jButton2.addActionListener(e -> openAddProperty());
+        jButton3.addActionListener(e -> viewAgentInformation());
+        jButton4.addActionListener(e -> assignPropertyToAgent());
+        jButton5.addActionListener(e -> viewPropertySalesStatus());
+        Logout.addActionListener(e -> returnToMain());
+    }
+
+    private void openViewProperties() {
+        ViewProperties viewProperties = new ViewProperties();
+        viewProperties.setVisible(true);
+        this.dispose();
+    }
+
+    private void openAddProperty() {
+        AddProperty addProperty = new AddProperty();
+        addProperty.setVisible(true);
+        this.dispose();
+    }
+
+    private void viewAgentInformation() {
+        homequest.model.Agent agent = homequest.HomeQuest.getAgent();
+        String message = String.format("<html><body style='width: 300px'><h2>Agent Information</h2>" +
+            "<p><b>Name:</b> %s</p>" +
+            "<p><b>License:</b> %s</p>" +
+            "<p><b>Total Listings:</b> %d</p></body></html>",
+            agent.getName(), agent.getLicenseNumber(), agent.getListings().size());
+        
+        javax.swing.JOptionPane.showMessageDialog(this, message,
+            "Agent Information", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void assignPropertyToAgent() {
+        homequest.model.Owner owner = homequest.HomeQuest.getOwner();
+        homequest.model.Agent agent = homequest.HomeQuest.getAgent();
+        
+        if (owner.getProperties().isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "You don't have any properties to assign.",
+                "No Properties",
+                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
+        String[] options = new String[owner.getProperties().size()];
+        for (int i = 0; i < owner.getProperties().size(); i++) {
+            homequest.model.Property prop = owner.getProperties().get(i);
+            options[i] = prop.getBlockLot() + " - " + prop.getStatus();
+        }
+        
+        String selected = (String) javax.swing.JOptionPane.showInputDialog(this,
+            "Select property to assign to " + agent.getName() + ":",
+            "Assign Property",
+            javax.swing.JOptionPane.QUESTION_MESSAGE,
+            null,
+            options,
+            options[0]);
+        
+        if (selected != null) {
+            int index = java.util.Arrays.asList(options).indexOf(selected);
+            homequest.model.Property property = owner.getProperties().get(index);
+            
+            if (owner.assignPropertyToAgent(property, agent)) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "Property " + property.getBlockLot() + " assigned to " + agent.getName(),
+                    "Success",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "Failed to assign property.",
+                    "Error",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void viewPropertySalesStatus() {
+        homequest.model.Owner owner = homequest.HomeQuest.getOwner();
+        
+        StringBuilder message = new StringBuilder("<html><body style='width: 400px'><h2>Property Sales Status</h2>");
+        
+        if (owner.getProperties().isEmpty()) {
+            message.append("<p>No properties owned.</p>");
+        } else {
+            int available = 0, reserved = 0, sold = 0;
+            
+            for (homequest.model.Property prop : owner.getProperties()) {
+                message.append("<p><b>").append(prop.getBlockLot()).append("</b> - ")
+                       .append("<span style='color: ");
+                
+                switch (prop.getStatus()) {
+                    case AVAILABLE:
+                        message.append("green'>AVAILABLE");
+                        available++;
+                        break;
+                    case RESERVED:
+                        message.append("orange'>RESERVED");
+                        reserved++;
+                        break;
+                    case SOLD:
+                        message.append("red'>SOLD");
+                        sold++;
+                        break;
+                }
+                message.append("</span></p>");
+            }
+            
+            message.append("<hr><p><b>Summary:</b></p>")
+                   .append("<p>Total: ").append(owner.getProperties().size())
+                   .append(" | Available: ").append(available)
+                   .append(" | Reserved: ").append(reserved)
+                   .append(" | Sold: ").append(sold).append("</p>");
+        }
+        message.append("</body></html>");
+        
+        javax.swing.JOptionPane.showMessageDialog(this, message.toString(),
+            "Property Sales Status", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void returnToMain() {
+        homequest.jframe.Main main = new homequest.jframe.Main();
+        main.setVisible(true);
+        this.dispose();
     }
 
     /**

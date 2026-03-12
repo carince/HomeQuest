@@ -17,6 +17,31 @@ public class Main extends javax.swing.JFrame {
      */
     public Main() {
         initComponents();
+        setupEventHandlers();
+    }
+
+    private void setupEventHandlers() {
+        Agent.addActionListener(e -> openAgentWorkspace());
+        Buyer.addActionListener(e -> openBuyerWorkspace());
+        Owner.addActionListener(e -> openOwnerWorkspace());
+    }
+
+    private void openAgentWorkspace() {
+        homequest.jframe.Agent.Workspace workspace = new homequest.jframe.Agent.Workspace();
+        workspace.setVisible(true);
+        this.dispose();
+    }
+
+    private void openBuyerWorkspace() {
+        homequest.jframe.Buyer.Workspace workspace = new homequest.jframe.Buyer.Workspace();
+        workspace.setVisible(true);
+        this.dispose();
+    }
+
+    private void openOwnerWorkspace() {
+        homequest.jframe.Owner.Workspace workspace = new homequest.jframe.Owner.Workspace();
+        workspace.setVisible(true);
+        this.dispose();
     }
 
     /**

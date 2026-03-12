@@ -26,7 +26,93 @@ public class ViewProperties extends javax.swing.JFrame {
      */
     public ViewProperties() {
         initComponents();
-        concatDummyCode();
+        loadUserData();
+        loadOwnerProperties();
+        setupEventHandlers();
+    }
+
+    private void loadUserData() {
+        homequest.model.Owner owner = homequest.HomeQuest.getOwner();
+        UserName.setText(owner.getName());
+    }
+
+    private void setupEventHandlers() {
+        Return.addActionListener(e -> returnToWorkspace());
+        Logout.addActionListener(e -> returnToMain());
+    }
+
+    private void returnToWorkspace() {
+        homequest.jframe.Owner.Workspace workspace = new homequest.jframe.Owner.Workspace();
+        workspace.setVisible(true);
+        this.dispose();
+    }
+
+    private void returnToMain() {
+        homequest.jframe.Main main = new homequest.jframe.Main();
+        main.setVisible(true);
+        this.dispose();
+    }
+
+    private void loadOwnerProperties() {
+        homequest.model.Owner owner = homequest.HomeQuest.getOwner();
+        java.util.List<homequest.model.Property> properties = owner.getProperties();
+
+        JPanel container = new JPanel();
+        container.setLayout(new javax.swing.BoxLayout(container, javax.swing.BoxLayout.Y_AXIS));
+
+        if (properties.isEmpty()) {
+            JLabel emptyLabel = new JLabel("No properties owned.");
+            emptyLabel.setFont(new java.awt.Font("Segoe UI", 0, 18));
+            emptyLabel.setForeground(java.awt.Color.GRAY);
+            JPanel emptyPanel = new JPanel();
+            emptyPanel.add(emptyLabel);
+            emptyPanel.setPreferredSize(new java.awt.Dimension(400, 100));
+            container.add(emptyPanel);
+        } else {
+            for (int i = 0; i < properties.size(); i++) {
+                homequest.model.Property property = properties.get(i);
+                JPanel panel = createPropertyPanel(property, i + 1);
+                container.add(panel);
+            }
+        }
+
+        ScrollWrapper.setViewportView(container);
+        ScrollWrapper.revalidate();
+        ScrollWrapper.repaint();
+    }
+
+    private JPanel createPropertyPanel(homequest.model.Property property, int index) {
+        JPanel panel = new JPanel();
+        
+        java.awt.Color bgColor;
+        switch (property.getStatus()) {
+            case AVAILABLE:
+                bgColor = new java.awt.Color(220, 255, 220);
+                break;
+            case RESERVED:
+                bgColor = new java.awt.Color(255, 250, 205);
+                break;
+            case SOLD:
+                bgColor = new java.awt.Color(255, 220, 220);
+                break;
+            default:
+                bgColor = java.awt.Color.LIGHT_GRAY;
+        }
+        
+        panel.setBackground(bgColor);
+        panel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        panel.setLayout(new java.awt.BorderLayout(10, 5));
+        panel.setPreferredSize(new java.awt.Dimension(400, 80));
+
+        JLabel label = new JLabel("<html><b>#" + index + ": " + property.getBlockLot() + "</b><br>" +
+                "TCP: ₱" + String.format("%,.2f", property.getTCP()) + "<br>" +
+                "Status: <b>" + property.getStatus() + "</b></html>");
+        label.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        label.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        panel.add(label, java.awt.BorderLayout.CENTER);
+
+        return panel;
     }
 
     /**

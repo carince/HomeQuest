@@ -1,18 +1,26 @@
 package homequest.model;
 
 import homequest.util.PropertyStatus;
+import homequest.transaction.Transaction;
 
 public abstract class Property {
     protected String blockLot;
     protected double lotArea;
     protected double basePrice;
     protected PropertyStatus status;
+    protected Buyer pendingBuyer;
+    protected Transaction pendingTransaction;
+    protected int pendingPaymentMethod;
+    protected String pendingBankName;
+    protected int pendingLoanTerm;
 
     public Property(String blockLot, double lotArea, double basePrice) {
         this.blockLot = blockLot;
         this.lotArea = lotArea;
         this.basePrice = basePrice;
         this.status = PropertyStatus.AVAILABLE;
+        this.pendingBuyer = null;
+        this.pendingTransaction = null;
     }
 
     public String getBlockLot() {
@@ -45,6 +53,54 @@ public abstract class Property {
 
     public void setStatus(PropertyStatus status) {
         this.status = status;
+    }
+
+    public Buyer getPendingBuyer() {
+        return pendingBuyer;
+    }
+
+    public void setPendingBuyer(Buyer pendingBuyer) {
+        this.pendingBuyer = pendingBuyer;
+    }
+
+    public Transaction getPendingTransaction() {
+        return pendingTransaction;
+    }
+
+    public void setPendingTransaction(Transaction pendingTransaction) {
+        this.pendingTransaction = pendingTransaction;
+    }
+
+    public int getPendingPaymentMethod() {
+        return pendingPaymentMethod;
+    }
+
+    public void setPendingPaymentMethod(int pendingPaymentMethod) {
+        this.pendingPaymentMethod = pendingPaymentMethod;
+    }
+
+    public String getPendingBankName() {
+        return pendingBankName;
+    }
+
+    public void setPendingBankName(String pendingBankName) {
+        this.pendingBankName = pendingBankName;
+    }
+
+    public int getPendingLoanTerm() {
+        return pendingLoanTerm;
+    }
+
+    public void setPendingLoanTerm(int pendingLoanTerm) {
+        this.pendingLoanTerm = pendingLoanTerm;
+    }
+
+    public void clearPendingRequest() {
+        this.pendingBuyer = null;
+        this.pendingTransaction = null;
+        this.pendingPaymentMethod = 0;
+        this.pendingBankName = null;
+        this.pendingLoanTerm = 0;
     }
 
     public abstract double getTCP();

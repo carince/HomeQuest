@@ -23,6 +23,105 @@ public class AddProperty extends javax.swing.JFrame {
      */
     public AddProperty() {
         initComponents();
+        loadUserData();
+        setupEventHandlers();
+    }
+
+    private void loadUserData() {
+        homequest.model.Owner owner = homequest.HomeQuest.getOwner();
+        UserName.setText(owner.getName());
+    }
+
+    private void setupEventHandlers() {
+        jButton1.addActionListener(e -> submitProperty());
+        jButton5.addActionListener(e -> returnToWorkspace());
+        Logout.addActionListener(e -> returnToMain());
+    }
+
+    private void submitProperty() {
+        String modelName = LNFTextField.getText().trim();
+        String basePriceStr = LNFTextField1.getText().trim();
+        String floorAreaStr = LNFTextField2.getText().trim();
+        String lotAreaStr = LNFTextField3.getText().trim();
+        String blockLot = LNFTextField4.getText().trim();
+        
+        if (blockLot.isEmpty() || modelName.isEmpty() || basePriceStr.isEmpty() || 
+            floorAreaStr.isEmpty() || lotAreaStr.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "All fields are required.",
+                "Validation Error",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        try {
+            double basePrice = Double.parseDouble(basePriceStr);
+            double floorArea = Double.parseDouble(floorAreaStr);
+            double lotArea = Double.parseDouble(lotAreaStr);
+            
+            if (basePrice <= 0 || floorArea <= 0 || lotArea <= 0) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "All numeric values must be positive.",
+                    "Validation Error",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            homequest.model.Owner owner = homequest.HomeQuest.getOwner();
+            homequest.model.Agent agent = homequest.HomeQuest.getAgent();
+            java.util.List<homequest.model.Property> allProperties = homequest.HomeQuest.getAllProperties();
+            
+            homequest.model.HouseAndLot newProperty = owner.addNewProperty(
+                blockLot, lotArea, basePrice, modelName, floorArea, allProperties
+            );
+            
+            int assignChoice = javax.swing.JOptionPane.showConfirmDialog(this,
+                "Property added successfully!\n\nAssign this property to agent " + agent.getName() + "?",
+                "Assign to Agent",
+                javax.swing.JOptionPane.YES_NO_OPTION,
+                javax.swing.JOptionPane.QUESTION_MESSAGE);
+            
+            if (assignChoice == javax.swing.JOptionPane.YES_OPTION) {
+                owner.assignPropertyToAgent(newProperty, agent);
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "Property " + blockLot + " has been assigned to " + agent.getName(),
+                    "Success",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "Property added but not assigned to agent.",
+                    "Success",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            }
+            
+            clearForm();
+            
+        } catch (NumberFormatException e) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Invalid numeric value. Please enter valid numbers for price and areas.",
+                "Validation Error",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void clearForm() {
+        LNFTextField.setText("");
+        LNFTextField1.setText("");
+        LNFTextField2.setText("");
+        LNFTextField3.setText("");
+        LNFTextField4.setText("");
+    }
+
+    private void returnToWorkspace() {
+        homequest.jframe.Owner.Workspace workspace = new homequest.jframe.Owner.Workspace();
+        workspace.setVisible(true);
+        this.dispose();
+    }
+
+    private void returnToMain() {
+        homequest.jframe.Main main = new homequest.jframe.Main();
+        main.setVisible(true);
+        this.dispose();
     }
 
     /**

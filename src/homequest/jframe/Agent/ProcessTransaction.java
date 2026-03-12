@@ -28,7 +28,150 @@ public class ProcessTransaction extends javax.swing.JFrame {
      */
     public ProcessTransaction() {
         initComponents();
-        concatDummyCode();
+        loadUserData();
+        loadPendingRequests();
+        setupEventHandlers();
+    }
+
+    private void loadUserData() {
+        homequest.model.Agent agent = homequest.HomeQuest.getAgent();
+        UserName.setText(agent.getName());
+    }
+
+    private void setupEventHandlers() {
+        Return.addActionListener(e -> returnToWorkspace());
+        Logout.addActionListener(e -> returnToMain());
+    }
+
+    private void returnToWorkspace() {
+        homequest.jframe.Agent.Workspace workspace = new homequest.jframe.Agent.Workspace();
+        workspace.setVisible(true);
+        this.dispose();
+    }
+
+    private void returnToMain() {
+        homequest.jframe.Main main = new homequest.jframe.Main();
+        main.setVisible(true);
+        this.dispose();
+    }
+
+    private void loadPendingRequests() {
+        homequest.model.Agent agent = homequest.HomeQuest.getAgent();
+        java.util.List<homequest.model.Property> allProperties = homequest.HomeQuest.getAllProperties();
+        java.util.List<homequest.model.Property> reservedProps = agent.getReservedProperties(allProperties);
+
+        JPanel container = new JPanel();
+        container.setLayout(new javax.swing.BoxLayout(container, javax.swing.BoxLayout.Y_AXIS));
+
+        if (reservedProps.isEmpty()) {
+            JLabel emptyLabel = new JLabel("No pending purchase requests.");
+            emptyLabel.setFont(new java.awt.Font("Segoe UI", 0, 18));
+            emptyLabel.setForeground(java.awt.Color.GRAY);
+            JPanel emptyPanel = new JPanel();
+            emptyPanel.add(emptyLabel);
+            emptyPanel.setPreferredSize(new java.awt.Dimension(400, 100));
+            container.add(emptyPanel);
+        } else {
+            for (int i = 0; i < reservedProps.size(); i++) {
+                homequest.model.Property property = reservedProps.get(i);
+                JPanel panel = createRequestPanel(property, i + 1);
+                container.add(panel);
+            }
+        }
+
+        ScrollWrapper.setViewportView(container);
+        ScrollWrapper.revalidate();
+        ScrollWrapper.repaint();
+    }
+
+    private JPanel createRequestPanel(homequest.model.Property property, int index) {
+        JPanel panel = new JPanel();
+        panel.setBackground(new java.awt.Color(255, 250, 205));
+        panel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        panel.setLayout(new java.awt.BorderLayout(10, 5));
+        panel.setPreferredSize(new java.awt.Dimension(400, 120));
+
+        String paymentMethod = getPaymentMethodText(property);
+        
+        JLabel infoLabel = new JLabel("<html><b>#" + index + ": " + property.getBlockLot() + "</b><br>" +
+                "Buyer: " + property.getPendingBuyer().getName() + "<br>" +
+                "TCP: ₱" + String.format("%,.2f", property.getTCP()) + "<br>" +
+                "Payment: " + paymentMethod + "</html>");
+        infoLabel.setFont(new java.awt.Font("Segoe UI", 0, 12));
+        infoLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+        buttonPanel.setOpaque(false);
+
+        javax.swing.JButton approveBtn = new javax.swing.JButton("Approve");
+        approveBtn.setBackground(new java.awt.Color(144, 238, 144));
+        approveBtn.addActionListener(e -> handleApprove(property));
+
+        javax.swing.JButton rejectBtn = new javax.swing.JButton("Reject");
+        rejectBtn.setBackground(new java.awt.Color(255, 182, 193));
+        rejectBtn.addActionListener(e -> handleReject(property));
+
+        buttonPanel.add(approveBtn);
+        buttonPanel.add(rejectBtn);
+
+        panel.add(infoLabel, java.awt.BorderLayout.CENTER);
+        panel.add(buttonPanel, java.awt.BorderLayout.SOUTH);
+
+        return panel;
+    }
+
+    private String getPaymentMethodText(homequest.model.Property property) {
+        switch (property.getPendingPaymentMethod()) {
+            case 1:
+                return "Spot Cash";
+            case 2:
+                return "Check";
+            case 3:
+                return "Bank Financing (" + property.getPendingBankName() + ", " + property.getPendingLoanTerm() + " years)";
+            case 4:
+                return "Pag-IBIG Financing (" + property.getPendingLoanTerm() + " years)";
+            default:
+                return "Unknown";
+        }
+    }
+
+    private void handleApprove(homequest.model.Property property) {
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(this,
+                "Approve purchase request for " + property.getBlockLot() + "?",
+                "Confirm Approval",
+                javax.swing.JOptionPane.YES_NO_OPTION);
+
+        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+            homequest.model.Agent agent = homequest.HomeQuest.getAgent();
+            agent.approveTransaction(property);
+            
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Transaction approved successfully!\nProperty: " + property.getBlockLot() + "\nStatus: SOLD",
+                    "Success",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            
+            loadPendingRequests();
+        }
+    }
+
+    private void handleReject(homequest.model.Property property) {
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(this,
+                "Reject purchase request for " + property.getBlockLot() + "?\nProperty will return to AVAILABLE status.",
+                "Confirm Rejection",
+                javax.swing.JOptionPane.YES_NO_OPTION);
+
+        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+            homequest.model.Agent agent = homequest.HomeQuest.getAgent();
+            agent.rejectTransaction(property);
+            
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Request rejected. Property returned to AVAILABLE status.",
+                    "Rejected",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            
+            loadPendingRequests();
+        }
     }
 
     /**
@@ -178,40 +321,6 @@ public class ProcessTransaction extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> new ProcessTransaction().setVisible(true));
     }
-
-    public void concatDummyCode() {
-        JPanel container = new JPanel();
-        container.setLayout(new javax.swing.BoxLayout(container, javax.swing.BoxLayout.Y_AXIS));
-
-        for (int i = 0; i < 10; i++) {
-            JPanel panel = new JPanel();
-            panel.setBackground(java.awt.Color.lightGray);
-            panel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-            panel.setLayout(new FlowLayout(FlowLayout.LEADING, 20, 0));
-            panel.setPreferredSize(new java.awt.Dimension(400, 80));
-
-            UserIcon = new javax.swing.JLabel();
-            ImageIcon originalIcon = new ImageIcon(getClass().getResource("/homequest/jframe/pfp.jpg"));
-            Image scaledImage = originalIcon.getImage().getScaledInstance(50, 50, Image.SCALE_FAST);
-            UserIcon.setIcon(new ImageIcon(scaledImage));
-            panel.add(UserIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 50, 50));
-
-            JLabel label = new JLabel("<html>#" + (i + 1) + "<br>Wants to buy: Property " + (i + 1) + "<br>Buyer Name: Lorem Ipsum</html>");
-            label.setFont(new java.awt.Font("Segoe UI", 0, 12));
-            panel.add(label, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 5, -1, -1));
-
-            // 2. Add the individual property panel to the container
-            container.add(panel);
-        }
-
-        // 3. IMPORTANT: Set the container as the viewport view
-        ScrollWrapper.setViewportView(container);
-
-        // 4. Refresh the UI
-        ScrollWrapper.revalidate();
-        ScrollWrapper.repaint();
-    }
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel ButtonWrapper;

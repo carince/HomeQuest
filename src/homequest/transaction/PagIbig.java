@@ -45,7 +45,7 @@ public class PagIbig extends Transaction {
         System.out.println("Interest Rate: " + (BANK_RATE * 100) + "%");
 
         if (client.deductFunds(RESERVATION_FEE)) {
-            targetProperty.setStatus(PropertyStatus.RESERVED);
+            targetProperty.setStatus(PropertyStatus.SOLD);
             client.addTransaction(this);
 
             System.out.println("✓ Installment transaction initiated successfully!");

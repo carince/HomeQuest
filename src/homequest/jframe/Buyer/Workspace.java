@@ -23,6 +23,199 @@ public class Workspace extends javax.swing.JFrame {
      */
     public Workspace() {
         initComponents();
+        loadUserData();
+        setupEventHandlers();
+    }
+
+    private void loadUserData() {
+        homequest.model.Buyer buyer = homequest.HomeQuest.getBuyer();
+        UserName.setText(buyer.getName());
+    }
+
+    private void setupEventHandlers() {
+        jButton1.addActionListener(e -> browseAvailableProperties());
+        jButton2.addActionListener(e -> requestPurchase());
+        jButton3.addActionListener(e -> viewPurchaseHistory());
+        jButton4.addActionListener(e -> manageWallet());
+        jButton5.addActionListener(e -> openFinancialCalculator());
+        Logout.addActionListener(e -> returnToMain());
+    }
+
+    private void browseAvailableProperties() {
+        homequest.model.Buyer buyer = homequest.HomeQuest.getBuyer();
+        java.util.List<homequest.model.Property> availableProps = buyer.getAvailableProperties(homequest.HomeQuest.getAllProperties());
+        
+        StringBuilder message = new StringBuilder("<html><body style='width: 400px'><h2>Available Properties</h2>");
+        if (availableProps.isEmpty()) {
+            message.append("<p>No available properties at the moment.</p>");
+        } else {
+            for (int i = 0; i < availableProps.size(); i++) {
+                homequest.model.Property prop = availableProps.get(i);
+                message.append("<p><b>").append(i + 1).append(". ").append(prop.getBlockLot()).append("</b><br>")
+                       .append("TCP: ₱").append(String.format("%,.2f", prop.getTCP())).append("<br>")
+                       .append("Status: ").append(prop.getStatus()).append("</p>");
+            }
+        }
+        message.append("</body></html>");
+        
+        javax.swing.JOptionPane.showMessageDialog(this, message.toString(), 
+            "Available Properties", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void requestPurchase() {
+        homequest.model.Buyer buyer = homequest.HomeQuest.getBuyer();
+        java.util.List<homequest.model.Property> availableProps = buyer.getAvailableProperties(homequest.HomeQuest.getAllProperties());
+        
+        if (availableProps.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "No available properties to purchase.", 
+                "No Properties", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
+        String[] options = new String[availableProps.size()];
+        for (int i = 0; i < availableProps.size(); i++) {
+            options[i] = availableProps.get(i).getBlockLot() + " - ₱" + String.format("%,.2f", availableProps.get(i).getTCP());
+        }
+        
+        String selected = (String) javax.swing.JOptionPane.showInputDialog(this,
+            "Select property to purchase:",
+            "Request Purchase",
+            javax.swing.JOptionPane.QUESTION_MESSAGE,
+            null,
+            options,
+            options[0]);
+        
+        if (selected != null) {
+            int index = java.util.Arrays.asList(options).indexOf(selected);
+            homequest.model.Property selectedProperty = availableProps.get(index);
+            selectPaymentMethod(selectedProperty);
+        }
+    }
+
+    private void selectPaymentMethod(homequest.model.Property property) {
+        String[] paymentOptions = {"Spot Cash", "Check", "Bank Financing", "Pag-IBIG Financing"};
+        
+        String paymentMethod = (String) javax.swing.JOptionPane.showInputDialog(this,
+            "Select payment method for " + property.getBlockLot() + ":",
+            "Payment Method",
+            javax.swing.JOptionPane.QUESTION_MESSAGE,
+            null,
+            paymentOptions,
+            paymentOptions[0]);
+        
+        if (paymentMethod == null) return;
+        
+        int paymentChoice = java.util.Arrays.asList(paymentOptions).indexOf(paymentMethod) + 1;
+        String bankName = null;
+        int loanTerm = 0;
+        
+        if (paymentChoice == 3) {
+            bankName = javax.swing.JOptionPane.showInputDialog(this, "Enter bank name:");
+            if (bankName == null || bankName.trim().isEmpty()) return;
+            
+            String termStr = javax.swing.JOptionPane.showInputDialog(this, "Enter loan term (years):");
+            if (termStr == null) return;
+            try {
+                loanTerm = Integer.parseInt(termStr);
+            } catch (NumberFormatException e) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Invalid loan term.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } else if (paymentChoice == 4) {
+            String termStr = javax.swing.JOptionPane.showInputDialog(this, "Enter loan term (years):");
+            if (termStr == null) return;
+            try {
+                loanTerm = Integer.parseInt(termStr);
+            } catch (NumberFormatException e) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Invalid loan term.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+        
+        homequest.model.Buyer buyer = homequest.HomeQuest.getBuyer();
+        homequest.model.Agent agent = homequest.HomeQuest.getAgent();
+        
+        boolean success = buyer.createPurchaseRequest(property, paymentChoice, bankName, loanTerm, agent);
+        
+        if (success) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "<html><h3>Purchase Request Submitted</h3>" +
+                "<p>Property: " + property.getBlockLot() + "</p>" +
+                "<p>TCP: ₱" + String.format("%,.2f", property.getTCP()) + "</p>" +
+                "<p>Status: <b>Pending agent approval</b></p></html>",
+                "Success",
+                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Failed to submit request. Property may no longer be available.",
+                "Error",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void viewPurchaseHistory() {
+        homequest.model.Buyer buyer = homequest.HomeQuest.getBuyer();
+        java.util.List<homequest.transaction.Transaction> history = buyer.getPurchaseHistory();
+        
+        StringBuilder message = new StringBuilder("<html><body style='width: 400px'><h2>Purchase History</h2>");
+        if (history.isEmpty()) {
+            message.append("<p>No purchase history yet.</p>");
+        } else {
+            for (int i = 0; i < history.size(); i++) {
+                homequest.transaction.Transaction trans = history.get(i);
+                message.append("<p><b>Transaction ").append(i + 1).append("</b><br>")
+                       .append(trans.toString()).append("</p>");
+            }
+        }
+        message.append("</body></html>");
+        
+        javax.swing.JOptionPane.showMessageDialog(this, message.toString(),
+            "Purchase History", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void manageWallet() {
+        homequest.model.Buyer buyer = homequest.HomeQuest.getBuyer();
+        
+        String message = String.format("Current Balance: ₱%,.2f\n\nEnter amount to add (or cancel):", buyer.getWalletBalance());
+        String input = javax.swing.JOptionPane.showInputDialog(this, message, "Wallet Manager", javax.swing.JOptionPane.QUESTION_MESSAGE);
+        
+        if (input != null && !input.trim().isEmpty()) {
+            try {
+                double amount = Double.parseDouble(input);
+                if (amount > 0) {
+                    buyer.addFunds(amount);
+                    javax.swing.JOptionPane.showMessageDialog(this,
+                        String.format("Funds added successfully!\nNew Balance: ₱%,.2f", buyer.getWalletBalance()),
+                        "Success",
+                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                    UserName.setText(buyer.getName());
+                } else {
+                    javax.swing.JOptionPane.showMessageDialog(this,
+                        "Amount must be positive.",
+                        "Invalid Amount",
+                        javax.swing.JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (NumberFormatException e) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "Invalid amount entered.",
+                    "Error",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void openFinancialCalculator() {
+        javax.swing.JOptionPane.showMessageDialog(this,
+            "Financial Calculator feature coming soon!",
+            "Coming Soon",
+            javax.swing.JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void returnToMain() {
+        homequest.jframe.Main main = new homequest.jframe.Main();
+        main.setVisible(true);
+        this.dispose();
     }
 
     /**
