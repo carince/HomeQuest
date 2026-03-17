@@ -44,25 +44,10 @@ public class Bank extends Transaction {
 
     @Override
     public void finalizeTransaction() {
-        System.out.println("\n=== BANK FINANCING ===");
-        System.out.println("Bank: " + name);
-        System.out.println("Interest Rate: " + (BANK_RATE * 100) + "%");
-
-        if (client.deductFunds(RESERVATION_FEE)) {
-            targetProperty.setStatus(PropertyStatus.SOLD);
-            client.addTransaction(this);
-
-            System.out.println("✓ Installment transaction initiated successfully!");
-            System.out.println("  Transaction ID: " + transactionID);
-            System.out.println("  Reservation Fee Paid: ₱" + String.format("%.2f", RESERVATION_FEE));
-            System.out.println("  Monthly Installment: ₱" + String.format("%.2f", monthlyInstallment));
-            System.out.println("  Term: " + (termMonths / 12) + " years (" + termMonths + " months)");
-            System.out.println("  Remaining Balance: ₱" + String.format("%.2f", client.getWalletBalance()));
-        } else {
-            System.out.println("✗ Insufficient funds for reservation fee!");
-            System.out.println("  Required: ₱" + String.format("%.2f", RESERVATION_FEE));
-            System.out.println("  Available: ₱" + String.format("%.2f", client.getWalletBalance()));
-        }
+        // Deduct reservation fee if available; proceed with RESERVED status regardless
+        client.deductFunds(RESERVATION_FEE);
+        targetProperty.setStatus(PropertyStatus.RESERVED);
+        client.addTransaction(this);
     }
 
     @Override

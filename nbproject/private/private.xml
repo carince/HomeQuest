@@ -3,18 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/crnc/NetBeansProjects/HomeQuest/src/homequest/HomeQuest.java</file>
-            <file>file:/home/crnc/NetBeansProjects/HomeQuest/src/homequest/model/Agent.java</file>
-            <file>file:/home/crnc/NetBeansProjects/HomeQuest/src/homequest/model/Buyer.java</file>
-            <file>file:/home/crnc/NetBeansProjects/HomeQuest/src/homequest/model/HouseAndLot.java</file>
-            <file>file:/home/crnc/NetBeansProjects/HomeQuest/src/homequest/model/Owner.java</file>
-            <file>file:/home/crnc/NetBeansProjects/HomeQuest/src/homequest/model/Property.java</file>
-            <file>file:/home/crnc/NetBeansProjects/HomeQuest/nbproject/project.xml</file>
-            <file>file:/home/crnc/NetBeansProjects/HomeQuest/nbproject/project.properties</file>
-            <file>file:/home/crnc/NetBeansProjects/HomeQuest/src/homequest/transaction/PagIbig.java</file>
-            <file>file:/home/crnc/NetBeansProjects/HomeQuest/src/homequest/transaction/InstallmentPayment.java</file>
-            <file>file:/home/crnc/NetBeansProjects/HomeQuest/src/homequest/jframe/Main.java</file>
-            <file>file:/home/crnc/NetBeansProjects/HomeQuest/src/homequest/jframe/Agent/ProcessTransaction.java</file>
+            <file>file://tsclient/home/NetBeansProjects/HomeQuest/src/homequest/jframe/Main.java</file>
+            <file>file://tsclient/home/NetBeansProjects/HomeQuest/src/homequest/jframe/Owner/Workspace.java</file>
+            <file>file://tsclient/home/NetBeansProjects/HomeQuest/src/homequest/jframe/Owner/ViewProperties.java</file>
         </group>
     </open-files>
 </project-private>

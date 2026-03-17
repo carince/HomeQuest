@@ -36,6 +36,65 @@ public class AddProperty extends javax.swing.JFrame {
         jButton1.addActionListener(e -> submitProperty());
         jButton5.addActionListener(e -> returnToWorkspace());
         Logout.addActionListener(e -> returnToMain());
+        
+        // Add input filters and document listeners for validation
+        setupInputValidation();
+    }
+
+    private void setupInputValidation() {
+        // Only allow alphanumeric and spaces for Name
+        LNFTextField.setDocument(new javax.swing.text.PlainDocument() {
+            @Override
+            public void insertString(int offs, String str, javax.swing.text.AttributeSet a) throws javax.swing.text.BadLocationException {
+                if (str != null && str.matches("[a-zA-Z0-9 ]*")) {
+                    super.insertString(offs, str, a);
+                }
+            }
+        });
+
+        // Only allow numbers and decimals for Base Price
+        LNFTextField1.setDocument(new NumericDocument(15));
+        
+        // Only allow numbers and decimals for Floor Area
+        LNFTextField2.setDocument(new NumericDocument(10));
+        
+        // Only allow numbers and decimals for Lot Area
+        LNFTextField3.setDocument(new NumericDocument(10));
+        
+        // Only allow alphanumeric and hyphens for Block/Lot
+        LNFTextField4.setDocument(new javax.swing.text.PlainDocument() {
+            @Override
+            public void insertString(int offs, String str, javax.swing.text.AttributeSet a) throws javax.swing.text.BadLocationException {
+                if (str != null && str.matches("[a-zA-Z0-9 -]*")) {
+                    super.insertString(offs, str, a);
+                }
+            }
+        });
+    }
+
+    // Custom document class for numeric input with decimals
+    class NumericDocument extends javax.swing.text.PlainDocument {
+        private int maxDigits;
+
+        public NumericDocument(int maxDigits) {
+            this.maxDigits = maxDigits;
+        }
+
+        @Override
+        public void insertString(int offs, String str, javax.swing.text.AttributeSet a) throws javax.swing.text.BadLocationException {
+            if (str == null) return;
+            
+            String newStr = this.getText(0, this.getLength()) + str;
+            
+            // Check if it matches number pattern (integers and decimals)
+            if (newStr.matches("\\d*\\.?\\d*") && this.getLength() + str.length() <= maxDigits) {
+                // Prevent multiple decimal points
+                if (str.contains(".") && this.getText(0, this.getLength()).contains(".")) {
+                    return;
+                }
+                super.insertString(offs, str, a);
+            }
+        }
     }
 
     private void submitProperty() {
@@ -45,12 +104,46 @@ public class AddProperty extends javax.swing.JFrame {
         String lotAreaStr = LNFTextField3.getText().trim();
         String blockLot = LNFTextField4.getText().trim();
         
-        if (blockLot.isEmpty() || modelName.isEmpty() || basePriceStr.isEmpty() || 
-            floorAreaStr.isEmpty() || lotAreaStr.isEmpty()) {
+        // Validate all fields are filled
+        StringBuilder errors = new StringBuilder();
+        
+        if (blockLot.isEmpty()) {
+            errors.append("• Block/Lot number is required\n");
+        } else if (blockLot.length() > 20) {
+            errors.append("• Block/Lot must be 20 characters or less\n");
+        }
+        
+        if (modelName.isEmpty()) {
+            errors.append("• Property name is required\n");
+        } else if (modelName.length() > 50) {
+            errors.append("• Property name must be 50 characters or less\n");
+        } else if (!modelName.matches("[a-zA-Z0-9 ]+")) {
+            errors.append("• Property name can only contain letters, numbers, and spaces\n");
+        }
+        
+        if (basePriceStr.isEmpty()) {
+            errors.append("• Base price is required\n");
+        } else if (basePriceStr.equals(".")) {
+            errors.append("• Base price must be a valid number\n");
+        }
+        
+        if (floorAreaStr.isEmpty()) {
+            errors.append("• Floor area is required\n");
+        } else if (floorAreaStr.equals(".")) {
+            errors.append("• Floor area must be a valid number\n");
+        }
+        
+        if (lotAreaStr.isEmpty()) {
+            errors.append("• Lot area is required\n");
+        } else if (lotAreaStr.equals(".")) {
+            errors.append("• Lot area must be a valid number\n");
+        }
+        
+        if (errors.length() > 0) {
             javax.swing.JOptionPane.showMessageDialog(this,
-                "All fields are required.",
-                "Validation Error",
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+                errors.toString(),
+                "Missing or Invalid Fields",
+                javax.swing.JOptionPane.WARNING_MESSAGE);
             return;
         }
         
@@ -59,11 +152,36 @@ public class AddProperty extends javax.swing.JFrame {
             double floorArea = Double.parseDouble(floorAreaStr);
             double lotArea = Double.parseDouble(lotAreaStr);
             
-            if (basePrice <= 0 || floorArea <= 0 || lotArea <= 0) {
+            // Validate numeric ranges
+            StringBuilder numErrors = new StringBuilder();
+            
+            if (basePrice <= 0) {
+                numErrors.append("• Base price must be greater than 0\n");
+            } else if (basePrice > 999_999_999) {
+                numErrors.append("• Base price is too large (max 999,999,999)\n");
+            }
+            
+            if (floorArea <= 0) {
+                numErrors.append("• Floor area must be greater than 0 sqm\n");
+            } else if (floorArea > 10_000) {
+                numErrors.append("• Floor area seems unusually large (max 10,000 sqm)\n");
+            }
+            
+            if (lotArea <= 0) {
+                numErrors.append("• Lot area must be greater than 0 sqm\n");
+            } else if (lotArea > 50_000) {
+                numErrors.append("• Lot area seems unusually large (max 50,000 sqm)\n");
+            }
+            
+            if (lotArea < floorArea) {
+                numErrors.append("• Lot area cannot be smaller than floor area\n");
+            }
+            
+            if (numErrors.length() > 0) {
                 javax.swing.JOptionPane.showMessageDialog(this,
-                    "All numeric values must be positive.",
-                    "Validation Error",
-                    javax.swing.JOptionPane.ERROR_MESSAGE);
+                    numErrors.toString(),
+                    "Invalid Values",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
                 return;
             }
             
@@ -98,8 +216,16 @@ public class AddProperty extends javax.swing.JFrame {
             
         } catch (NumberFormatException e) {
             javax.swing.JOptionPane.showMessageDialog(this,
-                "Invalid numeric value. Please enter valid numbers for price and areas.",
-                "Validation Error",
+                "Invalid numeric value. Please check price and area fields:\n\n" +
+                "• Base Price: Must be a valid decimal number\n" +
+                "• Floor Area: Must be a valid decimal number\n" +
+                "• Lot Area: Must be a valid decimal number",
+                "Invalid Input",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "An unexpected error occurred: " + e.getMessage(),
+                "Error",
                 javax.swing.JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -137,6 +263,7 @@ public class AddProperty extends javax.swing.JFrame {
         Header = new javax.swing.JPanel();
         HeaderLabel = new javax.swing.JLabel();
         Content = new javax.swing.JPanel();
+        ContentScrollPane = new javax.swing.JScrollPane();
         ContentWrapper = new javax.swing.JPanel();
         LNF = new javax.swing.JPanel();
         LNFLabel = new javax.swing.JLabel();
@@ -180,6 +307,7 @@ public class AddProperty extends javax.swing.JFrame {
         ContentLayout.rowWeights = new double[] {0.0};
         Content.setLayout(ContentLayout);
 
+        LNFLabel.setFont(new java.awt.Font("Segoe UI", 1, 12));
         LNFLabel.setText("Name");
 
         LNFTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -206,6 +334,7 @@ public class AddProperty extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        LNFLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12));
         LNFLabel1.setText("Base price (PHP)");
 
         LNFTextField1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -232,6 +361,7 @@ public class AddProperty extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        LNFLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12));
         LNFLabel2.setText("Floor area (sqm)");
 
         LNFTextField2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -258,6 +388,7 @@ public class AddProperty extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        LNFLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12));
         LNFLabel3.setText("Lot Area (sqm)");
 
         LNFTextField3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -284,6 +415,7 @@ public class AddProperty extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        LNFLabel4.setFont(new java.awt.Font("Segoe UI", 1, 12));
         LNFLabel4.setText("Block/Lot");
 
         LNFTextField4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -332,13 +464,13 @@ public class AddProperty extends javax.swing.JFrame {
             ContentWrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ContentWrapperLayout.createSequentialGroup()
                 .addComponent(LNF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(LNF4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(LNF3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(LNF2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(LNF1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(39, 39, 39))
             .addGroup(ContentWrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -348,12 +480,18 @@ public class AddProperty extends javax.swing.JFrame {
                     .addContainerGap()))
         );
 
+        ContentScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        ContentScrollPane.setViewportView(ContentWrapper);
+        ContentScrollPane.setPreferredSize(new java.awt.Dimension(350, 350));
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-        Content.add(ContentWrapper, gridBagConstraints);
+        Content.add(ContentScrollPane, gridBagConstraints);
 
         ButtonWrapper2.setLayout(new java.awt.GridLayout(1, 2, 20, 0));
 
@@ -472,6 +610,7 @@ public class AddProperty extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel ButtonWrapper2;
     private javax.swing.JPanel Content;
+    private javax.swing.JScrollPane ContentScrollPane;
     private javax.swing.JPanel ContentWrapper;
     private javax.swing.JPanel Header;
     private javax.swing.JLabel HeaderLabel;

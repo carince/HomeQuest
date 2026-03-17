@@ -144,10 +144,15 @@ public class ProcessTransaction extends javax.swing.JFrame {
 
         if (confirm == javax.swing.JOptionPane.YES_OPTION) {
             homequest.model.Agent agent = homequest.HomeQuest.getAgent();
+            int paymentMethod = property.getPendingPaymentMethod();
             agent.approveTransaction(property);
             
+            boolean isInstallment = (paymentMethod == 3 || paymentMethod == 4);
+            String finalStatus = isInstallment ? "RESERVED (installment ongoing)" : "SOLD";
+            String note = isInstallment ? "\nBuyer will continue making monthly payments." : "";
+            
             javax.swing.JOptionPane.showMessageDialog(this,
-                    "Transaction approved successfully!\nProperty: " + property.getBlockLot() + "\nStatus: SOLD",
+                    "Transaction approved successfully!\nProperty: " + property.getBlockLot() + "\nStatus: " + finalStatus + note,
                     "Success",
                     javax.swing.JOptionPane.INFORMATION_MESSAGE);
             
