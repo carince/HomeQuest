@@ -62,6 +62,8 @@ public class ProcessTransaction extends javax.swing.JFrame {
 
         JPanel container = new JPanel();
         container.setLayout(new javax.swing.BoxLayout(container, javax.swing.BoxLayout.Y_AXIS));
+        container.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
+        container.setOpaque(false);
 
         if (reservedProps.isEmpty()) {
             JLabel emptyLabel = new JLabel("No pending purchase requests.");
@@ -70,12 +72,17 @@ public class ProcessTransaction extends javax.swing.JFrame {
             JPanel emptyPanel = new JPanel();
             emptyPanel.add(emptyLabel);
             emptyPanel.setPreferredSize(new java.awt.Dimension(400, 100));
+            emptyPanel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 100));
+            emptyPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
             container.add(emptyPanel);
         } else {
             for (int i = 0; i < reservedProps.size(); i++) {
                 homequest.model.Property property = reservedProps.get(i);
                 JPanel panel = createRequestPanel(property, i + 1);
                 container.add(panel);
+                if (i < reservedProps.size() - 1) {
+                    container.add(javax.swing.Box.createVerticalStrut(8));
+                }
             }
         }
 
@@ -89,11 +96,13 @@ public class ProcessTransaction extends javax.swing.JFrame {
         panel.setBackground(new java.awt.Color(255, 250, 205));
         panel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         panel.setLayout(new java.awt.BorderLayout(10, 5));
-        panel.setPreferredSize(new java.awt.Dimension(400, 120));
+        panel.setPreferredSize(new java.awt.Dimension(400, 130));
+        panel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 130));
+        panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         String paymentMethod = getPaymentMethodText(property);
         
-        JLabel infoLabel = new JLabel("<html><b>#" + index + ": " + property.getBlockLot() + "</b><br>" +
+        JLabel infoLabel = new JLabel("<html><b>#" + index + ": " + property.getName() + "</b><br>" +
                 "Buyer: " + property.getPendingBuyer().getName() + "<br>" +
                 "TCP: ₱" + String.format("%,.2f", property.getTCP()) + "<br>" +
                 "Payment: " + paymentMethod + "</html>");
@@ -101,7 +110,7 @@ public class ProcessTransaction extends javax.swing.JFrame {
         infoLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+        buttonPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
         buttonPanel.setOpaque(false);
 
         javax.swing.JButton approveBtn = new javax.swing.JButton("Approve");
@@ -138,7 +147,7 @@ public class ProcessTransaction extends javax.swing.JFrame {
 
     private void handleApprove(homequest.model.Property property) {
         int confirm = javax.swing.JOptionPane.showConfirmDialog(this,
-                "Approve purchase request for " + property.getBlockLot() + "?",
+                "Approve purchase request for " + property.getName() + "?",
                 "Confirm Approval",
                 javax.swing.JOptionPane.YES_NO_OPTION);
 
@@ -152,7 +161,7 @@ public class ProcessTransaction extends javax.swing.JFrame {
             String note = isInstallment ? "\nBuyer will continue making monthly payments." : "";
             
             javax.swing.JOptionPane.showMessageDialog(this,
-                    "Transaction approved successfully!\nProperty: " + property.getBlockLot() + "\nStatus: " + finalStatus + note,
+                    "Transaction approved successfully!\nProperty: " + property.getName() + "\nStatus: " + finalStatus + note,
                     "Success",
                     javax.swing.JOptionPane.INFORMATION_MESSAGE);
             
@@ -162,7 +171,7 @@ public class ProcessTransaction extends javax.swing.JFrame {
 
     private void handleReject(homequest.model.Property property) {
         int confirm = javax.swing.JOptionPane.showConfirmDialog(this,
-                "Reject purchase request for " + property.getBlockLot() + "?\nProperty will return to AVAILABLE status.",
+                "Reject purchase request for " + property.getName() + "?\nProperty will return to AVAILABLE status.",
                 "Confirm Rejection",
                 javax.swing.JOptionPane.YES_NO_OPTION);
 

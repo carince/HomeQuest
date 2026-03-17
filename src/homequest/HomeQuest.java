@@ -18,7 +18,7 @@ public class HomeQuest {
     private static void initializeSampleData() {
         allProperties = new ArrayList<>();
         
-        agent = new Agent("Maria Santos", "LIC-2024-001");
+        agent = new Agent("Asiana Homes", "LIC-2024-001");
         owner = new Owner("ABC Development Corp");
         buyer = new Buyer("Pedro Reyes", 5_000_000);
 

@@ -5,6 +5,7 @@ import homequest.transaction.Transaction;
 
 public abstract class Property {
     protected String blockLot;
+    protected String name;
     protected double lotArea;
     protected double basePrice;
     protected PropertyStatus status;
@@ -16,6 +17,17 @@ public abstract class Property {
 
     public Property(String blockLot, double lotArea, double basePrice) {
         this.blockLot = blockLot;
+        this.name = blockLot;
+        this.lotArea = lotArea;
+        this.basePrice = basePrice;
+        this.status = PropertyStatus.AVAILABLE;
+        this.pendingBuyer = null;
+        this.pendingTransaction = null;
+    }
+
+    public Property(String blockLot, String name, double lotArea, double basePrice) {
+        this.blockLot = blockLot;
+        this.name = name;
         this.lotArea = lotArea;
         this.basePrice = basePrice;
         this.status = PropertyStatus.AVAILABLE;
@@ -29,6 +41,14 @@ public abstract class Property {
 
     public void setBlockLot(String blockLot) {
         this.blockLot = blockLot;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public double getLotArea() {

@@ -4,26 +4,31 @@
  */
 package homequest.jframe.Buyer;
 
+import homequest.jframe.Owner.*;
 import homequest.jframe.Agent.*;
 import homequest.jframe.*;
+import java.awt.Component;
 import java.awt.Image;
 import javax.swing.ImageIcon;
-
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 /**
  *
  * @author crnc
  */
-public class Workspace extends javax.swing.JFrame {
-    
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Workspace.class.getName());
+public class ViewAvailableProperties extends javax.swing.JFrame {
+
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ViewAvailableProperties.class.getName());
 
     /**
      * Creates new form Main
      */
-    public Workspace() {
+    public ViewAvailableProperties() {
         initComponents();
         loadUserData();
+        loadOwnerProperties();
         setupEventHandlers();
     }
 
@@ -33,74 +38,91 @@ public class Workspace extends javax.swing.JFrame {
     }
 
     private void setupEventHandlers() {
-        jButton1.addActionListener(e -> browseAvailableProperties());
-        jButton2.addActionListener(e -> requestPurchase());
-        jButton3.addActionListener(e -> viewPurchaseHistory());
-        jButton4.addActionListener(e -> manageWallet());
-        jButton5.addActionListener(e -> openFinancialCalculator());
+        Return.addActionListener(e -> returnToWorkspace());
         Logout.addActionListener(e -> returnToMain());
     }
 
-    private void browseAvailableProperties() {
-        ViewAvailableProperties viewWindow = new ViewAvailableProperties();
-        viewWindow.setVisible(true);
+    private void returnToWorkspace() {
+        homequest.jframe.Buyer.Workspace workspace = new homequest.jframe.Buyer.Workspace();
+        workspace.setVisible(true);
         this.dispose();
-    }
-
-    private void requestPurchase() {
-        PurchaseProperty purchaseWindow = new PurchaseProperty();
-        purchaseWindow.setVisible(true);
-        this.dispose();
-    }
-
-    private void viewPurchaseHistory() {
-        ViewPurchaseHistory historyWindow = new ViewPurchaseHistory();
-        historyWindow.setVisible(true);
-        this.dispose();
-    }
-
-    private void manageWallet() {
-        homequest.model.Buyer buyer = homequest.HomeQuest.getBuyer();
-        
-        String message = String.format("Current Balance: ₱%,.2f\n\nEnter amount to add (or cancel):", buyer.getWalletBalance());
-        String input = javax.swing.JOptionPane.showInputDialog(this, message, "Wallet Manager", javax.swing.JOptionPane.QUESTION_MESSAGE);
-        
-        if (input != null && !input.trim().isEmpty()) {
-            try {
-                double amount = Double.parseDouble(input);
-                if (amount > 0) {
-                    buyer.addFunds(amount);
-                    javax.swing.JOptionPane.showMessageDialog(this,
-                        String.format("Funds added successfully!\nNew Balance: ₱%,.2f", buyer.getWalletBalance()),
-                        "Success",
-                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
-                    UserName.setText(buyer.getName());
-                } else {
-                    javax.swing.JOptionPane.showMessageDialog(this,
-                        "Amount must be positive.",
-                        "Invalid Amount",
-                        javax.swing.JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (NumberFormatException e) {
-                javax.swing.JOptionPane.showMessageDialog(this,
-                    "Invalid amount entered.",
-                    "Error",
-                    javax.swing.JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-
-    private void openFinancialCalculator() {
-        javax.swing.JOptionPane.showMessageDialog(this,
-            "Financial Calculator feature coming soon!",
-            "Coming Soon",
-            javax.swing.JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void returnToMain() {
         homequest.jframe.Main main = new homequest.jframe.Main();
         main.setVisible(true);
         this.dispose();
+    }
+
+    private void loadOwnerProperties() {
+        homequest.model.Buyer buyer = homequest.HomeQuest.getBuyer();
+        java.util.List<homequest.model.Property> availableProps = buyer.getAvailableProperties(homequest.HomeQuest.getAllProperties());
+
+        JPanel container = new JPanel();
+        container.setLayout(new javax.swing.BoxLayout(container, javax.swing.BoxLayout.Y_AXIS));
+        container.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
+        container.setOpaque(false);
+
+        if (availableProps.isEmpty()) {
+            JLabel emptyLabel = new JLabel("No available properties at the moment.");
+            emptyLabel.setFont(new java.awt.Font("Segoe UI", 0, 18));
+            emptyLabel.setForeground(java.awt.Color.GRAY);
+            JPanel emptyPanel = new JPanel();
+            emptyPanel.add(emptyLabel);
+            emptyPanel.setPreferredSize(new java.awt.Dimension(400, 100));
+            emptyPanel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 100));
+            emptyPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            container.add(emptyPanel);
+        } else {
+            for (int i = 0; i < availableProps.size(); i++) {
+                homequest.model.Property property = availableProps.get(i);
+                JPanel panel = createPropertyPanel(property, i + 1);
+                container.add(panel);
+                if (i < availableProps.size() - 1) {
+                    container.add(javax.swing.Box.createVerticalStrut(8));
+                }
+            }
+        }
+
+        ScrollWrapper.setViewportView(container);
+        ScrollWrapper.revalidate();
+        ScrollWrapper.repaint();
+    }
+
+    private JPanel createPropertyPanel(homequest.model.Property property, int index) {
+        JPanel panel = new JPanel();
+        
+        java.awt.Color bgColor;
+        switch (property.getStatus()) {
+            case AVAILABLE:
+                bgColor = new java.awt.Color(220, 255, 220);
+                break;
+            case RESERVED:
+                bgColor = new java.awt.Color(255, 250, 205);
+                break;
+            case SOLD:
+                bgColor = new java.awt.Color(255, 220, 220);
+                break;
+            default:
+                bgColor = java.awt.Color.LIGHT_GRAY;
+        }
+        
+        panel.setBackground(bgColor);
+        panel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        panel.setLayout(new java.awt.BorderLayout(10, 5));
+        panel.setPreferredSize(new java.awt.Dimension(400, 95));
+        panel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 95));
+        panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel label = new JLabel("<html><b>#" + index + ": " + property.getName() + "</b><br>" +
+                "TCP: ₱" + String.format("%,.2f", property.getTCP()) + "<br>" +
+                "Status: <b>" + property.getStatus() + "</b></html>");
+        label.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        label.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        panel.add(label, java.awt.BorderLayout.CENTER);
+
+        return panel;
     }
 
     /**
@@ -116,13 +138,9 @@ public class Workspace extends javax.swing.JFrame {
         Header = new javax.swing.JPanel();
         HeaderLabel = new javax.swing.JLabel();
         Content = new javax.swing.JPanel();
+        ScrollWrapper = new javax.swing.JScrollPane();
         ButtonWrapper = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        ButtonWrapper2 = new javax.swing.JPanel();
-        jButton5 = new javax.swing.JButton();
+        Return = new javax.swing.JButton();
         Logout = new javax.swing.JButton();
         UserInfo = new javax.swing.JPanel();
         UserIcon = new javax.swing.JLabel();
@@ -130,7 +148,6 @@ public class Workspace extends javax.swing.JFrame {
         UserName = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(600, 500));
         setResizable(false);
         setSize(new java.awt.Dimension(600, 500));
 
@@ -140,54 +157,38 @@ public class Workspace extends javax.swing.JFrame {
         HeaderLabel.setText("HomeQuest");
         Header.add(HeaderLabel, new java.awt.GridBagConstraints());
 
-        Content.setMinimumSize(new java.awt.Dimension(562, 279));
-        Content.setPreferredSize(new java.awt.Dimension(563, 279));
         java.awt.GridBagLayout ContentLayout = new java.awt.GridBagLayout();
         ContentLayout.columnWidths = new int[] {0, 5, 0};
-        ContentLayout.rowHeights = new int[] {0, 5, 0, 5, 0};
+        ContentLayout.rowHeights = new int[] {0, 5, 0};
         ContentLayout.columnWeights = new double[] {0.0};
         ContentLayout.rowWeights = new double[] {0.0};
         Content.setLayout(ContentLayout);
 
-        ButtonWrapper.setLayout(new java.awt.GridLayout(4, 1, 0, 20));
-
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton1.setText("Browse Available Properties");
-        ButtonWrapper.add(jButton1);
-
-        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton2.setText("Purchase Property/s");
-        ButtonWrapper.add(jButton2);
-
-        jButton3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton3.setText("View Purchase History");
-        ButtonWrapper.add(jButton3);
-
-        jButton4.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton4.setText("Wallet Balance");
-        ButtonWrapper.add(jButton4);
-
+        ScrollWrapper.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        ScrollWrapper.setHorizontalScrollBar(null);
+        ScrollWrapper.setMinimumSize(new java.awt.Dimension(350, 300));
+        ScrollWrapper.setName(""); // NOI18N
+        ScrollWrapper.setPreferredSize(new java.awt.Dimension(400, 400));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-        Content.add(ButtonWrapper, gridBagConstraints);
+        Content.add(ScrollWrapper, gridBagConstraints);
 
-        ButtonWrapper2.setLayout(new java.awt.GridLayout(1, 2, 20, 0));
+        ButtonWrapper.setLayout(new java.awt.GridLayout(1, 2, 20, 0));
 
-        jButton5.setText("Financial Calculator");
-        ButtonWrapper2.add(jButton5);
+        Return.setText("Return");
+        Return.addActionListener(this::ReturnActionPerformed);
+        ButtonWrapper.add(Return);
 
         Logout.setText("Logout");
-        ButtonWrapper2.add(Logout);
+        ButtonWrapper.add(Logout);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-        Content.add(ButtonWrapper2, gridBagConstraints);
+        Content.add(ButtonWrapper, gridBagConstraints);
 
         UserInfo.setMaximumSize(new java.awt.Dimension(199, 96));
         UserInfo.setMinimumSize(new java.awt.Dimension(199, 196));
@@ -204,13 +205,13 @@ public class Workspace extends javax.swing.JFrame {
 
         UserType.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         UserType.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        UserType.setText("Buyer");
+        UserType.setText("Owner");
         UserInfo.add(UserType, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 199, 30));
 
         UserName.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         UserName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        UserName.setText("Buyer Name Here");
-        UserInfo.add(UserName, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 150, -1, 30));
+        UserName.setText("Owner Name Here");
+        UserInfo.add(UserName, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, -1, 30));
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -223,7 +224,7 @@ public class Workspace extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(Content, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
@@ -242,6 +243,10 @@ public class Workspace extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void ReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ReturnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -265,24 +270,20 @@ public class Workspace extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new Workspace().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new ViewAvailableProperties().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel ButtonWrapper;
-    private javax.swing.JPanel ButtonWrapper2;
     private javax.swing.JPanel Content;
     private javax.swing.JPanel Header;
     private javax.swing.JLabel HeaderLabel;
     private javax.swing.JButton Logout;
+    private javax.swing.JButton Return;
+    private javax.swing.JScrollPane ScrollWrapper;
     private javax.swing.JLabel UserIcon;
     private javax.swing.JPanel UserInfo;
     private javax.swing.JLabel UserName;
     private javax.swing.JLabel UserType;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     // End of variables declaration//GEN-END:variables
 }

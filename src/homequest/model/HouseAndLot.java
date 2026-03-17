@@ -7,7 +7,7 @@ public class HouseAndLot extends Property {
     private double floorArea;
 
     public HouseAndLot(String blockLot, double lotArea, double basePrice, String modelName, double floorArea) {
-        super(blockLot, lotArea, basePrice);
+        super(blockLot, modelName, lotArea, basePrice);
         this.modelName = modelName;
         this.floorArea = floorArea;
     }

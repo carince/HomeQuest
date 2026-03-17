@@ -193,24 +193,13 @@ public class AddProperty extends javax.swing.JFrame {
                 blockLot, lotArea, basePrice, modelName, floorArea, allProperties
             );
             
-            int assignChoice = javax.swing.JOptionPane.showConfirmDialog(this,
-                "Property added successfully!\n\nAssign this property to agent " + agent.getName() + "?",
-                "Assign to Agent",
-                javax.swing.JOptionPane.YES_NO_OPTION,
-                javax.swing.JOptionPane.QUESTION_MESSAGE);
+            // Automatically assign property to agent
+            owner.assignPropertyToAgent(newProperty, agent);
             
-            if (assignChoice == javax.swing.JOptionPane.YES_OPTION) {
-                owner.assignPropertyToAgent(newProperty, agent);
-                javax.swing.JOptionPane.showMessageDialog(this,
-                    "Property " + blockLot + " has been assigned to " + agent.getName(),
-                    "Success",
-                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                javax.swing.JOptionPane.showMessageDialog(this,
-                    "Property added but not assigned to agent.",
-                    "Success",
-                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
-            }
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Property added successfully!\n\nAutomatically assigned to agent " + agent.getName(),
+                "Success",
+                javax.swing.JOptionPane.INFORMATION_MESSAGE);
             
             clearForm();
             

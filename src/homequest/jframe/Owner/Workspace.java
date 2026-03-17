@@ -80,7 +80,7 @@ public class Workspace extends javax.swing.JFrame {
         String[] options = new String[owner.getProperties().size()];
         for (int i = 0; i < owner.getProperties().size(); i++) {
             homequest.model.Property prop = owner.getProperties().get(i);
-            options[i] = prop.getBlockLot() + " - " + prop.getStatus();
+            options[i] = prop.getName() + " - " + prop.getStatus();
         }
         
         String selected = (String) javax.swing.JOptionPane.showInputDialog(this,
@@ -97,7 +97,7 @@ public class Workspace extends javax.swing.JFrame {
             
             if (owner.assignPropertyToAgent(property, agent)) {
                 javax.swing.JOptionPane.showMessageDialog(this,
-                    "Property " + property.getBlockLot() + " assigned to " + agent.getName(),
+                    "Property " + property.getName() + " assigned to " + agent.getName(),
                     "Success",
                     javax.swing.JOptionPane.INFORMATION_MESSAGE);
             } else {
@@ -120,7 +120,7 @@ public class Workspace extends javax.swing.JFrame {
             int available = 0, reserved = 0, sold = 0;
             
             for (homequest.model.Property prop : owner.getProperties()) {
-                message.append("<p><b>").append(prop.getBlockLot()).append("</b> - ")
+                message.append("<p><b>").append(prop.getName()).append("</b> - ")
                        .append("<span style='color: ");
                 
                 switch (prop.getStatus()) {

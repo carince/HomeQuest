@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package homequest.jframe.Agent;
+package homequest.jframe.Buyer;
 
 import homequest.jframe.Owner.*;
 import homequest.jframe.Agent.*;
@@ -18,23 +18,24 @@ import javax.swing.JScrollPane;
  *
  * @author crnc
  */
-public class ViewListings extends javax.swing.JFrame {
+public class PurchaseProperty extends javax.swing.JFrame {
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ViewListings.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(PurchaseProperty.class.getName());
 
     /**
      * Creates new form Main
      */
-    public ViewListings() {
+    public PurchaseProperty() {
         initComponents();
         loadUserData();
-        loadAgentListings();
+        loadAvailableProperties();
         setupEventHandlers();
     }
 
     private void loadUserData() {
-        homequest.model.Agent agent = homequest.HomeQuest.getAgent();
-        UserName.setText(agent.getName());
+        homequest.model.Buyer buyer = homequest.HomeQuest.getBuyer();
+        UserName.setText(buyer.getName());
+        UserType.setText("Buyer");
     }
 
     private void setupEventHandlers() {
@@ -43,7 +44,7 @@ public class ViewListings extends javax.swing.JFrame {
     }
 
     private void returnToWorkspace() {
-        homequest.jframe.Agent.Workspace workspace = new homequest.jframe.Agent.Workspace();
+        homequest.jframe.Buyer.Workspace workspace = new homequest.jframe.Buyer.Workspace();
         workspace.setVisible(true);
         this.dispose();
     }
@@ -54,17 +55,17 @@ public class ViewListings extends javax.swing.JFrame {
         this.dispose();
     }
 
-    private void loadAgentListings() {
-        homequest.model.Agent agent = homequest.HomeQuest.getAgent();
-        java.util.List<homequest.model.Property> listings = agent.getListings();
+    private void loadAvailableProperties() {
+        homequest.model.Buyer buyer = homequest.HomeQuest.getBuyer();
+        java.util.List<homequest.model.Property> availableProps = buyer.getAvailableProperties(homequest.HomeQuest.getAllProperties());
 
         JPanel container = new JPanel();
         container.setLayout(new javax.swing.BoxLayout(container, javax.swing.BoxLayout.Y_AXIS));
         container.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         container.setOpaque(false);
 
-        if (listings.isEmpty()) {
-            JLabel emptyLabel = new JLabel("No properties in your listings.");
+        if (availableProps.isEmpty()) {
+            JLabel emptyLabel = new JLabel("No available properties to purchase.");
             emptyLabel.setFont(new java.awt.Font("Segoe UI", 0, 18));
             emptyLabel.setForeground(java.awt.Color.GRAY);
             JPanel emptyPanel = new JPanel();
@@ -74,11 +75,11 @@ public class ViewListings extends javax.swing.JFrame {
             emptyPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
             container.add(emptyPanel);
         } else {
-            for (int i = 0; i < listings.size(); i++) {
-                homequest.model.Property property = listings.get(i);
+            for (int i = 0; i < availableProps.size(); i++) {
+                homequest.model.Property property = availableProps.get(i);
                 JPanel panel = createPropertyPanel(property, i + 1);
                 container.add(panel);
-                if (i < listings.size() - 1) {
+                if (i < availableProps.size() - 1) {
                     container.add(javax.swing.Box.createVerticalStrut(8));
                 }
             }
@@ -91,22 +92,162 @@ public class ViewListings extends javax.swing.JFrame {
 
     private JPanel createPropertyPanel(homequest.model.Property property, int index) {
         JPanel panel = new JPanel();
-        panel.setBackground(java.awt.Color.lightGray);
+
+        panel.setBackground(new java.awt.Color(220, 255, 220));
         panel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        panel.setLayout(new java.awt.BorderLayout(10, 5));
-        panel.setPreferredSize(new java.awt.Dimension(400, 95));
-        panel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 95));
+        panel.setLayout(new java.awt.BorderLayout(10, 10));
+        panel.setPreferredSize(new java.awt.Dimension(400, 130));
+        panel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 130));
         panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JLabel label = new JLabel("<html><b>#" + index + ": " + property.getName() + "</b><br>" +
+                "Block/Lot: " + property.getBlockLot() + "<br>" +
                 "TCP: ₱" + String.format("%,.2f", property.getTCP()) + "<br>" +
-                "Status: " + property.getStatus() + "</html>");
+                "Status: <b>" + property.getStatus() + "</b></html>");
         label.setFont(new java.awt.Font("Segoe UI", 0, 14));
         label.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        
+
+        javax.swing.JButton buyButton = new javax.swing.JButton("Buy Property");
+        buyButton.setFont(new java.awt.Font("Segoe UI", 0, 12));
+        buyButton.addActionListener(e -> selectPaymentMethod(property));
+
+        JPanel buttonPanel = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        buttonPanel.setOpaque(false);
+        buttonPanel.add(buyButton);
+
         panel.add(label, java.awt.BorderLayout.CENTER);
+        panel.add(buttonPanel, java.awt.BorderLayout.SOUTH);
 
         return panel;
+    }
+
+    private void selectPaymentMethod(homequest.model.Property property) {
+        String[] paymentOptions = {"Spot Cash", "Check", "Bank Financing", "Pag-IBIG Financing"};
+
+        String paymentMethod = (String) javax.swing.JOptionPane.showInputDialog(this,
+                "Select payment method for " + property.getName() + ":",
+                "Payment Method",
+                javax.swing.JOptionPane.QUESTION_MESSAGE,
+                null,
+                paymentOptions,
+                paymentOptions[0]);
+
+        if (paymentMethod == null) return;
+
+        int paymentChoice = java.util.Arrays.asList(paymentOptions).indexOf(paymentMethod) + 1;
+        String bankName = null;
+        int loanTerm = 0;
+
+        if (paymentChoice == 3) {
+            bankName = javax.swing.JOptionPane.showInputDialog(this, "Enter bank name:");
+            if (bankName == null || bankName.trim().isEmpty()) return;
+
+            String termStr = javax.swing.JOptionPane.showInputDialog(this, "Enter loan term (years):");
+            if (termStr == null) return;
+            try {
+                loanTerm = Integer.parseInt(termStr);
+                if (loanTerm <= 0) {
+                    javax.swing.JOptionPane.showMessageDialog(this, "Loan term must be greater than 0.", "Invalid Term", javax.swing.JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Invalid loan term.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } else if (paymentChoice == 4) {
+            String termStr = javax.swing.JOptionPane.showInputDialog(this, "Enter loan term (years):");
+            if (termStr == null) return;
+            try {
+                loanTerm = Integer.parseInt(termStr);
+                if (loanTerm <= 0) {
+                    javax.swing.JOptionPane.showMessageDialog(this, "Loan term must be greater than 0.", "Invalid Term", javax.swing.JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Invalid loan term.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+
+        boolean confirmed = showBreakdownAndConfirm(property, paymentChoice, bankName, loanTerm);
+        if (!confirmed) return;
+
+        homequest.model.Buyer buyer = homequest.HomeQuest.getBuyer();
+        homequest.model.Agent agent = homequest.HomeQuest.getAgent();
+        boolean success = buyer.createPurchaseRequest(property, paymentChoice, bankName, loanTerm, agent);
+
+        if (success) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "<html><h3>Purchase Request Submitted</h3>" +
+                    "<p>Property: " + property.getName() + "</p>" +
+                    "<p>TCP: ₱" + String.format("%,.2f", property.getTCP()) + "</p>" +
+                    "<p>Status: <b>Pending agent approval</b></p></html>",
+                    "Success",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            loadAvailableProperties();
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Failed to submit request. Property may no longer be available.",
+                    "Error",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private boolean showBreakdownAndConfirm(homequest.model.Property property, int paymentChoice, String bankName, int loanTerm) {
+        double netPrice = property.getBasePrice();
+        double vat = homequest.util.FinancialEngine.calculateVAT(netPrice, false);
+        double otherCharges = homequest.util.FinancialEngine.computeOtherCharges(netPrice);
+        double tcp = property.getTCP();
+
+        String paymentLabel;
+        String financingDetails = "";
+        switch (paymentChoice) {
+            case 1:
+                paymentLabel = "Spot Cash";
+                break;
+            case 2:
+                paymentLabel = "Check";
+                break;
+            case 3:
+                paymentLabel = "Bank Financing";
+                double bankMonthly = homequest.util.FinancialEngine.getMonthlyAmortization(tcp, loanTerm);
+                financingDetails = "<p>Bank: " + bankName + "</p>" +
+                        "<p>Loan Term: " + loanTerm + " years</p>" +
+                        "<p>Estimated Monthly: ₱" + String.format("%,.2f", bankMonthly) + "</p>";
+                break;
+            case 4:
+                paymentLabel = "Pag-IBIG Financing";
+                double pagibigMonthly = homequest.util.FinancialEngine.getMonthlyAmortization(tcp, loanTerm);
+                financingDetails = "<p>Loan Term: " + loanTerm + " years</p>" +
+                        "<p>Estimated Monthly: ₱" + String.format("%,.2f", pagibigMonthly) + "</p>";
+                break;
+            default:
+                paymentLabel = "Unknown";
+        }
+
+        String breakdown = "<html><body style='width: 420px'>" +
+                "<h3>Purchase Breakdown</h3>" +
+                "<p><b>Property:</b> " + property.getName() + "</p>" +
+                "<p><b>Block/Lot:</b> " + property.getBlockLot() + "</p>" +
+                "<hr>" +
+                "<p>Base Price: ₱" + String.format("%,.2f", netPrice) + "</p>" +
+                "<p>VAT: ₱" + String.format("%,.2f", vat) + "</p>" +
+                "<p>Other Charges: ₱" + String.format("%,.2f", otherCharges) + "</p>" +
+                "<p><b>Total Contract Price (TCP): ₱" + String.format("%,.2f", tcp) + "</b></p>" +
+                "<hr>" +
+                "<p><b>Payment Method:</b> " + paymentLabel + "</p>" +
+                financingDetails +
+                "<p>Continue with this purchase request?</p>" +
+                "</body></html>";
+
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(
+                this,
+                breakdown,
+                "Confirm Purchase",
+                javax.swing.JOptionPane.YES_NO_OPTION,
+                javax.swing.JOptionPane.QUESTION_MESSAGE);
+
+        return confirm == javax.swing.JOptionPane.YES_OPTION;
     }
 
     /**
@@ -189,12 +330,12 @@ public class ViewListings extends javax.swing.JFrame {
 
         UserType.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         UserType.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        UserType.setText("Agent");
+        UserType.setText("Buyer");
         UserInfo.add(UserType, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 199, 30));
 
         UserName.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         UserName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        UserName.setText("Agent Name Here");
+        UserName.setText("Owner Name Here");
         UserInfo.add(UserName, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, -1, 30));
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -254,7 +395,7 @@ public class ViewListings extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new ViewListings().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new PurchaseProperty().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

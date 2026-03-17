@@ -59,6 +59,8 @@ public class ViewProperties extends javax.swing.JFrame {
 
         JPanel container = new JPanel();
         container.setLayout(new javax.swing.BoxLayout(container, javax.swing.BoxLayout.Y_AXIS));
+        container.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
+        container.setOpaque(false);
 
         if (properties.isEmpty()) {
             JLabel emptyLabel = new JLabel("No properties owned.");
@@ -67,12 +69,17 @@ public class ViewProperties extends javax.swing.JFrame {
             JPanel emptyPanel = new JPanel();
             emptyPanel.add(emptyLabel);
             emptyPanel.setPreferredSize(new java.awt.Dimension(400, 100));
+            emptyPanel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 100));
+            emptyPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
             container.add(emptyPanel);
         } else {
             for (int i = 0; i < properties.size(); i++) {
                 homequest.model.Property property = properties.get(i);
                 JPanel panel = createPropertyPanel(property, i + 1);
                 container.add(panel);
+                if (i < properties.size() - 1) {
+                    container.add(javax.swing.Box.createVerticalStrut(8));
+                }
             }
         }
 
@@ -102,9 +109,11 @@ public class ViewProperties extends javax.swing.JFrame {
         panel.setBackground(bgColor);
         panel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         panel.setLayout(new java.awt.BorderLayout(10, 5));
-        panel.setPreferredSize(new java.awt.Dimension(400, 80));
+        panel.setPreferredSize(new java.awt.Dimension(400, 95));
+        panel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 95));
+        panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel label = new JLabel("<html><b>#" + index + ": " + property.getBlockLot() + "</b><br>" +
+        JLabel label = new JLabel("<html><b>#" + index + ": " + property.getName() + "</b><br>" +
                 "TCP: ₱" + String.format("%,.2f", property.getTCP()) + "<br>" +
                 "Status: <b>" + property.getStatus() + "</b></html>");
         label.setFont(new java.awt.Font("Segoe UI", 0, 14));
@@ -262,40 +271,6 @@ public class ViewProperties extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> new ViewProperties().setVisible(true));
     }
-
-    public void concatDummyCode() {
-        // 1. Create a container to hold all the property rows
-        JPanel container = new JPanel();
-        // BoxLayout.Y_AXIS stacks them vertically
-        container.setLayout(new javax.swing.BoxLayout(container, javax.swing.BoxLayout.Y_AXIS));
-
-        for (int i = 0; i < 10; i++) { // Increased to 10 so you can actually test the scroll
-            JPanel panel = new JPanel();
-            panel.setBackground(java.awt.Color.lightGray);
-            panel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-            panel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-            // Match the preferred size so the layout manager knows how big to make each row
-            panel.setPreferredSize(new java.awt.Dimension(400, 50));
-
-            JLabel label = new JLabel("#" + (i + 1) + ": Property " + (i + 1) + " (lorem ipsum idk)");
-            label.setFont(new java.awt.Font("Segoe UI", 0, 24));
-            label.setForeground(new java.awt.Color(51, 0, 0));
-
-            panel.add(label, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 5, -1, -1));
-
-            // 2. Add the individual property panel to the container
-            container.add(panel);
-        }
-
-        // 3. IMPORTANT: Set the container as the viewport view
-        ScrollWrapper.setViewportView(container);
-
-        // 4. Refresh the UI
-        ScrollWrapper.revalidate();
-        ScrollWrapper.repaint();
-    }
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel ButtonWrapper;
