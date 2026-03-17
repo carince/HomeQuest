@@ -33,26 +33,15 @@ public abstract class InstallmentPayment extends Transaction {
         return finalLumpsum;
     }
     
-    public void finalize() {
+    public void processInstallmentStart() {
         if (client.deductFunds(FinancialEngine.RESERVATION_FEE)) {
             targetProperty.setStatus(PropertyStatus.RESERVED);
             client.addTransaction(this);
-            
-            System.out.println("✓ Installment transaction initiated successfully!");
-            System.out.println("  Transaction ID: " + transactionID);
-            System.out.println("  Reservation Fee Paid: ₱" + String.format("%.2f", FinancialEngine.RESERVATION_FEE));
-            System.out.println("  Monthly Installment: ₱" + String.format("%.2f", monthlyInstallment));
-            System.out.println("  Term: " + (termMonths / 12) + " years (" + termMonths + " months)");
-            System.out.println("  Remaining Balance: ₱" + String.format("%.2f", client.getWalletBalance()));
-        } else {
-            System.out.println("✗ Insufficient funds for reservation fee!");
-            System.out.println("  Required: ₱" + String.format("%.2f", FinancialEngine.RESERVATION_FEE));
-            System.out.println("  Available: ₱" + String.format("%.2f", client.getWalletBalance()));
         }
     }
     
     @Override
     public void finalizeTransaction() {
-        finalize();
+        processInstallmentStart();
     }
 }

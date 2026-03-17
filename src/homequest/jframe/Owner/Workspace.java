@@ -59,7 +59,7 @@ public class Workspace extends javax.swing.JFrame {
             "<p><b>Name:</b> %s</p>" +
             "<p><b>License:</b> %s</p>" +
             "<p><b>Total Listings:</b> %d</p></body></html>",
-            agent.getName(), agent.getLicenseNumber(), agent.getListings().size());
+            agent.getName(), agent.getListings().size());
         
         javax.swing.JOptionPane.showMessageDialog(this, message,
             "Agent Information", javax.swing.JOptionPane.INFORMATION_MESSAGE);

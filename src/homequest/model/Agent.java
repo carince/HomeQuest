@@ -7,13 +7,11 @@ import java.util.List;
 
 public class Agent {
     private String name;
-    private String licenseNumber;
     private List<Property> listings;
     private double totalCommission;
 
-    public Agent(String name, String licenseNumber) {
+    public Agent(String name) {
         this.name = name;
-        this.licenseNumber = licenseNumber;
         this.listings = new ArrayList<>();
         this.totalCommission = 0;
     }
@@ -24,14 +22,6 @@ public class Agent {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getLicenseNumber() {
-        return licenseNumber;
-    }
-
-    public void setLicenseNumber(String licenseNumber) {
-        this.licenseNumber = licenseNumber;
     }
 
     public List<Property> getListings() {
@@ -107,6 +97,6 @@ public class Agent {
 
     @Override
     public String toString() {
-        return "Agent: " + name + " (License: " + licenseNumber + ")";
+        return "Agent: " + name;
     }
 }

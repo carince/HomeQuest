@@ -4,15 +4,11 @@
  */
 package homequest.jframe.Buyer;
 
-import homequest.jframe.Owner.*;
-import homequest.jframe.Agent.*;
-import homequest.jframe.*;
 import java.awt.Component;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 /**
  *
@@ -95,8 +91,8 @@ public class ViewPurchaseHistory extends javax.swing.JFrame {
         panel.setBackground(new java.awt.Color(235, 245, 255));
         panel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         panel.setLayout(new java.awt.BorderLayout(10, 5));
-        panel.setPreferredSize(new java.awt.Dimension(400, 110));
-        panel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 110));
+        panel.setPreferredSize(new java.awt.Dimension(400, 130));
+        panel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 130));
         panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         homequest.model.Property property = transaction.getTargetProperty();
@@ -111,7 +107,114 @@ public class ViewPurchaseHistory extends javax.swing.JFrame {
         
         panel.add(label, java.awt.BorderLayout.CENTER);
 
+        if (transaction instanceof homequest.transaction.Bank || transaction instanceof homequest.transaction.PagIbig) {
+            javax.swing.JButton duesButton = new javax.swing.JButton("View Dues / Pay");
+            duesButton.addActionListener(e -> openInstallmentDuesDialog(transaction));
+
+            JPanel buttonPanel = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+            buttonPanel.setOpaque(false);
+            buttonPanel.add(duesButton);
+            panel.add(buttonPanel, java.awt.BorderLayout.SOUTH);
+        }
+
         return panel;
+    }
+
+    private void openInstallmentDuesDialog(homequest.transaction.Transaction transaction) {
+        int termMonths;
+        double monthlyDue;
+        String paymentType;
+
+        if (transaction instanceof homequest.transaction.Bank) {
+            homequest.transaction.Bank bankTransaction = (homequest.transaction.Bank) transaction;
+            termMonths = bankTransaction.getTermMonths();
+            monthlyDue = bankTransaction.getMonthlyInstallment();
+            paymentType = "Bank Financing";
+        } else if (transaction instanceof homequest.transaction.PagIbig) {
+            homequest.transaction.PagIbig pagIbigTransaction = (homequest.transaction.PagIbig) transaction;
+            termMonths = pagIbigTransaction.getTermMonths();
+            monthlyDue = pagIbigTransaction.getMonthlyInstallment();
+            paymentType = "Pag-IBIG Financing";
+        } else {
+            return;
+        }
+
+        int paidCount = transaction.getPayments().size();
+        homequest.model.Buyer buyer = homequest.HomeQuest.getBuyer();
+
+        String[] columns = {"Due #", "Amount", "Status"};
+        Object[][] rows = new Object[termMonths][3];
+        for (int month = 1; month <= termMonths; month++) {
+            rows[month - 1][0] = "Month " + month;
+            rows[month - 1][1] = "₱" + String.format("%,.2f", monthlyDue);
+            rows[month - 1][2] = month <= paidCount ? "PAID" : "PENDING";
+        }
+
+        javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel(rows, columns) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        javax.swing.JTable duesTable = new javax.swing.JTable(model);
+        duesTable.setRowHeight(24);
+        duesTable.getTableHeader().setReorderingAllowed(false);
+
+        javax.swing.JScrollPane tableScroll = new javax.swing.JScrollPane(duesTable);
+        tableScroll.setPreferredSize(new java.awt.Dimension(450, 220));
+
+        String summary = "<html><b>Payment Type:</b> " + paymentType + "<br>" +
+                "<b>Monthly Due:</b> ₱" + String.format("%,.2f", monthlyDue) + "<br>" +
+                "<b>Paid:</b> " + paidCount + " / " + termMonths + " months<br>" +
+                "<b>Wallet Balance:</b> ₱" + String.format("%,.2f", buyer.getWalletBalance()) + "</html>";
+
+        JPanel content = new JPanel(new java.awt.BorderLayout(10, 10));
+        content.add(new JLabel(summary), java.awt.BorderLayout.NORTH);
+        content.add(tableScroll, java.awt.BorderLayout.CENTER);
+
+        if (paidCount >= termMonths) {
+            javax.swing.JOptionPane.showMessageDialog(
+                    this,
+                    content,
+                    "Installment Dues - Fully Paid",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        int choice = javax.swing.JOptionPane.showOptionDialog(
+                this,
+                content,
+                "Installment Dues",
+                javax.swing.JOptionPane.YES_NO_OPTION,
+                javax.swing.JOptionPane.QUESTION_MESSAGE,
+                null,
+                new String[]{"Pay Next Due", "Close"},
+                "Pay Next Due");
+
+        if (choice == javax.swing.JOptionPane.YES_OPTION) {
+            boolean paid = false;
+            if (transaction instanceof homequest.transaction.Bank) {
+                paid = ((homequest.transaction.Bank) transaction).payNextDue();
+            } else if (transaction instanceof homequest.transaction.PagIbig) {
+                paid = ((homequest.transaction.PagIbig) transaction).payNextDue();
+            }
+
+            if (paid) {
+                javax.swing.JOptionPane.showMessageDialog(
+                        this,
+                        "Monthly due paid successfully!",
+                        "Payment Success",
+                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(
+                        this,
+                        "Unable to pay due. You may have insufficient wallet balance or all dues are already paid.",
+                        "Payment Failed",
+                        javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
+            loadPurchaseHistory();
+        }
     }
 
     /**

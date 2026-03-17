@@ -42,6 +42,25 @@ public class PagIbig extends Transaction {
         return monthlyInstallment;
     }
 
+    public boolean payNextDue() {
+        if (payments.size() >= termMonths) {
+            return false;
+        }
+
+        if (!client.deductFunds(monthlyInstallment)) {
+            return false;
+        }
+
+        int monthNumber = payments.size() + 1;
+        addPayment(monthlyInstallment, "Month " + monthNumber);
+
+        if (payments.size() >= termMonths) {
+            targetProperty.setStatus(PropertyStatus.SOLD);
+        }
+
+        return true;
+    }
+
     @Override
     public void finalizeTransaction() {
         // Deduct reservation fee if available; proceed with RESERVED status regardless

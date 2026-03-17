@@ -24,6 +24,7 @@ public class Main extends javax.swing.JFrame {
         Agent.addActionListener(e -> openAgentWorkspace());
         Buyer.addActionListener(e -> openBuyerWorkspace());
         Owner.addActionListener(e -> openOwnerWorkspace());
+        ViewProperties.addActionListener(e -> openViewProperties());
     }
 
     private void openAgentWorkspace() {
@@ -41,6 +42,12 @@ public class Main extends javax.swing.JFrame {
     private void openOwnerWorkspace() {
         homequest.jframe.Owner.Workspace workspace = new homequest.jframe.Owner.Workspace();
         workspace.setVisible(true);
+        this.dispose();
+    }
+
+    private void openViewProperties() {
+        homequest.jframe.ViewProperties viewProperties = new homequest.jframe.ViewProperties();
+        viewProperties.setVisible(true);
         this.dispose();
     }
 

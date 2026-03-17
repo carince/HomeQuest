@@ -1,1 +1,0 @@
-com.homequest.transaction.Spot

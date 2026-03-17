@@ -16,23 +16,15 @@ public abstract class CashPayment extends Transaction {
         return totalAmount;
     }
     
-    public void finalize() {
+    public void processCashPayment() {
         if (client.deductFunds(totalAmount)) {
             targetProperty.setStatus(PropertyStatus.SOLD);
             client.addTransaction(this);
-            System.out.println("✓ Transaction finalized successfully!");
-            System.out.println("  Transaction ID: " + transactionID);
-            System.out.println("  Total Amount Paid: ₱" + String.format("%.2f", totalAmount));
-            System.out.println("  Remaining Balance: ₱" + String.format("%.2f", client.getWalletBalance()));
-        } else {
-            System.out.println("✗ Insufficient funds! Transaction failed.");
-            System.out.println("  Required: ₱" + String.format("%.2f", totalAmount));
-            System.out.println("  Available: ₱" + String.format("%.2f", client.getWalletBalance()));
         }
     }
     
     @Override
     public void finalizeTransaction() {
-        finalize();
+        processCashPayment();
     }
 }
