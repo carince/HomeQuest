@@ -20,10 +20,6 @@ public class Agent {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public List<Property> getListings() {
         return listings;
     }
@@ -40,10 +36,6 @@ public class Agent {
 
     public void addListing(Property property) {
         this.listings.add(property);
-    }
-
-    public void removeListing(Property property) {
-        this.listings.remove(property);
     }
 
     public List<Property> getReservedProperties(List<Property> allProperties) {

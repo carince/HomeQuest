@@ -16,20 +16,12 @@ public class Owner {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public List<Property> getProperties() {
         return properties;
     }
 
     public void addProperty(Property property) {
         this.properties.add(property);
-    }
-
-    public void removeProperty(Property property) {
-        this.properties.remove(property);
     }
 
     public HouseAndLot addNewProperty(String blockLot, double lotArea, double basePrice, 

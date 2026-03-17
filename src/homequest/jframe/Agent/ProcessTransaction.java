@@ -4,16 +4,11 @@
  */
 package homequest.jframe.Agent;
 
-import homequest.jframe.Owner.*;
-import homequest.jframe.Agent.*;
-import homequest.jframe.*;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 /**
  *

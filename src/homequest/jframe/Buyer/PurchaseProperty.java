@@ -173,8 +173,7 @@ public class PurchaseProperty extends javax.swing.JFrame {
         if (!confirmed) return;
 
         homequest.model.Buyer buyer = homequest.HomeQuest.getBuyer();
-        homequest.model.Agent agent = homequest.HomeQuest.getAgent();
-        boolean success = buyer.createPurchaseRequest(property, paymentChoice, bankName, loanTerm, agent);
+        boolean success = buyer.createPurchaseRequest(property, paymentChoice, bankName, loanTerm);
 
         if (success) {
             javax.swing.JOptionPane.showMessageDialog(this,

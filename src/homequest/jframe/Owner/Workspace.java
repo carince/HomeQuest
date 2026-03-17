@@ -35,7 +35,6 @@ public class Workspace extends javax.swing.JFrame {
     private void setupEventHandlers() {
         jButton1.addActionListener(e -> openViewProperties());
         jButton2.addActionListener(e -> openAddProperty());
-        jButton3.addActionListener(e -> viewAgentInformation());
         jButton4.addActionListener(e -> assignPropertyToAgent());
         jButton5.addActionListener(e -> viewPropertySalesStatus());
         Logout.addActionListener(e -> returnToMain());
@@ -174,7 +173,6 @@ public class Workspace extends javax.swing.JFrame {
         ButtonWrapper = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         ButtonWrapper2 = new javax.swing.JPanel();
         jButton5 = new javax.swing.JButton();
@@ -185,7 +183,6 @@ public class Workspace extends javax.swing.JFrame {
         UserName = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("HomeQuest");
         setResizable(false);
         setSize(new java.awt.Dimension(600, 500));
 
@@ -211,10 +208,6 @@ public class Workspace extends javax.swing.JFrame {
         jButton2.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jButton2.setText("Add New Property");
         ButtonWrapper.add(jButton2);
-
-        jButton3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton3.setText("View All Agents");
-        ButtonWrapper.add(jButton3);
 
         jButton4.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jButton4.setText("Assign Property to Agent");
@@ -334,7 +327,6 @@ public class Workspace extends javax.swing.JFrame {
     private javax.swing.JLabel UserType;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     // End of variables declaration//GEN-END:variables

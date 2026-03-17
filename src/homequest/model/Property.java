@@ -1,7 +1,6 @@
 package homequest.model;
 
 import homequest.util.PropertyStatus;
-import homequest.transaction.Transaction;
 
 public abstract class Property {
     protected String blockLot;
@@ -10,7 +9,6 @@ public abstract class Property {
     protected double basePrice;
     protected PropertyStatus status;
     protected Buyer pendingBuyer;
-    protected Transaction pendingTransaction;
     protected int pendingPaymentMethod;
     protected String pendingBankName;
     protected int pendingLoanTerm;
@@ -22,7 +20,6 @@ public abstract class Property {
         this.basePrice = basePrice;
         this.status = PropertyStatus.AVAILABLE;
         this.pendingBuyer = null;
-        this.pendingTransaction = null;
     }
 
     public Property(String blockLot, String name, double lotArea, double basePrice) {
@@ -32,39 +29,22 @@ public abstract class Property {
         this.basePrice = basePrice;
         this.status = PropertyStatus.AVAILABLE;
         this.pendingBuyer = null;
-        this.pendingTransaction = null;
     }
 
     public String getBlockLot() {
         return blockLot;
     }
 
-    public void setBlockLot(String blockLot) {
-        this.blockLot = blockLot;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public double getLotArea() {
         return lotArea;
     }
 
-    public void setLotArea(double lotArea) {
-        this.lotArea = lotArea;
-    }
-
     public double getBasePrice() {
         return basePrice;
-    }
-
-    public void setBasePrice(double basePrice) {
-        this.basePrice = basePrice;
     }
 
     public PropertyStatus getStatus() {
@@ -81,14 +61,6 @@ public abstract class Property {
 
     public void setPendingBuyer(Buyer pendingBuyer) {
         this.pendingBuyer = pendingBuyer;
-    }
-
-    public Transaction getPendingTransaction() {
-        return pendingTransaction;
-    }
-
-    public void setPendingTransaction(Transaction pendingTransaction) {
-        this.pendingTransaction = pendingTransaction;
     }
 
     public int getPendingPaymentMethod() {
@@ -117,7 +89,6 @@ public abstract class Property {
 
     public void clearPendingRequest() {
         this.pendingBuyer = null;
-        this.pendingTransaction = null;
         this.pendingPaymentMethod = 0;
         this.pendingBankName = null;
         this.pendingLoanTerm = 0;

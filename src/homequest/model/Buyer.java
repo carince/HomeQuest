@@ -1,6 +1,6 @@
 package homequest.model;
 
-import homequest.transaction.*;
+import homequest.transaction.Transaction;
 import homequest.util.PropertyStatus;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,16 +20,8 @@ public class Buyer {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public double getWalletBalance() {
         return walletBalance;
-    }
-
-    public void setWalletBalance(double walletBalance) {
-        this.walletBalance = walletBalance;
     }
 
     public void addFunds(double amount) {
@@ -62,7 +54,7 @@ public class Buyer {
         return availableProps;
     }
 
-    public boolean createPurchaseRequest(Property property, int paymentMethod, String bankName, int loanTerm, Agent agent) {
+    public boolean createPurchaseRequest(Property property, int paymentMethod, String bankName, int loanTerm) {
         if (property.getStatus() != PropertyStatus.AVAILABLE) {
             return false;
         }
