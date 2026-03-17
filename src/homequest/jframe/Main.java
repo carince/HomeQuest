@@ -65,7 +65,6 @@ public class Main extends javax.swing.JFrame {
         Owner = new javax.swing.JButton();
         ButtonWrapper = new javax.swing.JPanel();
         ViewProperties = new javax.swing.JButton();
-        Calculator = new javax.swing.JButton();
 
         jScrollPane1.setViewportView(jTree1);
 
@@ -107,13 +106,10 @@ public class Main extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         Content.add(UserWrapper, gridBagConstraints);
 
-        ButtonWrapper.setLayout(new java.awt.GridLayout(1, 2, 20, 20));
+        ButtonWrapper.setLayout(new java.awt.GridLayout(1, 1, 20, 20));
 
         ViewProperties.setText("View All Properties");
         ButtonWrapper.add(ViewProperties);
-
-        Calculator.setText("Financial Calculator");
-        ButtonWrapper.add(Calculator);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -181,7 +177,6 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton Agent;
     private javax.swing.JPanel ButtonWrapper;
     private javax.swing.JButton Buyer;
-    private javax.swing.JButton Calculator;
     private javax.swing.JPanel Content;
     private javax.swing.JPanel Header;
     private javax.swing.JLabel HeaderLabel;

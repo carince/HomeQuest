@@ -4,8 +4,6 @@
  */
 package homequest.jframe.Buyer;
 
-import homequest.jframe.Agent.*;
-import homequest.jframe.*;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 
@@ -37,7 +35,6 @@ public class Workspace extends javax.swing.JFrame {
         jButton2.addActionListener(e -> requestPurchase());
         jButton3.addActionListener(e -> viewPurchaseHistory());
         jButton4.addActionListener(e -> manageWallet());
-        jButton5.addActionListener(e -> openFinancialCalculator());
         Logout.addActionListener(e -> returnToMain());
     }
 
@@ -90,13 +87,6 @@ public class Workspace extends javax.swing.JFrame {
         }
     }
 
-    private void openFinancialCalculator() {
-        javax.swing.JOptionPane.showMessageDialog(this,
-            "Financial Calculator feature coming soon!",
-            "Coming Soon",
-            javax.swing.JOptionPane.INFORMATION_MESSAGE);
-    }
-
     private void returnToMain() {
         homequest.jframe.Main main = new homequest.jframe.Main();
         main.setVisible(true);
@@ -122,7 +112,6 @@ public class Workspace extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         ButtonWrapper2 = new javax.swing.JPanel();
-        jButton5 = new javax.swing.JButton();
         Logout = new javax.swing.JButton();
         UserInfo = new javax.swing.JPanel();
         UserIcon = new javax.swing.JLabel();
@@ -175,10 +164,7 @@ public class Workspace extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         Content.add(ButtonWrapper, gridBagConstraints);
 
-        ButtonWrapper2.setLayout(new java.awt.GridLayout(1, 2, 20, 0));
-
-        jButton5.setText("Financial Calculator");
-        ButtonWrapper2.add(jButton5);
+        ButtonWrapper2.setLayout(new java.awt.GridLayout(1, 1, 20, 0));
 
         Logout.setText("Logout");
         ButtonWrapper2.add(Logout);
@@ -284,6 +270,5 @@ public class Workspace extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     // End of variables declaration//GEN-END:variables
 }

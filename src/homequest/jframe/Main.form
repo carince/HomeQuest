@@ -136,7 +136,7 @@
           </Constraints>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-            <Property name="columns" type="int" value="2"/>
+            <Property name="columns" type="int" value="1"/>
             <Property name="horizontalGap" type="int" value="20"/>
             <Property name="rows" type="int" value="1"/>
             <Property name="verticalGap" type="int" value="20"/>
@@ -145,11 +145,6 @@
             <Component class="javax.swing.JButton" name="ViewProperties">
               <Properties>
                 <Property name="text" type="java.lang.String" value="View All Properties"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JButton" name="Calculator">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Financial Calculator"/>
               </Properties>
             </Component>
           </SubComponents>

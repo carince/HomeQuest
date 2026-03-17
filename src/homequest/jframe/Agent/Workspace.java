@@ -4,7 +4,6 @@
  */
 package homequest.jframe.Agent;
 
-import homequest.jframe.*;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 
@@ -34,8 +33,7 @@ public class Workspace extends javax.swing.JFrame {
     private void setupEventHandlers() {
         jButton1.addActionListener(e -> openViewListings());
         jButton3.addActionListener(e -> openApproveTransaction());
-        jButton5.addActionListener(e -> openFinancialCalculator());
-        Logout.addActionListener(e -> returnToMain());
+        Logout1.addActionListener(e -> returnToMain());
     }
 
     private void openViewListings() {
@@ -48,13 +46,6 @@ public class Workspace extends javax.swing.JFrame {
         ProcessTransaction processTransaction = new ProcessTransaction();
         processTransaction.setVisible(true);
         this.dispose();
-    }
-
-    private void openFinancialCalculator() {
-        javax.swing.JOptionPane.showMessageDialog(this, 
-            "Financial Calculator feature coming soon!", 
-            "Coming Soon", 
-            javax.swing.JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void returnToMain() {
@@ -80,15 +71,14 @@ public class Workspace extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         ButtonWrapper2 = new javax.swing.JPanel();
-        jButton5 = new javax.swing.JButton();
-        Logout = new javax.swing.JButton();
         UserInfo = new javax.swing.JPanel();
         UserIcon = new javax.swing.JLabel();
         UserType = new javax.swing.JLabel();
         UserName = new javax.swing.JLabel();
+        ButtonWrapper1 = new javax.swing.JPanel();
+        Logout1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("HomeQuest");
         setResizable(false);
         setSize(new java.awt.Dimension(600, 500));
 
@@ -121,14 +111,7 @@ public class Workspace extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         Content.add(ButtonWrapper, gridBagConstraints);
 
-        ButtonWrapper2.setLayout(new java.awt.GridLayout(1, 2, 20, 0));
-
-        jButton5.setText("Financial Calculator");
-        ButtonWrapper2.add(jButton5);
-
-        Logout.setText("Logout");
-        ButtonWrapper2.add(Logout);
-
+        ButtonWrapper2.setLayout(new java.awt.GridLayout(1, 1, 20, 0));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
@@ -164,6 +147,18 @@ public class Workspace extends javax.swing.JFrame {
         gridBagConstraints.gridheight = 3;
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         Content.add(UserInfo, gridBagConstraints);
+
+        ButtonWrapper1.setLayout(new java.awt.GridLayout(1, 2, 20, 0));
+
+        Logout1.setText("Logout");
+        ButtonWrapper1.add(Logout1);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+        Content.add(ButtonWrapper1, gridBagConstraints);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -216,17 +211,17 @@ public class Workspace extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel ButtonWrapper;
+    private javax.swing.JPanel ButtonWrapper1;
     private javax.swing.JPanel ButtonWrapper2;
     private javax.swing.JPanel Content;
     private javax.swing.JPanel Header;
     private javax.swing.JLabel HeaderLabel;
-    private javax.swing.JButton Logout;
+    private javax.swing.JButton Logout1;
     private javax.swing.JLabel UserIcon;
     private javax.swing.JPanel UserInfo;
     private javax.swing.JLabel UserName;
     private javax.swing.JLabel UserType;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton5;
     // End of variables declaration//GEN-END:variables
 }
