@@ -70,6 +70,7 @@ public class Main extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTree1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("HomeQuest");
         setResizable(false);
         setSize(new java.awt.Dimension(600, 500));
 

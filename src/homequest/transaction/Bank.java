@@ -1,7 +1,9 @@
 package homequest.transaction;
 
+import homequest.model.Agent;
 import homequest.model.Buyer;
 import homequest.model.Property;
+import homequest.util.FinancialEngine;
 import homequest.util.PropertyStatus;
 
 public class Bank extends Transaction {
@@ -11,10 +13,12 @@ public class Bank extends Transaction {
     private String name;
     private int termMonths;
     private double monthlyInstallment;
+    private Agent receivedBy;
 
-    public Bank(Property targetProperty, Buyer client, int termYears, String bankName) {
+    public Bank(Property targetProperty, Buyer client, int termYears, String bankName, Agent agent) {
         super(targetProperty, client);
         this.name = bankName;
+        this.receivedBy = agent;
         this.termMonths = termYears * 12;
 
         double tcp = targetProperty.getTCP();
@@ -46,6 +50,9 @@ public class Bank extends Transaction {
     public void finalizeTransaction() {
         // Deduct reservation fee if available; proceed with RESERVED status regardless
         client.deductFunds(RESERVATION_FEE);
+        if (receivedBy != null) {
+            receivedBy.addCommission(FinancialEngine.calculateAgentCommission(targetProperty.getTCP()));
+        }
         targetProperty.setStatus(PropertyStatus.RESERVED);
         client.addTransaction(this);
     }

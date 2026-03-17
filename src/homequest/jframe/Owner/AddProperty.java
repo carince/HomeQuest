@@ -184,6 +184,10 @@ public class AddProperty extends javax.swing.JFrame {
                     javax.swing.JOptionPane.WARNING_MESSAGE);
                 return;
             }
+
+            if (!showOwnerPropertyBreakdown(modelName, blockLot, basePrice, lotArea, floorArea)) {
+                return;
+            }
             
             homequest.model.Owner owner = homequest.HomeQuest.getOwner();
             homequest.model.Agent agent = homequest.HomeQuest.getAgent();
@@ -217,6 +221,40 @@ public class AddProperty extends javax.swing.JFrame {
                 "Error",
                 javax.swing.JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private boolean showOwnerPropertyBreakdown(String modelName, String blockLot, double basePrice, double lotArea, double floorArea) {
+        double vat = homequest.util.FinancialEngine.calculateVAT(basePrice, false);
+        double otherCharges = homequest.util.FinancialEngine.computeOtherCharges(basePrice);
+        double tcp = basePrice + vat + otherCharges;
+        double agentCut = homequest.util.FinancialEngine.calculateAgentCommission(tcp);
+        double ownerNet = tcp - agentCut;
+
+        String breakdown = "<html><body style='width: 430px'>" +
+                "<h3>Property Breakdown Preview</h3>" +
+                "<p><b>Property Name:</b> " + modelName + "</p>" +
+                "<p><b>Block/Lot:</b> " + blockLot + "</p>" +
+                "<p><b>Lot Area:</b> " + String.format("%,.2f", lotArea) + " sqm</p>" +
+                "<p><b>Floor Area:</b> " + String.format("%,.2f", floorArea) + " sqm</p>" +
+                "<hr>" +
+                "<p>Base Price: ₱" + String.format("%,.2f", basePrice) + "</p>" +
+                "<p>VAT: ₱" + String.format("%,.2f", vat) + "</p>" +
+                "<p>Other Charges: ₱" + String.format("%,.2f", otherCharges) + "</p>" +
+                "<p><b>Projected TCP: ₱" + String.format("%,.2f", tcp) + "</b></p>" +
+                "<hr>" +
+                "<p>Agent Cut (10%): ₱" + String.format("%,.2f", agentCut) + "</p>" +
+                "<p><b>Estimated Owner Net: ₱" + String.format("%,.2f", ownerNet) + "</b></p>" +
+                "<p>Continue adding this property?</p>" +
+                "</body></html>";
+
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(
+                this,
+                breakdown,
+                "Confirm Property Details",
+                javax.swing.JOptionPane.YES_NO_OPTION,
+                javax.swing.JOptionPane.QUESTION_MESSAGE);
+
+        return confirm == javax.swing.JOptionPane.YES_OPTION;
     }
 
     private void clearForm() {
@@ -279,6 +317,7 @@ public class AddProperty extends javax.swing.JFrame {
         UserName = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("HomeQuest");
         setPreferredSize(new java.awt.Dimension(600, 500));
         setResizable(false);
         setSize(new java.awt.Dimension(600, 500));

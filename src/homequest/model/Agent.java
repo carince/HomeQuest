@@ -9,11 +9,13 @@ public class Agent {
     private String name;
     private String licenseNumber;
     private List<Property> listings;
+    private double totalCommission;
 
     public Agent(String name, String licenseNumber) {
         this.name = name;
         this.licenseNumber = licenseNumber;
         this.listings = new ArrayList<>();
+        this.totalCommission = 0;
     }
 
     public String getName() {
@@ -34,6 +36,16 @@ public class Agent {
 
     public List<Property> getListings() {
         return listings;
+    }
+
+    public double getTotalCommission() {
+        return totalCommission;
+    }
+
+    public void addCommission(double amount) {
+        if (amount > 0) {
+            this.totalCommission += amount;
+        }
     }
 
     public void addListing(Property property) {
@@ -81,10 +93,10 @@ public class Agent {
                 transaction = new Check(property, buyer, agent);
                 break;
             case 3:
-                transaction = new Bank(property, buyer, property.getPendingLoanTerm(), property.getPendingBankName());
+                transaction = new Bank(property, buyer, property.getPendingLoanTerm(), property.getPendingBankName(), agent);
                 break;
             case 4:
-                transaction = new PagIbig(property, buyer, property.getPendingLoanTerm());
+                transaction = new PagIbig(property, buyer, property.getPendingLoanTerm(), agent);
                 break;
         }
         if (transaction != null) {

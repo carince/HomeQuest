@@ -5,6 +5,7 @@ public class FinancialEngine {
     public static final double HOUSE_VAT_THRESHOLD = 3_600_000;
     public static final double RESERVATION_FEE = 25_000;
     public static final double BANK_RATE = 0.07;
+    public static final double AGENT_COMMISSION_RATE = 0.10;
 
     public static double calculateVAT(double price, boolean isLot) {
         if (isLot) {
@@ -19,6 +20,10 @@ public class FinancialEngine {
 
     public static double computeOtherCharges(double netPrice) {
         return netPrice * 0.04;
+    }
+
+    public static double calculateAgentCommission(double amount) {
+        return amount * AGENT_COMMISSION_RATE;
     }
 
     public static double getMonthlyAmortization(double principal, int years) {

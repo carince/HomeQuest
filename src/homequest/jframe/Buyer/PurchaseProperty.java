@@ -198,6 +198,7 @@ public class PurchaseProperty extends javax.swing.JFrame {
         double vat = homequest.util.FinancialEngine.calculateVAT(netPrice, false);
         double otherCharges = homequest.util.FinancialEngine.computeOtherCharges(netPrice);
         double tcp = property.getTCP();
+        double agentCut = homequest.util.FinancialEngine.calculateAgentCommission(tcp);
 
         String paymentLabel;
         String financingDetails = "";
@@ -234,6 +235,7 @@ public class PurchaseProperty extends javax.swing.JFrame {
                 "<p>VAT: ₱" + String.format("%,.2f", vat) + "</p>" +
                 "<p>Other Charges: ₱" + String.format("%,.2f", otherCharges) + "</p>" +
                 "<p><b>Total Contract Price (TCP): ₱" + String.format("%,.2f", tcp) + "</b></p>" +
+                "<p>Agent Cut (10%): ₱" + String.format("%,.2f", agentCut) + "</p>" +
                 "<hr>" +
                 "<p><b>Payment Method:</b> " + paymentLabel + "</p>" +
                 financingDetails +
@@ -273,6 +275,7 @@ public class PurchaseProperty extends javax.swing.JFrame {
         UserName = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("HomeQuest");
         setResizable(false);
         setSize(new java.awt.Dimension(600, 500));
 

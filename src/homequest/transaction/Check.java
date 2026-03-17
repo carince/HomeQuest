@@ -3,6 +3,7 @@ package homequest.transaction;
 import homequest.model.Agent;
 import homequest.model.Buyer;
 import homequest.model.Property;
+import homequest.util.FinancialEngine;
 import homequest.util.PropertyStatus;
 
 public class Check extends Transaction {
@@ -38,6 +39,7 @@ public class Check extends Transaction {
         if (client.deductFunds(totalAmount)) {
             targetProperty.setStatus(PropertyStatus.SOLD);
             client.addTransaction(this);
+            receivedBy.addCommission(FinancialEngine.calculateAgentCommission(totalAmount));
             System.out.println("✓ Transaction finalized successfully!");
             System.out.println("  Transaction ID: " + transactionID);
             System.out.println("  Total Amount Paid: ₱" + String.format("%.2f", totalAmount));
