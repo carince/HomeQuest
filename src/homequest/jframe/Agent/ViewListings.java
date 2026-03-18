@@ -106,8 +106,8 @@ public class ViewListings extends javax.swing.JFrame {
         panel.setBackground(java.awt.Color.lightGray);
         panel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         panel.setLayout(new java.awt.BorderLayout(10, 5));
-        panel.setPreferredSize(new java.awt.Dimension(400, 95));
-        panel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 95));
+        panel.setPreferredSize(new java.awt.Dimension(400, 125));
+        panel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 125));
         panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JLabel label = new JLabel(
@@ -116,6 +116,8 @@ public class ViewListings extends javax.swing.JFrame {
                 ": " +
                 property.getName() +
                 "</b><br>" +
+                "Block: " + property.getBlock() + " &nbsp; Lot: " + property.getLot() + "<br>" +
+                "Lot Area: " + String.format("%,.2f", property.getLotArea()) + " sqm<br>" +
                 "TCP: ₱" +
                 String.format("%,.2f", property.getTCP()) +
                 "<br>" +

@@ -105,15 +105,16 @@ public class PurchaseProperty extends javax.swing.JFrame {
         panel.setBackground(isReservedByMe ? new java.awt.Color(200, 240, 255) : new java.awt.Color(220, 255, 220));
         panel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         panel.setLayout(new java.awt.BorderLayout(10, 10));
-        panel.setPreferredSize(new java.awt.Dimension(400, 130));
-        panel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 130));
+        panel.setPreferredSize(new java.awt.Dimension(400, 170));
+        panel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 170));
         panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         String statusLabel = isReservedByMe ? "<b style='color:blue'>RESERVED (by you)</b>" : "<b>" + property.getStatus() + "</b>";
         JLabel label = new JLabel("<html><b>#" + index + ": " + property.getName() + "</b><br>" +
-                "Block/Lot: " + property.getBlockLot() + "<br>" +
-                "TCP: ₱" + String.format("%,.2f", property.getTCP()) + "<br>" +
-                "Status: " + statusLabel + "</html>");
+            "Block: " + property.getBlock() + " &nbsp; Lot: " + property.getLot() + "<br>" +
+            "Lot Area: " + String.format("%,.2f", property.getLotArea()) + " sqm<br>" +
+            "TCP: ₱" + String.format("%,.2f", property.getTCP()) + "<br>" +
+            "Status: " + statusLabel + "</html>");
         label.setFont(new java.awt.Font("Segoe UI", 0, 14));
         label.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -315,7 +316,7 @@ public class PurchaseProperty extends javax.swing.JFrame {
         String breakdown = "<html><body style='width: 420px'>" +
                 "<h3>Purchase Breakdown</h3>" +
                 "<p><b>Property:</b> " + property.getName() + "</p>" +
-                "<p><b>Block/Lot:</b> " + property.getBlockLot() + "</p>" +
+                "<p><b>Block:</b> " + property.getBlock() + " &nbsp; <b>Lot:</b> " + property.getLot() + "</p>" +
                 "<hr>" +
                 "<p>Base Price: ₱" + String.format("%,.2f", netPrice) + "</p>" +
                 "<p>VAT: ₱" + String.format("%,.2f", vat) + "</p>" +

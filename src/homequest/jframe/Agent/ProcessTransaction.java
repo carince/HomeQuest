@@ -91,14 +91,15 @@ public class ProcessTransaction extends javax.swing.JFrame {
         panel.setBackground(new java.awt.Color(255, 250, 205));
         panel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         panel.setLayout(new java.awt.BorderLayout(10, 5));
-        panel.setPreferredSize(new java.awt.Dimension(400, 130));
-        panel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 130));
+        panel.setPreferredSize(new java.awt.Dimension(400, 165));
+        panel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 165));
         panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         String paymentMethod = getPaymentMethodText(property);
         
         JLabel infoLabel = new JLabel("<html><b>#" + index + ": " + property.getName() + "</b><br>" +
-                "Buyer: " + property.getPendingBuyer().getName() + "<br>" +
+            "Block: " + property.getBlock() + " &nbsp; Lot: " + property.getLot() + "<br>" +
+            "Buyer: " + property.getPendingBuyer().getName() + "<br>" +
                 "TCP: ₱" + String.format("%,.2f", property.getTCP()) + "<br>" +
                 "Payment: " + paymentMethod + "</html>");
         infoLabel.setFont(new java.awt.Font("Segoe UI", 0, 12));

@@ -46,6 +46,20 @@ public abstract class Property {
         return blockLot;
     }
 
+    public String getBlock() {
+        if (blockLot == null || !blockLot.contains("L")) {
+            return blockLot;
+        }
+        return blockLot.substring(0, blockLot.indexOf("L")).replaceAll("[^0-9]", "");
+    }
+
+    public String getLot() {
+        if (blockLot == null || !blockLot.contains("L")) {
+            return blockLot;
+        }
+        return blockLot.substring(blockLot.indexOf("L") + 1).replaceAll("[^0-9]", "");
+    }
+
     public String getName() {
         return name;
     }

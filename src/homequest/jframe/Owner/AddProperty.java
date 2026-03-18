@@ -233,7 +233,7 @@ public class AddProperty extends javax.swing.JFrame {
         String breakdown = "<html><body style='width: 430px'>" +
                 "<h3>Property Breakdown Preview</h3>" +
                 "<p><b>Property Name:</b> " + modelName + "</p>" +
-                "<p><b>Block/Lot:</b> " + blockLot + "</p>" +
+                "<p><b>Block:</b> " + parseBlock(blockLot) + " &nbsp; <b>Lot:</b> " + parseLot(blockLot) + "</p>" +
                 "<p><b>Lot Area:</b> " + String.format("%,.2f", lotArea) + " sqm</p>" +
                 "<p><b>Floor Area:</b> " + String.format("%,.2f", floorArea) + " sqm</p>" +
                 "<hr>" +
@@ -263,6 +263,20 @@ public class AddProperty extends javax.swing.JFrame {
         LNFTextField2.setText("");
         LNFTextField3.setText("");
         LNFTextField4.setText("");
+    }
+
+    private String parseBlock(String blockLot) {
+        if (blockLot == null || !blockLot.contains("L")) {
+            return blockLot;
+        }
+        return blockLot.substring(0, blockLot.indexOf("L")).replaceAll("[^0-9]", "");
+    }
+
+    private String parseLot(String blockLot) {
+        if (blockLot == null || !blockLot.contains("L")) {
+            return blockLot;
+        }
+        return blockLot.substring(blockLot.indexOf("L") + 1).replaceAll("[^0-9]", "");
     }
 
     private void returnToWorkspace() {

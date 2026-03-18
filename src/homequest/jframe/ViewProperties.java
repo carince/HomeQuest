@@ -125,7 +125,7 @@ public class ViewProperties extends javax.swing.JFrame {
         imageLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JLabel infoLabel = new JLabel("<html><b>" + property.getName() + "</b><br>" +
-                "Block/Lot: " + property.getBlockLot() + "<br>" +
+                "Block: " + property.getBlock() + " &nbsp; Lot: " + property.getLot() + "<br>" +
                 "Lot Area: " + String.format("%,.2f", property.getLotArea()) + " sqm<br>" +
                 "TCP: ₱" + String.format("%,.2f", property.getTCP()) + "<br>" +
                 "Status: <b>" + property.getStatus() + "</b></html>");
