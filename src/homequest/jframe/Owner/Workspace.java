@@ -23,6 +23,7 @@ public class Workspace extends javax.swing.JFrame {
      */
     public Workspace() {
         initComponents();
+        setTitle("HomeQuest - Owner");
         loadUserData();
         setupEventHandlers();
     }

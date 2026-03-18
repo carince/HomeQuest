@@ -31,6 +31,7 @@ public class ViewAvailableProperties extends javax.swing.JFrame {
      */
     public ViewAvailableProperties() {
         initComponents();
+        setTitle("HomeQuest - Buyer / View Available Properties");
         loadUserData();
         loadOwnerProperties();
         setupEventHandlers();

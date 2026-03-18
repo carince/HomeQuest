@@ -23,6 +23,7 @@ public class ProcessTransaction extends javax.swing.JFrame {
      */
     public ProcessTransaction() {
         initComponents();
+        setTitle("HomeQuest - Agent / Process Transaction");
         loadUserData();
         loadPendingRequests();
         setupEventHandlers();

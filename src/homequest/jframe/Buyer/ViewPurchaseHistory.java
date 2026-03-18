@@ -24,6 +24,7 @@ public class ViewPurchaseHistory extends javax.swing.JFrame {
      */
     public ViewPurchaseHistory() {
         initComponents();
+        setTitle("HomeQuest - Buyer / View Purchase History");
         loadUserData();
         loadPurchaseHistory();
         setupEventHandlers();

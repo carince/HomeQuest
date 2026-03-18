@@ -29,6 +29,7 @@ public class ViewListings extends javax.swing.JFrame {
      */
     public ViewListings() {
         initComponents();
+        setTitle("HomeQuest - Agent / View Listings");
         loadUserData();
         loadAgentListings();
         setupEventHandlers();

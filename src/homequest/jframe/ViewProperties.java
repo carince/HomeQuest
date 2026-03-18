@@ -35,6 +35,7 @@ public class ViewProperties extends javax.swing.JFrame {
      */
     public ViewProperties() {
         initComponents();
+        setTitle("HomeQuest - View Properties");
         loadPropertyImages();
         setupEventHandlers();
     }

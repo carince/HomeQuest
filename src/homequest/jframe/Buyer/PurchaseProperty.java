@@ -28,6 +28,7 @@ public class PurchaseProperty extends javax.swing.JFrame {
      */
     public PurchaseProperty() {
         initComponents();
+        setTitle("HomeQuest - Buyer / Purchase Property");
         loadUserData();
         loadAvailableProperties();
         setupEventHandlers();

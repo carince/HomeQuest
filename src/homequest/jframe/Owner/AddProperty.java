@@ -23,6 +23,7 @@ public class AddProperty extends javax.swing.JFrame {
      */
     public AddProperty() {
         initComponents();
+        setTitle("HomeQuest - Owner / Add New Property");
         loadUserData();
         setupEventHandlers();
     }
