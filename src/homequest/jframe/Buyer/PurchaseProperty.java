@@ -243,7 +243,7 @@ public class PurchaseProperty extends javax.swing.JFrame {
             bankName = javax.swing.JOptionPane.showInputDialog(this, "Enter bank name:");
             if (bankName == null || bankName.trim().isEmpty()) return;
 
-            String termStr = javax.swing.JOptionPane.showInputDialog(this, "Enter loan term (years):");
+            String termStr = javax.swing.JOptionPane.showInputDialog(this, "Enter loan term (years, max " + homequest.model.Buyer.MAX_INSTALLMENT_YEARS + "):");
             if (termStr == null) return;
             try {
                 loanTerm = Integer.parseInt(termStr);
@@ -251,17 +251,31 @@ public class PurchaseProperty extends javax.swing.JFrame {
                     javax.swing.JOptionPane.showMessageDialog(this, "Loan term must be greater than 0.", "Invalid Term", javax.swing.JOptionPane.ERROR_MESSAGE);
                     return;
                 }
+                if (loanTerm > homequest.model.Buyer.MAX_INSTALLMENT_YEARS) {
+                    javax.swing.JOptionPane.showMessageDialog(this,
+                            "Loan term cannot exceed " + homequest.model.Buyer.MAX_INSTALLMENT_YEARS + " years.",
+                            "Invalid Term",
+                            javax.swing.JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
             } catch (NumberFormatException e) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Invalid loan term.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
                 return;
             }
         } else if (paymentChoice == 4) {
-            String termStr = javax.swing.JOptionPane.showInputDialog(this, "Enter loan term (years):");
+            String termStr = javax.swing.JOptionPane.showInputDialog(this, "Enter loan term (years, max " + homequest.model.Buyer.MAX_INSTALLMENT_YEARS + "):");
             if (termStr == null) return;
             try {
                 loanTerm = Integer.parseInt(termStr);
                 if (loanTerm <= 0) {
                     javax.swing.JOptionPane.showMessageDialog(this, "Loan term must be greater than 0.", "Invalid Term", javax.swing.JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (loanTerm > homequest.model.Buyer.MAX_INSTALLMENT_YEARS) {
+                    javax.swing.JOptionPane.showMessageDialog(this,
+                            "Loan term cannot exceed " + homequest.model.Buyer.MAX_INSTALLMENT_YEARS + " years.",
+                            "Invalid Term",
+                            javax.swing.JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             } catch (NumberFormatException e) {

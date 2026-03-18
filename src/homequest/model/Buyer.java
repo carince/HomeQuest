@@ -9,6 +9,7 @@ import java.util.List;
 
 public class Buyer {
     public static final double RESERVATION_FEE = 5000.0;
+    public static final int MAX_INSTALLMENT_YEARS = 30;
     private String name;
     private double walletBalance;
     private List<Transaction> purchaseHistory;
@@ -93,6 +94,11 @@ public class Buyer {
     }
 
     public boolean createPurchaseRequest(Property property, int paymentMethod, String bankName, int loanTerm) {
+        if ((paymentMethod == 3 || paymentMethod == 4) &&
+            (loanTerm <= 0 || loanTerm > MAX_INSTALLMENT_YEARS)) {
+            return false;
+        }
+
         // Property must be RESERVED or AVAILABLE, and if reserved, must be reserved by this buyer
         if (property.getStatus() == PropertyStatus.RESERVED) {
             if (property.getReservedBy() != this) {
