@@ -20,18 +20,16 @@ public class HomeQuest {
         
         agent = new Agent("Sean Serrano");
         owner = new Owner("Asiana Homes");
-        buyer = new Buyer("De Guzman", 15_000_000);
+        buyer = new Buyer("Natalia Andal", 1_000_000);
 
         String[] modelNames = {"Nadine", "Elaine", "Eunice"};
 
-        // Seed 10 properties.
-        for (int index = 0; index < 10; index++) {
-            int block = (index / 5) + 1;
-            int lot = (index % 5) + 1;
+        for (int index = 0; index < 100; index++) {
+            int block = (index / 10) + 1;
+            int lot = (index % 10) + 1;
             String modelName = modelNames[index % modelNames.length];
             String blockLot = "B" + block + "L" + lot;
 
-            // Deterministic variety so sample data feels realistic.
             double lotArea = 90 + (block * 8) + ((lot % 5) * 6);
             double floorArea = 45 + (block * 4) + ((lot % 6) * 5);
             double basePrice = 1_600_000 + (block * 180_000) + (lot * 42_000) + ((index % 3) * 120_000);

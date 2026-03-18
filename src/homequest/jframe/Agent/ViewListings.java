@@ -9,8 +9,22 @@ import homequest.jframe.Agent.*;
 import homequest.jframe.Owner.*;
 import java.awt.Component;
 import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+import java.net.JarURLConnection;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.jar.JarEntry;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -23,6 +37,8 @@ public class ViewListings extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger =
         java.util.logging.Logger.getLogger(ViewListings.class.getName());
     private final homequest.util.PropertyFilterDialog.FilterCriteria activeFilters = new homequest.util.PropertyFilterDialog.FilterCriteria();
+    private final List<String> imagePool = discoverImageFiles();
+    private final Map<String, ImageIcon> imageCache = new HashMap<>();
 
     /**
      * Creates new form Main
@@ -98,7 +114,8 @@ public class ViewListings extends javax.swing.JFrame {
         } else {
             for (int i = 0; i < listings.size(); i++) {
                 homequest.model.Property property = listings.get(i);
-                JPanel panel = createPropertyPanel(property, i + 1);
+                String imageName = getImageNameForProperty(property, i);
+                JPanel panel = createPropertyPanel(property, i + 1, imageName);
                 container.add(panel);
                 if (i < listings.size() - 1) {
                     container.add(javax.swing.Box.createVerticalStrut(8));
@@ -113,14 +130,15 @@ public class ViewListings extends javax.swing.JFrame {
 
     private JPanel createPropertyPanel(
         homequest.model.Property property,
-        int index
+        int index,
+        String imageName
     ) {
         JPanel panel = new JPanel();
         panel.setBackground(java.awt.Color.lightGray);
         panel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         panel.setLayout(new java.awt.BorderLayout(10, 5));
-        panel.setPreferredSize(new java.awt.Dimension(400, 125));
-        panel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 125));
+        panel.setPreferredSize(new java.awt.Dimension(400, 165));
+        panel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 165));
         panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JLabel label = new JLabel(
@@ -145,7 +163,130 @@ public class ViewListings extends javax.swing.JFrame {
 
         panel.add(label, java.awt.BorderLayout.CENTER);
 
+        javax.swing.JButton showImageButton = new javax.swing.JButton("Show Image");
+        showImageButton.addActionListener(e -> showImagePopup(property.getName(), imageName));
+        JPanel buttonPanel = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        buttonPanel.setOpaque(false);
+        buttonPanel.add(showImageButton);
+        panel.add(buttonPanel, java.awt.BorderLayout.SOUTH);
+
         return panel;
+    }
+
+    private String getImageNameForProperty(homequest.model.Property property, int index) {
+        if (imagePool.isEmpty()) {
+            return null;
+        }
+
+        String propertyName = property.getName().toLowerCase().trim();
+        for (String imageName : imagePool) {
+            String imageNameWithoutExt = imageName.substring(0, imageName.lastIndexOf('.')).toLowerCase();
+            if (propertyName.equals(imageNameWithoutExt)) {
+                return imageName;
+            }
+        }
+
+        for (String imageName : imagePool) {
+            String imageNameWithoutExt = imageName.substring(0, imageName.lastIndexOf('.')).toLowerCase();
+            if (propertyName.startsWith(imageNameWithoutExt)) {
+                return imageName;
+            }
+        }
+
+        int safeIndex = Math.abs(index) % imagePool.size();
+        return imagePool.get(safeIndex);
+    }
+
+    private ImageIcon loadImageIcon(String imageName) {
+        if (imageName == null || imageName.trim().isEmpty()) {
+            return null;
+        }
+
+        ImageIcon cached = imageCache.get(imageName);
+        if (cached != null) {
+            return cached;
+        }
+
+        URL imageUrl = getClass().getResource("/homequest/jframe/imgs/" + imageName);
+        if (imageUrl == null) {
+            return null;
+        }
+
+        ImageIcon original = new ImageIcon(imageUrl);
+        Image scaled = original.getImage().getScaledInstance(520, 320, Image.SCALE_SMOOTH);
+        ImageIcon scaledIcon = new ImageIcon(scaled);
+        imageCache.put(imageName, scaledIcon);
+        return scaledIcon;
+    }
+
+    private void showImagePopup(String propertyName, String imageName) {
+        ImageIcon icon = loadImageIcon(imageName);
+        if (icon == null) {
+            JOptionPane.showMessageDialog(
+                this,
+                "No image found for " + propertyName + ".",
+                "Image Not Found",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+            return;
+        }
+
+        JLabel imageLabel = new JLabel(icon);
+        imageLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        JOptionPane optionPane = new JOptionPane(imageLabel, JOptionPane.PLAIN_MESSAGE);
+        JDialog dialog = optionPane.createDialog(this, propertyName + " - Property Image");
+        dialog.setModal(true);
+        dialog.setVisible(true);
+    }
+
+    private List<String> discoverImageFiles() {
+        List<String> discovered = new ArrayList<>();
+        try {
+            URL directoryUrl = getClass().getResource("/homequest/jframe/imgs");
+            if (directoryUrl == null) {
+                return discovered;
+            }
+
+            if ("file".equals(directoryUrl.getProtocol())) {
+                File directory = new File(directoryUrl.toURI());
+                File[] files = directory.listFiles();
+                if (files != null) {
+                    for (File file : files) {
+                        if (file.isFile() && isImageFile(file.getName())) {
+                            discovered.add(file.getName());
+                        }
+                    }
+                }
+            } else if ("jar".equals(directoryUrl.getProtocol())) {
+                JarURLConnection connection = (JarURLConnection) directoryUrl.openConnection();
+                String prefix = connection.getEntryName();
+                Enumeration<JarEntry> entries = connection.getJarFile().entries();
+                while (entries.hasMoreElements()) {
+                    JarEntry entry = entries.nextElement();
+                    String name = entry.getName();
+                    if (!entry.isDirectory() && name.startsWith(prefix + "/")) {
+                        String fileName = name.substring(prefix.length() + 1);
+                        if (!fileName.contains("/") && isImageFile(fileName)) {
+                            discovered.add(fileName);
+                        }
+                    }
+                }
+            }
+        } catch (URISyntaxException | IOException ex) {
+            logger.log(java.util.logging.Level.WARNING, "Unable to scan images directory", ex);
+        }
+
+        Collections.sort(discovered);
+        return discovered;
+    }
+
+    private boolean isImageFile(String fileName) {
+        String lower = fileName.toLowerCase();
+        return lower.endsWith(".jpg")
+            || lower.endsWith(".jpeg")
+            || lower.endsWith(".png")
+            || lower.endsWith(".gif")
+            || lower.endsWith(".bmp");
     }
 
     /**

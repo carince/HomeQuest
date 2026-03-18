@@ -37,7 +37,7 @@ public class Workspace extends javax.swing.JFrame {
         jButton1.addActionListener(e -> openViewProperties());
         jButton2.addActionListener(e -> openAddProperty());
         jButton4.addActionListener(e -> assignPropertyToAgent());
-        jButton5.addActionListener(e -> viewPropertySalesStatus());
+        jButton5.addActionListener(e -> openGenerateReport());
         Logout.addActionListener(e -> returnToMain());
     }
 
@@ -199,64 +199,10 @@ public class Workspace extends javax.swing.JFrame {
         }
     }
 
-    private void viewPropertySalesStatus() {
-        homequest.model.Owner owner = homequest.HomeQuest.getOwner();
-
-        StringBuilder message = new StringBuilder(
-            "<html><body style='width: 400px'><h2>Property Sales Status</h2>"
-        );
-
-        if (owner.getProperties().isEmpty()) {
-            message.append("<p>No properties owned.</p>");
-        } else {
-            int available = 0,
-                reserved = 0,
-                sold = 0;
-
-            for (homequest.model.Property prop : owner.getProperties()) {
-                message
-                    .append("<p><b>")
-                    .append(prop.getName())
-                    .append("</b> - ")
-                    .append("<span style='color: ");
-
-                switch (prop.getStatus()) {
-                    case AVAILABLE:
-                        message.append("green'>AVAILABLE");
-                        available++;
-                        break;
-                    case RESERVED:
-                        message.append("orange'>RESERVED");
-                        reserved++;
-                        break;
-                    case SOLD:
-                        message.append("red'>SOLD");
-                        sold++;
-                        break;
-                }
-                message.append("</span></p>");
-            }
-
-            message
-                .append("<hr><p><b>Summary:</b></p>")
-                .append("<p>Total: ")
-                .append(owner.getProperties().size())
-                .append(" | Available: ")
-                .append(available)
-                .append(" | Reserved: ")
-                .append(reserved)
-                .append(" | Sold: ")
-                .append(sold)
-                .append("</p>");
-        }
-        message.append("</body></html>");
-
-        javax.swing.JOptionPane.showMessageDialog(
-            this,
-            message.toString(),
-            "Property Sales Status",
-            javax.swing.JOptionPane.INFORMATION_MESSAGE
-        );
+    private void openGenerateReport() {
+        GenerateReport report = new GenerateReport();
+        report.setVisible(true);
+        this.dispose();
     }
 
     private void returnToMain() {
@@ -324,7 +270,7 @@ public class Workspace extends javax.swing.JFrame {
 
         ButtonWrapper2.setLayout(new java.awt.GridLayout(1, 2, 20, 0));
 
-        jButton5.setText("View Property Sale Status");
+        jButton5.setText("Generate Report");
         ButtonWrapper2.add(jButton5);
 
         Logout.setText("Logout");
