@@ -40,6 +40,10 @@ public class Agent {
         this.listings.add(property);
     }
 
+    public boolean removeListing(Property property) {
+        return this.listings.remove(property);
+    }
+
     public List<Property> getReservedProperties(List<Property> allProperties) {
         List<Property> reservedProps = new ArrayList<>();
         for (Property prop : allProperties) {

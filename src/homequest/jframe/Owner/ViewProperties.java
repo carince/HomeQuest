@@ -133,8 +133,8 @@ public class ViewProperties extends javax.swing.JFrame {
         panel.setBackground(bgColor);
         panel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         panel.setLayout(new java.awt.BorderLayout(10, 5));
-        panel.setPreferredSize(new java.awt.Dimension(400, 125));
-        panel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 125));
+        panel.setPreferredSize(new java.awt.Dimension(400, 165));
+        panel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 165));
         panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JLabel label = new JLabel(
@@ -159,7 +159,71 @@ public class ViewProperties extends javax.swing.JFrame {
 
         panel.add(label, java.awt.BorderLayout.CENTER);
 
+        javax.swing.JButton removeButton = new javax.swing.JButton("Remove Property");
+        removeButton.setBackground(new java.awt.Color(255, 182, 182));
+        removeButton.addActionListener(e -> handleRemoveProperty(property));
+
+        JPanel buttonPanel = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        buttonPanel.setOpaque(false);
+        buttonPanel.add(removeButton);
+        panel.add(buttonPanel, java.awt.BorderLayout.SOUTH);
+
         return panel;
+    }
+
+    private void handleRemoveProperty(homequest.model.Property property) {
+        homequest.model.Owner owner = homequest.HomeQuest.getOwner();
+        boolean willRefundReservation = property.getReservedBy() != null &&
+            property.getReservationStatus() == homequest.util.ReservationStatus.ACTIVE;
+        String reason = owner.getRemovalBlockReason(property);
+        if (reason != null) {
+            javax.swing.JOptionPane.showMessageDialog(
+                this,
+                reason,
+                "Cannot Remove Property",
+                javax.swing.JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to remove " + property.getName() + " from listings?" +
+            (willRefundReservation ? "\nReservation fee will be refunded to the buyer." : ""),
+            "Confirm Removal",
+            javax.swing.JOptionPane.YES_NO_OPTION,
+            javax.swing.JOptionPane.WARNING_MESSAGE
+        );
+
+        if (confirm != javax.swing.JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        boolean removed = owner.removeProperty(
+            property,
+            homequest.HomeQuest.getAllProperties(),
+            homequest.HomeQuest.getAgent()
+        );
+
+        if (!removed) {
+            String latestReason = owner.getRemovalBlockReason(property);
+            javax.swing.JOptionPane.showMessageDialog(
+                this,
+                latestReason != null ? latestReason : "Property could not be removed.",
+                "Remove Failed",
+                javax.swing.JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+
+        javax.swing.JOptionPane.showMessageDialog(
+            this,
+            "Property removed successfully." +
+            (willRefundReservation ? "\nReservation fee refunded to buyer." : ""),
+            "Removed",
+            javax.swing.JOptionPane.INFORMATION_MESSAGE
+        );
+        loadOwnerProperties();
     }
 
     /**

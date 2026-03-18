@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Buyer {
+    public static final double RESERVATION_FEE = 5000.0;
     private String name;
     private double walletBalance;
     private List<Transaction> purchaseHistory;
@@ -69,7 +70,6 @@ public class Buyer {
     }
 
     public boolean reserveProperty(Property property) {
-        final double RESERVATION_FEE = 5000.0;
         if (property.getStatus() != PropertyStatus.AVAILABLE) {
             return false;
         }
@@ -83,7 +83,6 @@ public class Buyer {
     }
 
     public boolean cancelReservation(Property property) {
-        final double RESERVATION_FEE = 5000.0;
         if (property.getStatus() != PropertyStatus.RESERVED || property.getReservedBy() != this) {
             return false;
         }
