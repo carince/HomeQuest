@@ -60,16 +60,10 @@ public class AddProperty extends javax.swing.JFrame {
         
         // Only allow numbers and decimals for Lot Area
         LNFTextField3.setDocument(new NumericDocument(10));
-        
-        // Only allow alphanumeric and hyphens for Block/Lot
-        LNFTextField4.setDocument(new javax.swing.text.PlainDocument() {
-            @Override
-            public void insertString(int offs, String str, javax.swing.text.AttributeSet a) throws javax.swing.text.BadLocationException {
-                if (str != null && str.matches("[a-zA-Z0-9 -]*")) {
-                    super.insertString(offs, str, a);
-                }
-            }
-        });
+
+        // Block and lot are whole numbers only.
+        LNFTextField7.setDocument(new WholeNumberDocument(3));
+        LNFTextField4.setDocument(new WholeNumberDocument(4));
     }
 
     // Custom document class for numeric input with decimals
@@ -83,8 +77,9 @@ public class AddProperty extends javax.swing.JFrame {
         @Override
         public void insertString(int offs, String str, javax.swing.text.AttributeSet a) throws javax.swing.text.BadLocationException {
             if (str == null) return;
-            
-            String newStr = this.getText(0, this.getLength()) + str;
+
+            String current = this.getText(0, this.getLength());
+            String newStr = current.substring(0, offs) + str + current.substring(offs);
             
             // Check if it matches number pattern (integers and decimals)
             if (newStr.matches("\\d*\\.?\\d*") && this.getLength() + str.length() <= maxDigits) {
@@ -97,20 +92,46 @@ public class AddProperty extends javax.swing.JFrame {
         }
     }
 
+    class WholeNumberDocument extends javax.swing.text.PlainDocument {
+        private int maxDigits;
+
+        public WholeNumberDocument(int maxDigits) {
+            this.maxDigits = maxDigits;
+        }
+
+        @Override
+        public void insertString(int offs, String str, javax.swing.text.AttributeSet a) throws javax.swing.text.BadLocationException {
+            if (str == null) return;
+
+            String current = this.getText(0, this.getLength());
+            String newStr = current.substring(0, offs) + str + current.substring(offs);
+            if (newStr.matches("\\d*") && this.getLength() + str.length() <= maxDigits) {
+                super.insertString(offs, str, a);
+            }
+        }
+    }
+
     private void submitProperty() {
         String modelName = LNFTextField.getText().trim();
+        String blockStr = LNFTextField7.getText().trim();
+        String lotStr = LNFTextField4.getText().trim();
         String basePriceStr = LNFTextField1.getText().trim();
         String floorAreaStr = LNFTextField2.getText().trim();
         String lotAreaStr = LNFTextField3.getText().trim();
-        String blockLot = LNFTextField4.getText().trim();
         
         // Validate all fields are filled
         StringBuilder errors = new StringBuilder();
         
-        if (blockLot.isEmpty()) {
-            errors.append("• Block/Lot number is required\n");
-        } else if (blockLot.length() > 20) {
-            errors.append("• Block/Lot must be 20 characters or less\n");
+        if (blockStr.isEmpty()) {
+            errors.append("• Block is required\n");
+        } else if (!blockStr.matches("\\d+")) {
+            errors.append("• Block must be a whole number\n");
+        }
+
+        if (lotStr.isEmpty()) {
+            errors.append("• Lot is required\n");
+        } else if (!lotStr.matches("\\d+")) {
+            errors.append("• Lot must be a whole number\n");
         }
         
         if (modelName.isEmpty()) {
@@ -148,12 +169,23 @@ public class AddProperty extends javax.swing.JFrame {
         }
         
         try {
+            int block = Integer.parseInt(blockStr);
+            int lot = Integer.parseInt(lotStr);
             double basePrice = Double.parseDouble(basePriceStr);
             double floorArea = Double.parseDouble(floorAreaStr);
             double lotArea = Double.parseDouble(lotAreaStr);
+            String blockLot = "B" + block + "L" + lot;
             
             // Validate numeric ranges
             StringBuilder numErrors = new StringBuilder();
+
+            if (block <= 0) {
+                numErrors.append("• Block must be greater than 0\n");
+            }
+
+            if (lot <= 0) {
+                numErrors.append("• Lot must be greater than 0\n");
+            }
             
             if (basePrice <= 0) {
                 numErrors.append("• Base price must be greater than 0\n");
@@ -176,6 +208,14 @@ public class AddProperty extends javax.swing.JFrame {
             if (lotArea < floorArea) {
                 numErrors.append("• Lot area cannot be smaller than floor area\n");
             }
+
+            java.util.List<homequest.model.Property> allProperties = homequest.HomeQuest.getAllProperties();
+            for (homequest.model.Property property : allProperties) {
+                if (property.getBlockLot().equalsIgnoreCase(blockLot)) {
+                    numErrors.append("• Block/Lot already exists: " + blockLot + "\n");
+                    break;
+                }
+            }
             
             if (numErrors.length() > 0) {
                 javax.swing.JOptionPane.showMessageDialog(this,
@@ -191,7 +231,6 @@ public class AddProperty extends javax.swing.JFrame {
             
             homequest.model.Owner owner = homequest.HomeQuest.getOwner();
             homequest.model.Agent agent = homequest.HomeQuest.getAgent();
-            java.util.List<homequest.model.Property> allProperties = homequest.HomeQuest.getAllProperties();
             
             homequest.model.HouseAndLot newProperty = owner.addNewProperty(
                 blockLot, lotArea, basePrice, modelName, floorArea, allProperties
@@ -263,6 +302,7 @@ public class AddProperty extends javax.swing.JFrame {
         LNFTextField2.setText("");
         LNFTextField3.setText("");
         LNFTextField4.setText("");
+        LNFTextField7.setText("");
     }
 
     private String parseBlock(String blockLot) {

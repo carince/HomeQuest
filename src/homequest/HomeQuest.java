@@ -20,22 +20,27 @@ public class HomeQuest {
         
         agent = new Agent("Sean Serrano");
         owner = new Owner("Asiana Homes");
-        buyer = new Buyer("De Guzman", 5_000_000);
+        buyer = new Buyer("De Guzman", 15_000_000);
 
-        HouseAndLot prop1 = new HouseAndLot("B1L5", 120, 2_500_000, "Nadine", 80);
-        HouseAndLot prop2 = new HouseAndLot("B2L10", 150, 4_200_000, "Elaine", 120);
-        HouseAndLot prop3 = new HouseAndLot("B3L7", 100, 1_800_000, "Eunice", 50);
-        allProperties.add(prop1);
-        allProperties.add(prop2);
-        allProperties.add(prop3);
+        String[] modelNames = {"Nadine", "Elaine", "Eunice"};
 
-        agent.addListing(prop1);
-        agent.addListing(prop2);
-        agent.addListing(prop3);
+        // Seed 10 properties.
+        for (int index = 0; index < 10; index++) {
+            int block = (index / 5) + 1;
+            int lot = (index % 5) + 1;
+            String modelName = modelNames[index % modelNames.length];
+            String blockLot = "B" + block + "L" + lot;
 
-        owner.addProperty(prop1);
-        owner.addProperty(prop2);
-        owner.addProperty(prop3);
+            // Deterministic variety so sample data feels realistic.
+            double lotArea = 90 + (block * 8) + ((lot % 5) * 6);
+            double floorArea = 45 + (block * 4) + ((lot % 6) * 5);
+            double basePrice = 1_600_000 + (block * 180_000) + (lot * 42_000) + ((index % 3) * 120_000);
+
+            HouseAndLot property = new HouseAndLot(blockLot, lotArea, basePrice, modelName, floorArea);
+            allProperties.add(property);
+            agent.addListing(property);
+            owner.addProperty(property);
+        }
     }
 
     public static Agent getAgent() {
