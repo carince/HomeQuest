@@ -4,9 +4,9 @@
  */
 package homequest.jframe.Agent;
 
-import homequest.jframe.Owner.*;
-import homequest.jframe.Agent.*;
 import homequest.jframe.*;
+import homequest.jframe.Agent.*;
+import homequest.jframe.Owner.*;
 import java.awt.Component;
 import java.awt.Image;
 import javax.swing.ImageIcon;
@@ -20,7 +20,8 @@ import javax.swing.JScrollPane;
  */
 public class ViewListings extends javax.swing.JFrame {
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ViewListings.class.getName());
+    private static final java.util.logging.Logger logger =
+        java.util.logging.Logger.getLogger(ViewListings.class.getName());
 
     /**
      * Creates new form Main
@@ -34,7 +35,8 @@ public class ViewListings extends javax.swing.JFrame {
 
     private void loadUserData() {
         homequest.model.Agent agent = homequest.HomeQuest.getAgent();
-        UserName.setText(agent.getName());
+        UserName1.setText(agent.getName());
+        UserType1.setText("Agent");
     }
 
     private void setupEventHandlers() {
@@ -43,7 +45,8 @@ public class ViewListings extends javax.swing.JFrame {
     }
 
     private void returnToWorkspace() {
-        homequest.jframe.Agent.Workspace workspace = new homequest.jframe.Agent.Workspace();
+        homequest.jframe.Agent.Workspace workspace =
+            new homequest.jframe.Agent.Workspace();
         workspace.setVisible(true);
         this.dispose();
     }
@@ -59,8 +62,12 @@ public class ViewListings extends javax.swing.JFrame {
         java.util.List<homequest.model.Property> listings = agent.getListings();
 
         JPanel container = new JPanel();
-        container.setLayout(new javax.swing.BoxLayout(container, javax.swing.BoxLayout.Y_AXIS));
-        container.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
+        container.setLayout(
+            new javax.swing.BoxLayout(container, javax.swing.BoxLayout.Y_AXIS)
+        );
+        container.setBorder(
+            javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8)
+        );
         container.setOpaque(false);
 
         if (listings.isEmpty()) {
@@ -70,7 +77,9 @@ public class ViewListings extends javax.swing.JFrame {
             JPanel emptyPanel = new JPanel();
             emptyPanel.add(emptyLabel);
             emptyPanel.setPreferredSize(new java.awt.Dimension(400, 100));
-            emptyPanel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 100));
+            emptyPanel.setMaximumSize(
+                new java.awt.Dimension(Integer.MAX_VALUE, 100)
+            );
             emptyPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
             container.add(emptyPanel);
         } else {
@@ -89,7 +98,10 @@ public class ViewListings extends javax.swing.JFrame {
         ScrollWrapper.repaint();
     }
 
-    private JPanel createPropertyPanel(homequest.model.Property property, int index) {
+    private JPanel createPropertyPanel(
+        homequest.model.Property property,
+        int index
+    ) {
         JPanel panel = new JPanel();
         panel.setBackground(java.awt.Color.lightGray);
         panel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -98,12 +110,24 @@ public class ViewListings extends javax.swing.JFrame {
         panel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 95));
         panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel label = new JLabel("<html><b>#" + index + ": " + property.getName() + "</b><br>" +
-                "TCP: ₱" + String.format("%,.2f", property.getTCP()) + "<br>" +
-                "Status: " + property.getStatus() + "</html>");
+        JLabel label = new JLabel(
+            "<html><b>#" +
+                index +
+                ": " +
+                property.getName() +
+                "</b><br>" +
+                "TCP: ₱" +
+                String.format("%,.2f", property.getTCP()) +
+                "<br>" +
+                "Status: " +
+                property.getStatus() +
+                "</html>"
+        );
         label.setFont(new java.awt.Font("Segoe UI", 0, 14));
-        label.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        
+        label.setBorder(
+            javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        );
+
         panel.add(label, java.awt.BorderLayout.CENTER);
 
         return panel;
@@ -119,28 +143,19 @@ public class ViewListings extends javax.swing.JFrame {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        Header = new javax.swing.JPanel();
-        HeaderLabel = new javax.swing.JLabel();
         Content = new javax.swing.JPanel();
         ScrollWrapper = new javax.swing.JScrollPane();
         ButtonWrapper = new javax.swing.JPanel();
         Return = new javax.swing.JButton();
         Logout = new javax.swing.JButton();
-        UserInfo = new javax.swing.JPanel();
-        UserIcon = new javax.swing.JLabel();
-        UserType = new javax.swing.JLabel();
-        UserName = new javax.swing.JLabel();
+        Header1 = new javax.swing.JPanel();
+        HeaderLabel1 = new javax.swing.JLabel();
+        UserType1 = new javax.swing.JLabel();
+        UserName1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("HomeQuest");
         setResizable(false);
         setSize(new java.awt.Dimension(600, 500));
-
-        Header.setLayout(new java.awt.GridBagLayout());
-
-        HeaderLabel.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
-        HeaderLabel.setText("HomeQuest");
-        Header.add(HeaderLabel, new java.awt.GridBagConstraints());
 
         java.awt.GridBagLayout ContentLayout = new java.awt.GridBagLayout();
         ContentLayout.columnWidths = new int[] {0, 5, 0};
@@ -175,35 +190,34 @@ public class ViewListings extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         Content.add(ButtonWrapper, gridBagConstraints);
 
-        UserInfo.setMaximumSize(new java.awt.Dimension(199, 96));
-        UserInfo.setMinimumSize(new java.awt.Dimension(199, 196));
-        UserInfo.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        Header1.setLayout(new java.awt.GridBagLayout());
 
-        ImageIcon originalIcon = new ImageIcon(getClass().getResource("/homequest/jframe/pfp.jpg"));
-        Image scaledImage = originalIcon.getImage().getScaledInstance(100, 100, Image.SCALE_FAST);
-        UserIcon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        UserIcon.setIcon(new ImageIcon(scaledImage));
-        UserIcon.setMaximumSize(new java.awt.Dimension(100, 100));
-        UserIcon.setMinimumSize(new java.awt.Dimension(100, 100));
-        UserIcon.setPreferredSize(new java.awt.Dimension(100, 100));
-        UserInfo.add(UserIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 200, 120));
-
-        UserType.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        UserType.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        UserType.setText("Agent");
-        UserInfo.add(UserType, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 199, 30));
-
-        UserName.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        UserName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        UserName.setText("Agent Name Here");
-        UserInfo.add(UserName, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, -1, 30));
-
+        HeaderLabel1.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
+        HeaderLabel1.setText("HomeQuest");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridheight = 3;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-        Content.add(UserInfo, gridBagConstraints);
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.BASELINE_LEADING;
+        gridBagConstraints.weightx = 1.0;
+        Header1.add(HeaderLabel1, gridBagConstraints);
+
+        UserType1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        UserType1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        UserType1.setText("Owner");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        Header1.add(UserType1, gridBagConstraints);
+
+        UserName1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        UserName1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        UserName1.setText("Owner Name Here");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        Header1.add(UserName1, gridBagConstraints);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -211,16 +225,16 @@ public class ViewListings extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(Content, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
-                    .addComponent(Header, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(Header1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Content, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(Header, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Header1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(Content, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
                 .addContainerGap())
@@ -229,7 +243,8 @@ public class ViewListings extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void ReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnActionPerformed
+    private void ReturnActionPerformed(java.awt.event.ActionEvent evt) {
+//GEN-FIRST:event_ReturnActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_ReturnActionPerformed
 
@@ -240,7 +255,7 @@ public class ViewListings extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -249,26 +264,29 @@ public class ViewListings extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (
+            ReflectiveOperationException
+            | javax.swing.UnsupportedLookAndFeelException ex
+        ) {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new ViewListings().setVisible(true));
+        java.awt.EventQueue.invokeLater(() ->
+            new ViewListings().setVisible(true)
+        );
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel ButtonWrapper;
     private javax.swing.JPanel Content;
-    private javax.swing.JPanel Header;
-    private javax.swing.JLabel HeaderLabel;
+    private javax.swing.JPanel Header1;
+    private javax.swing.JLabel HeaderLabel1;
     private javax.swing.JButton Logout;
     private javax.swing.JButton Return;
     private javax.swing.JScrollPane ScrollWrapper;
-    private javax.swing.JLabel UserIcon;
-    private javax.swing.JPanel UserInfo;
-    private javax.swing.JLabel UserName;
-    private javax.swing.JLabel UserType;
+    private javax.swing.JLabel UserName1;
+    private javax.swing.JLabel UserType1;
     // End of variables declaration//GEN-END:variables
 }

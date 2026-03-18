@@ -29,7 +29,7 @@ public class AddProperty extends javax.swing.JFrame {
 
     private void loadUserData() {
         homequest.model.Owner owner = homequest.HomeQuest.getOwner();
-        UserName.setText(owner.getName());
+        UserName1.setText(owner.getName());
     }
 
     private void setupEventHandlers() {
@@ -287,10 +287,7 @@ public class AddProperty extends javax.swing.JFrame {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        Header = new javax.swing.JPanel();
-        HeaderLabel = new javax.swing.JLabel();
         Content = new javax.swing.JPanel();
-        ContentScrollPane = new javax.swing.JScrollPane();
         ContentWrapper = new javax.swing.JPanel();
         LNF = new javax.swing.JPanel();
         LNFLabel = new javax.swing.JLabel();
@@ -311,31 +308,23 @@ public class AddProperty extends javax.swing.JFrame {
         ButtonWrapper2 = new javax.swing.JPanel();
         jButton5 = new javax.swing.JButton();
         Logout = new javax.swing.JButton();
-        UserInfo = new javax.swing.JPanel();
-        UserIcon = new javax.swing.JLabel();
-        UserType = new javax.swing.JLabel();
-        UserName = new javax.swing.JLabel();
+        Header1 = new javax.swing.JPanel();
+        HeaderLabel1 = new javax.swing.JLabel();
+        UserType1 = new javax.swing.JLabel();
+        UserName1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("HomeQuest");
         setPreferredSize(new java.awt.Dimension(600, 500));
         setResizable(false);
         setSize(new java.awt.Dimension(600, 500));
 
-        Header.setLayout(new java.awt.GridBagLayout());
-
-        HeaderLabel.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
-        HeaderLabel.setText("HomeQuest");
-        Header.add(HeaderLabel, new java.awt.GridBagConstraints());
-
         java.awt.GridBagLayout ContentLayout = new java.awt.GridBagLayout();
-        ContentLayout.columnWidths = new int[] {0, 5, 0};
+        ContentLayout.columnWidths = new int[] {0};
         ContentLayout.rowHeights = new int[] {0, 5, 0};
         ContentLayout.columnWeights = new double[] {0.0};
         ContentLayout.rowWeights = new double[] {0.0};
         Content.setLayout(ContentLayout);
 
-        LNFLabel.setFont(new java.awt.Font("Segoe UI", 1, 12));
         LNFLabel.setText("Name");
 
         LNFTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -362,7 +351,6 @@ public class AddProperty extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        LNFLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12));
         LNFLabel1.setText("Base price (PHP)");
 
         LNFTextField1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -389,7 +377,6 @@ public class AddProperty extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        LNFLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12));
         LNFLabel2.setText("Floor area (sqm)");
 
         LNFTextField2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -416,7 +403,6 @@ public class AddProperty extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        LNFLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12));
         LNFLabel3.setText("Lot Area (sqm)");
 
         LNFTextField3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -443,7 +429,6 @@ public class AddProperty extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        LNFLabel4.setFont(new java.awt.Font("Segoe UI", 1, 12));
         LNFLabel4.setText("Block/Lot");
 
         LNFTextField4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -492,13 +477,13 @@ public class AddProperty extends javax.swing.JFrame {
             ContentWrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ContentWrapperLayout.createSequentialGroup()
                 .addComponent(LNF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(LNF4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(LNF3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(LNF2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(LNF1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(39, 39, 39))
             .addGroup(ContentWrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -508,18 +493,12 @@ public class AddProperty extends javax.swing.JFrame {
                     .addContainerGap()))
         );
 
-        ContentScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        ContentScrollPane.setViewportView(ContentWrapper);
-        ContentScrollPane.setPreferredSize(new java.awt.Dimension(350, 350));
-
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-        Content.add(ContentScrollPane, gridBagConstraints);
+        Content.add(ContentWrapper, gridBagConstraints);
 
         ButtonWrapper2.setLayout(new java.awt.GridLayout(1, 2, 20, 0));
 
@@ -530,58 +509,57 @@ public class AddProperty extends javax.swing.JFrame {
         ButtonWrapper2.add(Logout);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         Content.add(ButtonWrapper2, gridBagConstraints);
 
-        UserInfo.setMaximumSize(new java.awt.Dimension(199, 96));
-        UserInfo.setMinimumSize(new java.awt.Dimension(199, 196));
-        UserInfo.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        Header1.setLayout(new java.awt.GridBagLayout());
 
-        ImageIcon originalIcon = new ImageIcon(getClass().getResource("/homequest/jframe/pfp.jpg"));
-        Image scaledImage = originalIcon.getImage().getScaledInstance(100, 100, Image.SCALE_FAST);
-        UserIcon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        UserIcon.setIcon(new ImageIcon(scaledImage));
-        UserIcon.setMaximumSize(new java.awt.Dimension(100, 100));
-        UserIcon.setMinimumSize(new java.awt.Dimension(100, 100));
-        UserIcon.setPreferredSize(new java.awt.Dimension(100, 100));
-        UserInfo.add(UserIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 200, 120));
-
-        UserType.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        UserType.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        UserType.setText("Owner");
-        UserInfo.add(UserType, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 199, 30));
-
-        UserName.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        UserName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        UserName.setText("Owner Name Here");
-        UserInfo.add(UserName, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, -1, 30));
-
+        HeaderLabel1.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
+        HeaderLabel1.setText("HomeQuest");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridheight = 3;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-        Content.add(UserInfo, gridBagConstraints);
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.BASELINE_LEADING;
+        gridBagConstraints.weightx = 1.0;
+        Header1.add(HeaderLabel1, gridBagConstraints);
+
+        UserType1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        UserType1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        UserType1.setText("Owner");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        Header1.add(UserType1, gridBagConstraints);
+
+        UserName1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        UserName1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        UserName1.setText("Owner Name Here");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        Header1.add(UserName1, gridBagConstraints);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(Content, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
-                    .addComponent(Header, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(Header1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(Header, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Header1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(Content, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -638,10 +616,9 @@ public class AddProperty extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel ButtonWrapper2;
     private javax.swing.JPanel Content;
-    private javax.swing.JScrollPane ContentScrollPane;
     private javax.swing.JPanel ContentWrapper;
-    private javax.swing.JPanel Header;
-    private javax.swing.JLabel HeaderLabel;
+    private javax.swing.JPanel Header1;
+    private javax.swing.JLabel HeaderLabel1;
     private javax.swing.JPanel LNF;
     private javax.swing.JPanel LNF1;
     private javax.swing.JPanel LNF2;
@@ -658,10 +635,8 @@ public class AddProperty extends javax.swing.JFrame {
     private javax.swing.JTextField LNFTextField3;
     private javax.swing.JTextField LNFTextField4;
     private javax.swing.JButton Logout;
-    private javax.swing.JLabel UserIcon;
-    private javax.swing.JPanel UserInfo;
-    private javax.swing.JLabel UserName;
-    private javax.swing.JLabel UserType;
+    private javax.swing.JLabel UserName1;
+    private javax.swing.JLabel UserType1;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton5;
     // End of variables declaration//GEN-END:variables

@@ -16,7 +16,8 @@ import javax.swing.JPanel;
  */
 public class ProcessTransaction extends javax.swing.JFrame {
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ProcessTransaction.class.getName());
+    private static final java.util.logging.Logger logger =
+        java.util.logging.Logger.getLogger(ProcessTransaction.class.getName());
 
     /**
      * Creates new form Main
@@ -30,7 +31,8 @@ public class ProcessTransaction extends javax.swing.JFrame {
 
     private void loadUserData() {
         homequest.model.Agent agent = homequest.HomeQuest.getAgent();
-        UserName.setText(agent.getName());
+        UserName1.setText(agent.getName());
+        UserType1.setText("Agent");
     }
 
     private void setupEventHandlers() {
@@ -39,7 +41,8 @@ public class ProcessTransaction extends javax.swing.JFrame {
     }
 
     private void returnToWorkspace() {
-        homequest.jframe.Agent.Workspace workspace = new homequest.jframe.Agent.Workspace();
+        homequest.jframe.Agent.Workspace workspace =
+            new homequest.jframe.Agent.Workspace();
         workspace.setVisible(true);
         this.dispose();
     }
@@ -52,12 +55,18 @@ public class ProcessTransaction extends javax.swing.JFrame {
 
     private void loadPendingRequests() {
         homequest.model.Agent agent = homequest.HomeQuest.getAgent();
-        java.util.List<homequest.model.Property> allProperties = homequest.HomeQuest.getAllProperties();
-        java.util.List<homequest.model.Property> reservedProps = agent.getReservedProperties(allProperties);
+        java.util.List<homequest.model.Property> allProperties =
+            homequest.HomeQuest.getAllProperties();
+        java.util.List<homequest.model.Property> reservedProps =
+            agent.getReservedProperties(allProperties);
 
         JPanel container = new JPanel();
-        container.setLayout(new javax.swing.BoxLayout(container, javax.swing.BoxLayout.Y_AXIS));
-        container.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
+        container.setLayout(
+            new javax.swing.BoxLayout(container, javax.swing.BoxLayout.Y_AXIS)
+        );
+        container.setBorder(
+            javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8)
+        );
         container.setOpaque(false);
 
         if (reservedProps.isEmpty()) {
@@ -67,7 +76,9 @@ public class ProcessTransaction extends javax.swing.JFrame {
             JPanel emptyPanel = new JPanel();
             emptyPanel.add(emptyLabel);
             emptyPanel.setPreferredSize(new java.awt.Dimension(400, 100));
-            emptyPanel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 100));
+            emptyPanel.setMaximumSize(
+                new java.awt.Dimension(Integer.MAX_VALUE, 100)
+            );
             emptyPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
             container.add(emptyPanel);
         } else {
@@ -86,7 +97,10 @@ public class ProcessTransaction extends javax.swing.JFrame {
         ScrollWrapper.repaint();
     }
 
-    private JPanel createRequestPanel(homequest.model.Property property, int index) {
+    private JPanel createRequestPanel(
+        homequest.model.Property property,
+        int index
+    ) {
         JPanel panel = new JPanel();
         panel.setBackground(new java.awt.Color(255, 250, 205));
         panel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -96,16 +110,32 @@ public class ProcessTransaction extends javax.swing.JFrame {
         panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         String paymentMethod = getPaymentMethodText(property);
-        
-        JLabel infoLabel = new JLabel("<html><b>#" + index + ": " + property.getName() + "</b><br>" +
-                "Buyer: " + property.getPendingBuyer().getName() + "<br>" +
-                "TCP: ₱" + String.format("%,.2f", property.getTCP()) + "<br>" +
-                "Payment: " + paymentMethod + "</html>");
+
+        JLabel infoLabel = new JLabel(
+            "<html><b>#" +
+                index +
+                ": " +
+                property.getName() +
+                "</b><br>" +
+                "Buyer: " +
+                property.getPendingBuyer().getName() +
+                "<br>" +
+                "TCP: ₱" +
+                String.format("%,.2f", property.getTCP()) +
+                "<br>" +
+                "Payment: " +
+                paymentMethod +
+                "</html>"
+        );
         infoLabel.setFont(new java.awt.Font("Segoe UI", 0, 12));
-        infoLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        infoLabel.setBorder(
+            javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        );
 
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        buttonPanel.setLayout(
+            new java.awt.FlowLayout(java.awt.FlowLayout.LEFT)
+        );
         buttonPanel.setOpaque(false);
 
         javax.swing.JButton approveBtn = new javax.swing.JButton("Approve");
@@ -132,53 +162,81 @@ public class ProcessTransaction extends javax.swing.JFrame {
             case 2:
                 return "Check";
             case 3:
-                return "Bank Financing (" + property.getPendingBankName() + ", " + property.getPendingLoanTerm() + " years)";
+                return (
+                    "Bank Financing (" +
+                    property.getPendingBankName() +
+                    ", " +
+                    property.getPendingLoanTerm() +
+                    " years)"
+                );
             case 4:
-                return "Pag-IBIG Financing (" + property.getPendingLoanTerm() + " years)";
+                return (
+                    "Pag-IBIG Financing (" +
+                    property.getPendingLoanTerm() +
+                    " years)"
+                );
             default:
                 return "Unknown";
         }
     }
 
     private void handleApprove(homequest.model.Property property) {
-        int confirm = javax.swing.JOptionPane.showConfirmDialog(this,
-                "Approve purchase request for " + property.getName() + "?",
-                "Confirm Approval",
-                javax.swing.JOptionPane.YES_NO_OPTION);
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(
+            this,
+            "Approve purchase request for " + property.getName() + "?",
+            "Confirm Approval",
+            javax.swing.JOptionPane.YES_NO_OPTION
+        );
 
         if (confirm == javax.swing.JOptionPane.YES_OPTION) {
             homequest.model.Agent agent = homequest.HomeQuest.getAgent();
             int paymentMethod = property.getPendingPaymentMethod();
             agent.approveTransaction(property);
-            
+
             boolean isInstallment = (paymentMethod == 3 || paymentMethod == 4);
-            String finalStatus = isInstallment ? "RESERVED (installment ongoing)" : "SOLD";
-            String note = isInstallment ? "\nBuyer will continue making monthly payments." : "";
-            
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "Transaction approved successfully!\nProperty: " + property.getName() + "\nStatus: " + finalStatus + note,
-                    "Success",
-                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
-            
+            String finalStatus = isInstallment
+                ? "RESERVED (installment ongoing)"
+                : "SOLD";
+            String note = isInstallment
+                ? "\nBuyer will continue making monthly payments."
+                : "";
+
+            javax.swing.JOptionPane.showMessageDialog(
+                this,
+                "Transaction approved successfully!\nProperty: " +
+                    property.getName() +
+                    "\nStatus: " +
+                    finalStatus +
+                    note,
+                "Success",
+                javax.swing.JOptionPane.INFORMATION_MESSAGE
+            );
+
             loadPendingRequests();
         }
     }
 
     private void handleReject(homequest.model.Property property) {
-        int confirm = javax.swing.JOptionPane.showConfirmDialog(this,
-                "Reject purchase request for " + property.getName() + "?\nProperty will return to AVAILABLE status.",
-                "Confirm Rejection",
-                javax.swing.JOptionPane.YES_NO_OPTION);
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(
+            this,
+            "Reject purchase request for " +
+                property.getName() +
+                "?\nProperty will return to AVAILABLE status.",
+            "Confirm Rejection",
+            javax.swing.JOptionPane.YES_NO_OPTION
+        );
 
         if (confirm == javax.swing.JOptionPane.YES_OPTION) {
             homequest.model.Agent agent = homequest.HomeQuest.getAgent();
             agent.rejectTransaction(property);
-            
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "Request rejected. Property returned to AVAILABLE status.",
-                    "Rejected",
-                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
-            
+
+            javax.swing.JOptionPane.showMessageDialog(
+                this,
+                "Request rejected. Property returned to AVAILABLE status.",
+                "Rejected",
+                javax.swing.JOptionPane.INFORMATION_MESSAGE
+            );
+
             loadPendingRequests();
         }
     }
@@ -193,28 +251,19 @@ public class ProcessTransaction extends javax.swing.JFrame {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        Header = new javax.swing.JPanel();
-        HeaderLabel = new javax.swing.JLabel();
         Content = new javax.swing.JPanel();
         ScrollWrapper = new javax.swing.JScrollPane();
         ButtonWrapper = new javax.swing.JPanel();
         Return = new javax.swing.JButton();
         Logout = new javax.swing.JButton();
-        UserInfo = new javax.swing.JPanel();
-        UserIcon = new javax.swing.JLabel();
-        UserType = new javax.swing.JLabel();
-        UserName = new javax.swing.JLabel();
+        Header1 = new javax.swing.JPanel();
+        HeaderLabel1 = new javax.swing.JLabel();
+        UserType1 = new javax.swing.JLabel();
+        UserName1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("HomeQuest");
         setResizable(false);
         setSize(new java.awt.Dimension(600, 500));
-
-        Header.setLayout(new java.awt.GridBagLayout());
-
-        HeaderLabel.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
-        HeaderLabel.setText("HomeQuest");
-        Header.add(HeaderLabel, new java.awt.GridBagConstraints());
 
         java.awt.GridBagLayout ContentLayout = new java.awt.GridBagLayout();
         ContentLayout.columnWidths = new int[] {0, 5, 0};
@@ -249,35 +298,34 @@ public class ProcessTransaction extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         Content.add(ButtonWrapper, gridBagConstraints);
 
-        UserInfo.setMaximumSize(new java.awt.Dimension(199, 96));
-        UserInfo.setMinimumSize(new java.awt.Dimension(199, 196));
-        UserInfo.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        Header1.setLayout(new java.awt.GridBagLayout());
 
-        ImageIcon originalIcon = new ImageIcon(getClass().getResource("/homequest/jframe/pfp.jpg"));
-        Image scaledImage = originalIcon.getImage().getScaledInstance(100, 100, Image.SCALE_FAST);
-        UserIcon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        UserIcon.setIcon(new ImageIcon(scaledImage));
-        UserIcon.setMaximumSize(new java.awt.Dimension(100, 100));
-        UserIcon.setMinimumSize(new java.awt.Dimension(100, 100));
-        UserIcon.setPreferredSize(new java.awt.Dimension(100, 100));
-        UserInfo.add(UserIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 200, 120));
-
-        UserType.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        UserType.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        UserType.setText("Agent");
-        UserInfo.add(UserType, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 199, 30));
-
-        UserName.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        UserName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        UserName.setText("Agent Name Here");
-        UserInfo.add(UserName, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, -1, 30));
-
+        HeaderLabel1.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
+        HeaderLabel1.setText("HomeQuest");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridheight = 3;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-        Content.add(UserInfo, gridBagConstraints);
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.weightx = 1.0;
+        Header1.add(HeaderLabel1, gridBagConstraints);
+
+        UserType1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        UserType1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        UserType1.setText("Owner");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        Header1.add(UserType1, gridBagConstraints);
+
+        UserName1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        UserName1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        UserName1.setText("Owner Name Here");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        Header1.add(UserName1, gridBagConstraints);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -285,16 +333,16 @@ public class ProcessTransaction extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(Content, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
-                    .addComponent(Header, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(Header1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Content, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(Header, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Header1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(Content, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
                 .addContainerGap())
@@ -303,7 +351,8 @@ public class ProcessTransaction extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void ReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnActionPerformed
+    private void ReturnActionPerformed(java.awt.event.ActionEvent evt) {
+//GEN-FIRST:event_ReturnActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_ReturnActionPerformed
 
@@ -314,7 +363,7 @@ public class ProcessTransaction extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -323,26 +372,29 @@ public class ProcessTransaction extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (
+            ReflectiveOperationException
+            | javax.swing.UnsupportedLookAndFeelException ex
+        ) {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new ProcessTransaction().setVisible(true));
+        java.awt.EventQueue.invokeLater(() ->
+            new ProcessTransaction().setVisible(true)
+        );
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel ButtonWrapper;
     private javax.swing.JPanel Content;
-    private javax.swing.JPanel Header;
-    private javax.swing.JLabel HeaderLabel;
+    private javax.swing.JPanel Header1;
+    private javax.swing.JLabel HeaderLabel1;
     private javax.swing.JButton Logout;
     private javax.swing.JButton Return;
     private javax.swing.JScrollPane ScrollWrapper;
-    private javax.swing.JLabel UserIcon;
-    private javax.swing.JPanel UserInfo;
-    private javax.swing.JLabel UserName;
-    private javax.swing.JLabel UserType;
+    private javax.swing.JLabel UserName1;
+    private javax.swing.JLabel UserType1;
     // End of variables declaration//GEN-END:variables
 }
