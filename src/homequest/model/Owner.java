@@ -35,11 +35,32 @@ public class Owner {
     }
 
     public boolean assignPropertyToAgent(Property property, Agent agent) {
-        if (!properties.contains(property)) {
+        String reason = getAssignmentBlockReason(property, agent);
+        if (reason != null) {
             return false;
         }
         agent.addListing(property);
         return true;
+    }
+
+    public String getAssignmentBlockReason(Property property, Agent agent) {
+        if (agent == null) {
+            return "No agent is available for assignment.";
+        }
+
+        if (property == null) {
+            return "Please select a valid property.";
+        }
+
+        if (!properties.contains(property)) {
+            return "Property does not belong to this owner.";
+        }
+
+        if (agent.getListings().contains(property)) {
+            return "Property is already assigned to this agent.";
+        }
+
+        return null;
     }
 
     public String getRemovalBlockReason(Property property) {

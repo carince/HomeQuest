@@ -37,7 +37,9 @@ public class Agent {
     }
 
     public void addListing(Property property) {
-        this.listings.add(property);
+        if (property != null && !this.listings.contains(property)) {
+            this.listings.add(property);
+        }
     }
 
     public boolean removeListing(Property property) {

@@ -72,40 +72,102 @@ public class Workspace extends javax.swing.JFrame {
     }
 
     private void assignPropertyToAgent() {
-        homequest.model.Owner owner = homequest.HomeQuest.getOwner();
-        homequest.model.Agent agent = homequest.HomeQuest.getAgent();
+        try {
+            homequest.model.Owner owner = homequest.HomeQuest.getOwner();
+            homequest.model.Agent agent = homequest.HomeQuest.getAgent();
 
-        if (owner.getProperties().isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(
+            if (owner == null) {
+                javax.swing.JOptionPane.showMessageDialog(
+                    this,
+                    "Owner data is not available.",
+                    "Assignment Error",
+                    javax.swing.JOptionPane.ERROR_MESSAGE
+                );
+                return;
+            }
+
+            if (agent == null) {
+                javax.swing.JOptionPane.showMessageDialog(
+                    this,
+                    "Agent data is not available.",
+                    "Assignment Error",
+                    javax.swing.JOptionPane.ERROR_MESSAGE
+                );
+                return;
+            }
+
+            if (owner.getProperties().isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(
+                    this,
+                    "You don't have any properties to assign.",
+                    "No Properties",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE
+                );
+                return;
+            }
+
+            java.util.List<homequest.model.Property> assignableProperties =
+                owner
+                    .getProperties()
+                    .stream()
+                    .filter(prop -> !agent.getListings().contains(prop))
+                    .toList();
+
+            if (assignableProperties.isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(
+                    this,
+                    "All your properties are already assigned to " +
+                    agent.getName() +
+                    ".",
+                    "No Assignable Properties",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE
+                );
+                return;
+            }
+
+            String[] options = new String[assignableProperties.size()];
+            for (int i = 0; i < assignableProperties.size(); i++) {
+                homequest.model.Property prop = assignableProperties.get(i);
+                options[i] = prop.getName() + " - " + prop.getStatus();
+            }
+
+            String selected = (String) javax.swing.JOptionPane.showInputDialog(
                 this,
-                "You don't have any properties to assign.",
-                "No Properties",
-                javax.swing.JOptionPane.INFORMATION_MESSAGE
+                "Select property to assign to " + agent.getName() + ":",
+                "Assign Property",
+                javax.swing.JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
             );
-            return;
-        }
 
-        String[] options = new String[owner.getProperties().size()];
-        for (int i = 0; i < owner.getProperties().size(); i++) {
-            homequest.model.Property prop = owner.getProperties().get(i);
-            options[i] = prop.getName() + " - " + prop.getStatus();
-        }
+            if (selected == null) {
+                return;
+            }
 
-        String selected = (String) javax.swing.JOptionPane.showInputDialog(
-            this,
-            "Select property to assign to " + agent.getName() + ":",
-            "Assign Property",
-            javax.swing.JOptionPane.QUESTION_MESSAGE,
-            null,
-            options,
-            options[0]
-        );
-
-        if (selected != null) {
             int index = java.util.Arrays.asList(options).indexOf(selected);
-            homequest.model.Property property = owner
-                .getProperties()
-                .get(index);
+            if (index < 0 || index >= assignableProperties.size()) {
+                javax.swing.JOptionPane.showMessageDialog(
+                    this,
+                    "Invalid property selection. Please try again.",
+                    "Assignment Error",
+                    javax.swing.JOptionPane.ERROR_MESSAGE
+                );
+                return;
+            }
+
+            homequest.model.Property property = assignableProperties.get(index);
+            String blockReason = owner.getAssignmentBlockReason(property, agent);
+
+            if (blockReason != null) {
+                javax.swing.JOptionPane.showMessageDialog(
+                    this,
+                    blockReason,
+                    "Assignment Blocked",
+                    javax.swing.JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
 
             if (owner.assignPropertyToAgent(property, agent)) {
                 javax.swing.JOptionPane.showMessageDialog(
@@ -120,11 +182,19 @@ public class Workspace extends javax.swing.JFrame {
             } else {
                 javax.swing.JOptionPane.showMessageDialog(
                     this,
-                    "Failed to assign property.",
-                    "Error",
+                    "Unable to assign property due to a validation error.",
+                    "Assignment Error",
                     javax.swing.JOptionPane.ERROR_MESSAGE
                 );
             }
+        } catch (Exception ex) {
+            logger.log(java.util.logging.Level.SEVERE, "Failed to assign property to agent", ex);
+            javax.swing.JOptionPane.showMessageDialog(
+                this,
+                "Unexpected error while assigning property: " + ex.getMessage(),
+                "Assignment Error",
+                javax.swing.JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 
