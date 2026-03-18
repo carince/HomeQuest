@@ -21,6 +21,7 @@ public class ViewProperties extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger =
         java.util.logging.Logger.getLogger(ViewProperties.class.getName());
+    private final homequest.util.PropertyFilterDialog.FilterCriteria activeFilters = new homequest.util.PropertyFilterDialog.FilterCriteria();
 
     /**
      * Creates new form Main
@@ -38,8 +39,18 @@ public class ViewProperties extends javax.swing.JFrame {
     }
 
     private void setupEventHandlers() {
+        javax.swing.JButton filterButton = new javax.swing.JButton("Filter");
+        filterButton.addActionListener(e -> showFilterDialog());
+        ButtonWrapper.setLayout(new java.awt.GridLayout(1, 3, 20, 0));
+        ButtonWrapper.add(filterButton, 0);
         Return.addActionListener(e -> returnToWorkspace());
         Logout.addActionListener(e -> returnToMain());
+    }
+
+    private void showFilterDialog() {
+        if (homequest.util.PropertyFilterDialog.showFilterDialog(this, activeFilters)) {
+            loadOwnerProperties();
+        }
     }
 
     private void returnToWorkspace() {
@@ -59,6 +70,7 @@ public class ViewProperties extends javax.swing.JFrame {
         homequest.model.Owner owner = homequest.HomeQuest.getOwner();
         java.util.List<homequest.model.Property> properties =
             owner.getProperties();
+        properties = homequest.util.PropertyFilterDialog.filterProperties(properties, activeFilters);
 
         JPanel container = new JPanel();
         container.setLayout(

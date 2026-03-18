@@ -21,6 +21,7 @@ import javax.swing.JScrollPane;
 public class PurchaseProperty extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(PurchaseProperty.class.getName());
+    private final homequest.util.PropertyFilterDialog.FilterCriteria activeFilters = new homequest.util.PropertyFilterDialog.FilterCriteria();
 
     /**
      * Creates new form Main
@@ -39,8 +40,18 @@ public class PurchaseProperty extends javax.swing.JFrame {
     }
 
     private void setupEventHandlers() {
+        javax.swing.JButton filterButton = new javax.swing.JButton("Filter");
+        filterButton.addActionListener(e -> showFilterDialog());
+        ButtonWrapper.setLayout(new java.awt.GridLayout(1, 3, 20, 0));
+        ButtonWrapper.add(filterButton, 0);
         Return.addActionListener(e -> returnToWorkspace());
         Logout.addActionListener(e -> returnToMain());
+    }
+
+    private void showFilterDialog() {
+        if (homequest.util.PropertyFilterDialog.showFilterDialog(this, activeFilters)) {
+            loadAvailableProperties();
+        }
     }
 
     private void returnToWorkspace() {
@@ -64,6 +75,7 @@ public class PurchaseProperty extends javax.swing.JFrame {
         java.util.List<homequest.model.Property> allDisplayProps = new java.util.ArrayList<>();
         allDisplayProps.addAll(availableProps);
         allDisplayProps.addAll(reservedProps);
+        allDisplayProps = homequest.util.PropertyFilterDialog.filterProperties(allDisplayProps, activeFilters);
 
         JPanel container = new JPanel();
         container.setLayout(new javax.swing.BoxLayout(container, javax.swing.BoxLayout.Y_AXIS));

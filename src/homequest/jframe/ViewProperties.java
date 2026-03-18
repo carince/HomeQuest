@@ -28,6 +28,7 @@ import javax.swing.JScrollPane;
 public class ViewProperties extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ViewProperties.class.getName());
+    private final homequest.util.PropertyFilterDialog.FilterCriteria activeFilters = new homequest.util.PropertyFilterDialog.FilterCriteria();
 
     /**
      * Creates new form ViewProperties
@@ -39,6 +40,11 @@ public class ViewProperties extends javax.swing.JFrame {
     }
 
     private void setupEventHandlers() {
+        JButton filterButton = new JButton("Filter");
+        filterButton.addActionListener(e -> showFilterDialog());
+        buttonWrapper.setLayout(new GridLayout(1, 3, 20, 0));
+        buttonWrapper.add(filterButton, 0);
+
         returnButton.addActionListener(e -> {
             Main main = new Main();
             main.setVisible(true);
@@ -52,6 +58,12 @@ public class ViewProperties extends javax.swing.JFrame {
         });
     }
 
+    private void showFilterDialog() {
+        if (homequest.util.PropertyFilterDialog.showFilterDialog(this, activeFilters)) {
+            loadPropertyImages();
+        }
+    }
+
     private void loadPropertyImages() {
         JPanel container = new JPanel();
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
@@ -59,6 +71,7 @@ public class ViewProperties extends javax.swing.JFrame {
         container.setOpaque(false);
 
         java.util.List<homequest.model.Property> properties = homequest.HomeQuest.getAllProperties();
+        properties = homequest.util.PropertyFilterDialog.filterProperties(properties, activeFilters);
 
         if (properties.isEmpty()) {
             JLabel emptyLabel = new JLabel("No property data available.");
