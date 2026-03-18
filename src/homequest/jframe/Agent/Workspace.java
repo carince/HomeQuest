@@ -69,7 +69,6 @@ public class Workspace extends javax.swing.JFrame {
         ButtonWrapper = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        ButtonWrapper2 = new javax.swing.JPanel();
         ButtonWrapper1 = new javax.swing.JPanel();
         Logout1 = new javax.swing.JButton();
         Header1 = new javax.swing.JPanel();
@@ -82,7 +81,7 @@ public class Workspace extends javax.swing.JFrame {
         setSize(new java.awt.Dimension(600, 500));
 
         java.awt.GridBagLayout ContentLayout = new java.awt.GridBagLayout();
-        ContentLayout.columnWidths = new int[] {0, 5, 0};
+        ContentLayout.columnWidths = new int[] {0};
         ContentLayout.rowHeights = new int[] {0, 5, 0};
         ContentLayout.columnWeights = new double[] {0.0};
         ContentLayout.rowWeights = new double[] {0.0};
@@ -99,17 +98,13 @@ public class Workspace extends javax.swing.JFrame {
         ButtonWrapper.add(jButton3);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         Content.add(ButtonWrapper, gridBagConstraints);
-
-        ButtonWrapper2.setLayout(new java.awt.GridLayout(1, 1, 20, 0));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-        Content.add(ButtonWrapper2, gridBagConstraints);
 
         ButtonWrapper1.setLayout(new java.awt.GridLayout(1, 2, 20, 0));
 
@@ -117,7 +112,7 @@ public class Workspace extends javax.swing.JFrame {
         ButtonWrapper1.add(Logout1);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
@@ -207,7 +202,6 @@ public class Workspace extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel ButtonWrapper;
     private javax.swing.JPanel ButtonWrapper1;
-    private javax.swing.JPanel ButtonWrapper2;
     private javax.swing.JPanel Content;
     private javax.swing.JPanel Header1;
     private javax.swing.JLabel HeaderLabel1;

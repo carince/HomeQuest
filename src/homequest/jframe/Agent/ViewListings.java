@@ -158,7 +158,7 @@ public class ViewListings extends javax.swing.JFrame {
         setSize(new java.awt.Dimension(600, 500));
 
         java.awt.GridBagLayout ContentLayout = new java.awt.GridBagLayout();
-        ContentLayout.columnWidths = new int[] {0, 5, 0};
+        ContentLayout.columnWidths = new int[] {0};
         ContentLayout.rowHeights = new int[] {0, 5, 0};
         ContentLayout.columnWeights = new double[] {0.0};
         ContentLayout.rowWeights = new double[] {0.0};
@@ -170,8 +170,11 @@ public class ViewListings extends javax.swing.JFrame {
         ScrollWrapper.setName(""); // NOI18N
         ScrollWrapper.setPreferredSize(new java.awt.Dimension(400, 400));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         Content.add(ScrollWrapper, gridBagConstraints);
 
         ButtonWrapper.setLayout(new java.awt.GridLayout(1, 2, 20, 0));
@@ -184,7 +187,7 @@ public class ViewListings extends javax.swing.JFrame {
         ButtonWrapper.add(Logout);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);

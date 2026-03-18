@@ -346,6 +346,8 @@ public class ViewPurchaseHistory extends javax.swing.JFrame {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         Content.add(ScrollWrapper, gridBagConstraints);
 
         ButtonWrapper.setLayout(new java.awt.GridLayout(1, 2, 20, 0));

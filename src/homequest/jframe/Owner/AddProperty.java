@@ -304,6 +304,9 @@ public class AddProperty extends javax.swing.JFrame {
         LNF4 = new javax.swing.JPanel();
         LNFLabel4 = new javax.swing.JLabel();
         LNFTextField4 = new javax.swing.JTextField();
+        LNF7 = new javax.swing.JPanel();
+        LNFLabel7 = new javax.swing.JLabel();
+        LNFTextField7 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         ButtonWrapper2 = new javax.swing.JPanel();
         jButton5 = new javax.swing.JButton();
@@ -314,7 +317,6 @@ public class AddProperty extends javax.swing.JFrame {
         UserName1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(600, 500));
         setResizable(false);
         setSize(new java.awt.Dimension(600, 500));
 
@@ -324,6 +326,8 @@ public class AddProperty extends javax.swing.JFrame {
         ContentLayout.columnWeights = new double[] {0.0};
         ContentLayout.rowWeights = new double[] {0.0};
         Content.setLayout(ContentLayout);
+
+        ContentWrapper.setLayout(new java.awt.GridBagLayout());
 
         LNFLabel.setText("Name");
 
@@ -337,7 +341,7 @@ public class AddProperty extends javax.swing.JFrame {
             .addGroup(LNFLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(LNFLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(LNFTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
+                    .addComponent(LNFTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE)
                     .addComponent(LNFLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -350,6 +354,16 @@ public class AddProperty extends javax.swing.JFrame {
                 .addComponent(LNFTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 218;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        ContentWrapper.add(LNF, gridBagConstraints);
 
         LNFLabel1.setText("Base price (PHP)");
 
@@ -364,7 +378,7 @@ public class AddProperty extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(LNF1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(LNFTextField1)
-                    .addComponent(LNFLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE))
+                    .addComponent(LNFLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE))
                 .addContainerGap())
         );
         LNF1Layout.setVerticalGroup(
@@ -376,6 +390,17 @@ public class AddProperty extends javax.swing.JFrame {
                 .addComponent(LNFTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 195;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
+        ContentWrapper.add(LNF1, gridBagConstraints);
 
         LNFLabel2.setText("Floor area (sqm)");
 
@@ -390,7 +415,7 @@ public class AddProperty extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(LNF2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(LNFTextField2)
-                    .addComponent(LNFLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE))
+                    .addComponent(LNFLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE))
                 .addContainerGap())
         );
         LNF2Layout.setVerticalGroup(
@@ -402,6 +427,17 @@ public class AddProperty extends javax.swing.JFrame {
                 .addComponent(LNFTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 196;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
+        ContentWrapper.add(LNF2, gridBagConstraints);
 
         LNFLabel3.setText("Lot Area (sqm)");
 
@@ -416,7 +452,7 @@ public class AddProperty extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(LNF3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(LNFTextField3)
-                    .addComponent(LNFLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE))
+                    .addComponent(LNFLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE))
                 .addContainerGap())
         );
         LNF3Layout.setVerticalGroup(
@@ -429,7 +465,18 @@ public class AddProperty extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        LNFLabel4.setText("Block/Lot");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 204;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
+        ContentWrapper.add(LNF3, gridBagConstraints);
+
+        LNFLabel4.setText("Lot");
 
         LNFTextField4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         LNFTextField4.addActionListener(this::LNFTextField4ActionPerformed);
@@ -442,7 +489,7 @@ public class AddProperty extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(LNF4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(LNFTextField4)
-                    .addComponent(LNFLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE))
+                    .addComponent(LNFLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         LNF4Layout.setVerticalGroup(
@@ -455,48 +502,71 @@ public class AddProperty extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        ContentWrapper.add(LNF4, gridBagConstraints);
+
+        LNFLabel7.setText("Block");
+
+        LNFTextField7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        LNFTextField7.addActionListener(this::LNFTextField7ActionPerformed);
+
+        javax.swing.GroupLayout LNF7Layout = new javax.swing.GroupLayout(LNF7);
+        LNF7.setLayout(LNF7Layout);
+        LNF7Layout.setHorizontalGroup(
+            LNF7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(LNF7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(LNF7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(LNFTextField7)
+                    .addComponent(LNFLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        LNF7Layout.setVerticalGroup(
+            LNF7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(LNF7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(LNFLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(LNFTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 218;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
+        ContentWrapper.add(LNF7, gridBagConstraints);
+
         jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButton1.setText("Add New Property");
-
-        javax.swing.GroupLayout ContentWrapperLayout = new javax.swing.GroupLayout(ContentWrapper);
-        ContentWrapper.setLayout(ContentWrapperLayout);
-        ContentWrapperLayout.setHorizontalGroup(
-            ContentWrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(LNF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(LNF1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(LNF2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(LNF3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(LNF4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addGroup(ContentWrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(ContentWrapperLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
-                    .addContainerGap()))
-        );
-        ContentWrapperLayout.setVerticalGroup(
-            ContentWrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ContentWrapperLayout.createSequentialGroup()
-                .addComponent(LNF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(LNF4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(LNF3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(LNF2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(LNF1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(39, 39, 39))
-            .addGroup(ContentWrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ContentWrapperLayout.createSequentialGroup()
-                    .addContainerGap(330, Short.MAX_VALUE)
-                    .addComponent(jButton1)
-                    .addContainerGap()))
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 413;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 6, 6);
+        ContentWrapper.add(jButton1, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         Content.add(ContentWrapper, gridBagConstraints);
 
@@ -551,8 +621,8 @@ public class AddProperty extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(Content, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
-                    .addComponent(Header1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(Content, javax.swing.GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE)
+                    .addComponent(Header1, javax.swing.GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -587,6 +657,10 @@ public class AddProperty extends javax.swing.JFrame {
     private void LNFTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LNFTextField4ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_LNFTextField4ActionPerformed
+
+    private void LNFTextField7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LNFTextField7ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_LNFTextField7ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -624,16 +698,19 @@ public class AddProperty extends javax.swing.JFrame {
     private javax.swing.JPanel LNF2;
     private javax.swing.JPanel LNF3;
     private javax.swing.JPanel LNF4;
+    private javax.swing.JPanel LNF7;
     private javax.swing.JLabel LNFLabel;
     private javax.swing.JLabel LNFLabel1;
     private javax.swing.JLabel LNFLabel2;
     private javax.swing.JLabel LNFLabel3;
     private javax.swing.JLabel LNFLabel4;
+    private javax.swing.JLabel LNFLabel7;
     private javax.swing.JTextField LNFTextField;
     private javax.swing.JTextField LNFTextField1;
     private javax.swing.JTextField LNFTextField2;
     private javax.swing.JTextField LNFTextField3;
     private javax.swing.JTextField LNFTextField4;
+    private javax.swing.JTextField LNFTextField7;
     private javax.swing.JButton Logout;
     private javax.swing.JLabel UserName1;
     private javax.swing.JLabel UserType1;
