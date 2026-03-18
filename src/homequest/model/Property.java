@@ -1,6 +1,8 @@
 package homequest.model;
 
 import homequest.util.PropertyStatus;
+import homequest.util.ReservationStatus;
+import homequest.util.PurchaseRequestStatus;
 
 public abstract class Property {
     protected String blockLot;
@@ -8,7 +10,10 @@ public abstract class Property {
     protected double lotArea;
     protected double basePrice;
     protected PropertyStatus status;
+    protected Buyer reservedBy;
+    protected ReservationStatus reservationStatus;
     protected Buyer pendingBuyer;
+    protected PurchaseRequestStatus purchaseRequestStatus;
     protected int pendingPaymentMethod;
     protected String pendingBankName;
     protected int pendingLoanTerm;
@@ -19,7 +24,10 @@ public abstract class Property {
         this.lotArea = lotArea;
         this.basePrice = basePrice;
         this.status = PropertyStatus.AVAILABLE;
+        this.reservedBy = null;
+        this.reservationStatus = null;
         this.pendingBuyer = null;
+        this.purchaseRequestStatus = null;
     }
 
     public Property(String blockLot, String name, double lotArea, double basePrice) {
@@ -28,7 +36,10 @@ public abstract class Property {
         this.lotArea = lotArea;
         this.basePrice = basePrice;
         this.status = PropertyStatus.AVAILABLE;
+        this.reservedBy = null;
+        this.reservationStatus = null;
         this.pendingBuyer = null;
+        this.purchaseRequestStatus = null;
     }
 
     public String getBlockLot() {
@@ -87,11 +98,41 @@ public abstract class Property {
         this.pendingLoanTerm = pendingLoanTerm;
     }
 
+    public Buyer getReservedBy() {
+        return reservedBy;
+    }
+
+    public void setReservedBy(Buyer reservedBy) {
+        this.reservedBy = reservedBy;
+    }
+
+    public ReservationStatus getReservationStatus() {
+        return reservationStatus;
+    }
+
+    public void setReservationStatus(ReservationStatus reservationStatus) {
+        this.reservationStatus = reservationStatus;
+    }
+
+    public PurchaseRequestStatus getPurchaseRequestStatus() {
+        return purchaseRequestStatus;
+    }
+
+    public void setPurchaseRequestStatus(PurchaseRequestStatus purchaseRequestStatus) {
+        this.purchaseRequestStatus = purchaseRequestStatus;
+    }
+
     public void clearPendingRequest() {
         this.pendingBuyer = null;
+        this.purchaseRequestStatus = null;
         this.pendingPaymentMethod = 0;
         this.pendingBankName = null;
         this.pendingLoanTerm = 0;
+    }
+
+    public void clearReservation() {
+        this.reservedBy = null;
+        this.reservationStatus = null;
     }
 
     public abstract double getTCP();

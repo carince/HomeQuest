@@ -4,9 +4,9 @@
  */
 package homequest.jframe.Buyer;
 
-import homequest.jframe.*;
-import homequest.jframe.Agent.*;
 import homequest.jframe.Owner.*;
+import homequest.jframe.Agent.*;
+import homequest.jframe.*;
 import java.awt.Component;
 import java.awt.Image;
 import javax.swing.ImageIcon;
@@ -20,8 +20,7 @@ import javax.swing.JScrollPane;
  */
 public class PurchaseProperty extends javax.swing.JFrame {
 
-    private static final java.util.logging.Logger logger =
-        java.util.logging.Logger.getLogger(PurchaseProperty.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(PurchaseProperty.class.getName());
 
     /**
      * Creates new form Main
@@ -45,8 +44,7 @@ public class PurchaseProperty extends javax.swing.JFrame {
     }
 
     private void returnToWorkspace() {
-        homequest.jframe.Buyer.Workspace workspace =
-            new homequest.jframe.Buyer.Workspace();
+        homequest.jframe.Buyer.Workspace workspace = new homequest.jframe.Buyer.Workspace();
         workspace.setVisible(true);
         this.dispose();
     }
@@ -59,40 +57,35 @@ public class PurchaseProperty extends javax.swing.JFrame {
 
     private void loadAvailableProperties() {
         homequest.model.Buyer buyer = homequest.HomeQuest.getBuyer();
-        java.util.List<homequest.model.Property> availableProps =
-            buyer.getAvailableProperties(
-                homequest.HomeQuest.getAllProperties()
-            );
+        java.util.List<homequest.model.Property> availableProps = buyer.getAvailableProperties(homequest.HomeQuest.getAllProperties());
+        java.util.List<homequest.model.Property> reservedProps = buyer.getReservedProperties(homequest.HomeQuest.getAllProperties());
+        
+        // Combine both available and buyer's reserved properties
+        java.util.List<homequest.model.Property> allDisplayProps = new java.util.ArrayList<>();
+        allDisplayProps.addAll(availableProps);
+        allDisplayProps.addAll(reservedProps);
 
         JPanel container = new JPanel();
-        container.setLayout(
-            new javax.swing.BoxLayout(container, javax.swing.BoxLayout.Y_AXIS)
-        );
-        container.setBorder(
-            javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8)
-        );
+        container.setLayout(new javax.swing.BoxLayout(container, javax.swing.BoxLayout.Y_AXIS));
+        container.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         container.setOpaque(false);
 
-        if (availableProps.isEmpty()) {
-            JLabel emptyLabel = new JLabel(
-                "No available properties to purchase."
-            );
+        if (allDisplayProps.isEmpty()) {
+            JLabel emptyLabel = new JLabel("No available properties to purchase.");
             emptyLabel.setFont(new java.awt.Font("Segoe UI", 0, 18));
             emptyLabel.setForeground(java.awt.Color.GRAY);
             JPanel emptyPanel = new JPanel();
             emptyPanel.add(emptyLabel);
             emptyPanel.setPreferredSize(new java.awt.Dimension(400, 100));
-            emptyPanel.setMaximumSize(
-                new java.awt.Dimension(Integer.MAX_VALUE, 100)
-            );
+            emptyPanel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 100));
             emptyPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
             container.add(emptyPanel);
         } else {
-            for (int i = 0; i < availableProps.size(); i++) {
-                homequest.model.Property property = availableProps.get(i);
+            for (int i = 0; i < allDisplayProps.size(); i++) {
+                homequest.model.Property property = allDisplayProps.get(i);
                 JPanel panel = createPropertyPanel(property, i + 1);
                 container.add(panel);
-                if (i < availableProps.size() - 1) {
+                if (i < allDisplayProps.size() - 1) {
                     container.add(javax.swing.Box.createVerticalStrut(8));
                 }
             }
@@ -103,48 +96,38 @@ public class PurchaseProperty extends javax.swing.JFrame {
         ScrollWrapper.repaint();
     }
 
-    private JPanel createPropertyPanel(
-        homequest.model.Property property,
-        int index
-    ) {
+    private JPanel createPropertyPanel(homequest.model.Property property, int index) {
         JPanel panel = new JPanel();
-
-        panel.setBackground(new java.awt.Color(220, 255, 220));
+        
+        boolean isReservedByMe = property.getStatus() == homequest.util.PropertyStatus.RESERVED && 
+                                 property.getReservedBy() == homequest.HomeQuest.getBuyer();
+        
+        panel.setBackground(isReservedByMe ? new java.awt.Color(200, 240, 255) : new java.awt.Color(220, 255, 220));
         panel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         panel.setLayout(new java.awt.BorderLayout(10, 10));
         panel.setPreferredSize(new java.awt.Dimension(400, 130));
         panel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 130));
         panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel label = new JLabel(
-            "<html><b>#" +
-                index +
-                ": " +
-                property.getName() +
-                "</b><br>" +
-                "Block/Lot: " +
-                property.getBlockLot() +
-                "<br>" +
-                "TCP: ₱" +
-                String.format("%,.2f", property.getTCP()) +
-                "<br>" +
-                "Status: <b>" +
-                property.getStatus() +
-                "</b></html>"
-        );
+        String statusLabel = isReservedByMe ? "<b style='color:blue'>RESERVED (by you)</b>" : "<b>" + property.getStatus() + "</b>";
+        JLabel label = new JLabel("<html><b>#" + index + ": " + property.getName() + "</b><br>" +
+                "Block/Lot: " + property.getBlockLot() + "<br>" +
+                "TCP: ₱" + String.format("%,.2f", property.getTCP()) + "<br>" +
+                "Status: " + statusLabel + "</html>");
         label.setFont(new java.awt.Font("Segoe UI", 0, 14));
-        label.setBorder(
-            javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10)
-        );
+        label.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        javax.swing.JButton reserveButton = new javax.swing.JButton(isReservedByMe ? "Cancel Reservation" : "Reserve (₱5000)");
+        reserveButton.setFont(new java.awt.Font("Segoe UI", 0, 12));
+        reserveButton.addActionListener(e -> handleReserve(property));
 
         javax.swing.JButton buyButton = new javax.swing.JButton("Buy Property");
         buyButton.setFont(new java.awt.Font("Segoe UI", 0, 12));
         buyButton.addActionListener(e -> selectPaymentMethod(property));
 
-        JPanel buttonPanel = new JPanel(
-            new java.awt.FlowLayout(java.awt.FlowLayout.LEFT)
-        );
+        JPanel buttonPanel = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
         buttonPanel.setOpaque(false);
+        buttonPanel.add(reserveButton);
         buttonPanel.add(buyButton);
 
         panel.add(label, java.awt.BorderLayout.CENTER);
@@ -153,148 +136,155 @@ public class PurchaseProperty extends javax.swing.JFrame {
         return panel;
     }
 
-    private void selectPaymentMethod(homequest.model.Property property) {
-        String[] paymentOptions = {
-            "Spot Cash",
-            "Check",
-            "Bank Financing",
-            "Pag-IBIG Financing",
-        };
+    private void handleReserve(homequest.model.Property property) {
+        final double RESERVATION_FEE = 5000.0;
+        homequest.model.Buyer buyer = homequest.HomeQuest.getBuyer();
+        
+        // Check if buyer already has a reservation for this property
+        if (property.getReservedBy() != null && property.getReservedBy() == buyer) {
+            int confirm = javax.swing.JOptionPane.showConfirmDialog(this,
+                    "You already have a reservation for " + property.getName() + ".\n" +
+                    "Would you like to cancel this reservation and refund ₱5000?",
+                    "Cancel Reservation?",
+                    javax.swing.JOptionPane.YES_NO_OPTION);
+            if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+                buyer.cancelReservation(property);
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Reservation cancelled.\nProperty reservation fee (₱5000) refunded.",
+                        "Success",
+                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                loadAvailableProperties();
+            }
+            return;
+        }
+        
+        // Confirm reservation with buyer
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(this,
+                "<html><h3>Property Reservation</h3>" +
+                "<p><b>" + property.getName() + "</b></p>" +
+                "<p><b>Reservation Fee: ₱5,000.00</b></p>" +
+                "<p>This fee ensures no other buyer can purchase this property.</p>" +
+                "<p>You can proceed with the actual purchase at any time,<br>" +
+                "or cancel the reservation to get your fee back.</p>" +
+                "<p>Your current balance: ₱" + String.format("%,.2f", buyer.getWalletBalance()) + "</p>" +
+                "<p>Continue?</p></html>",
+                "Reserve Property",
+                javax.swing.JOptionPane.YES_NO_OPTION,
+                javax.swing.JOptionPane.QUESTION_MESSAGE);
 
-        String paymentMethod = (String) javax.swing.JOptionPane.showInputDialog(
-            this,
-            "Select payment method for " + property.getName() + ":",
-            "Payment Method",
-            javax.swing.JOptionPane.QUESTION_MESSAGE,
-            null,
-            paymentOptions,
-            paymentOptions[0]
-        );
+        if (confirm != javax.swing.JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        // Process reservation
+        if (buyer.reserveProperty(property)) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "<html><h3>Property Reserved Successfully</h3>" +
+                    "<p>Property: " + property.getName() + "</p>" +
+                    "<p>Reservation Fee: ₱5,000.00 deducted</p>" +
+                    "<p>New Balance: ₱" + String.format("%,.2f", buyer.getWalletBalance()) + "</p>" +
+                    "<p>You can now proceed with purchase at any time,<br>" +
+                    "or cancel to get your fee refunded.</p></html>",
+                    "Success",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            loadAvailableProperties();
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Reservation failed. You may not have enough balance or the property is no longer available.",
+                    "Error",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void selectPaymentMethod(homequest.model.Property property) {
+        homequest.model.Buyer buyer = homequest.HomeQuest.getBuyer();
+        
+        // Check if buyer can purchase this property
+        homequest.util.PropertyStatus status = property.getStatus();
+        if (status != homequest.util.PropertyStatus.AVAILABLE && 
+            !(status == homequest.util.PropertyStatus.RESERVED && property.getReservedBy() == buyer)) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Cannot purchase this property. It is not available or reserved by another buyer.",
+                    "Invalid Property",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        String[] paymentOptions = {"Spot Cash", "Check", "Bank Financing", "Pag-IBIG Financing"};
+
+        String paymentMethod = (String) javax.swing.JOptionPane.showInputDialog(this,
+                "Select payment method for " + property.getName() + ":",
+                "Payment Method",
+                javax.swing.JOptionPane.QUESTION_MESSAGE,
+                null,
+                paymentOptions,
+                paymentOptions[0]);
 
         if (paymentMethod == null) return;
 
-        int paymentChoice =
-            java.util.Arrays.asList(paymentOptions).indexOf(paymentMethod) + 1;
+        int paymentChoice = java.util.Arrays.asList(paymentOptions).indexOf(paymentMethod) + 1;
         String bankName = null;
         int loanTerm = 0;
 
         if (paymentChoice == 3) {
-            bankName = javax.swing.JOptionPane.showInputDialog(
-                this,
-                "Enter bank name:"
-            );
+            bankName = javax.swing.JOptionPane.showInputDialog(this, "Enter bank name:");
             if (bankName == null || bankName.trim().isEmpty()) return;
 
-            String termStr = javax.swing.JOptionPane.showInputDialog(
-                this,
-                "Enter loan term (years):"
-            );
+            String termStr = javax.swing.JOptionPane.showInputDialog(this, "Enter loan term (years):");
             if (termStr == null) return;
             try {
                 loanTerm = Integer.parseInt(termStr);
                 if (loanTerm <= 0) {
-                    javax.swing.JOptionPane.showMessageDialog(
-                        this,
-                        "Loan term must be greater than 0.",
-                        "Invalid Term",
-                        javax.swing.JOptionPane.ERROR_MESSAGE
-                    );
+                    javax.swing.JOptionPane.showMessageDialog(this, "Loan term must be greater than 0.", "Invalid Term", javax.swing.JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             } catch (NumberFormatException e) {
-                javax.swing.JOptionPane.showMessageDialog(
-                    this,
-                    "Invalid loan term.",
-                    "Error",
-                    javax.swing.JOptionPane.ERROR_MESSAGE
-                );
+                javax.swing.JOptionPane.showMessageDialog(this, "Invalid loan term.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
                 return;
             }
         } else if (paymentChoice == 4) {
-            String termStr = javax.swing.JOptionPane.showInputDialog(
-                this,
-                "Enter loan term (years):"
-            );
+            String termStr = javax.swing.JOptionPane.showInputDialog(this, "Enter loan term (years):");
             if (termStr == null) return;
             try {
                 loanTerm = Integer.parseInt(termStr);
                 if (loanTerm <= 0) {
-                    javax.swing.JOptionPane.showMessageDialog(
-                        this,
-                        "Loan term must be greater than 0.",
-                        "Invalid Term",
-                        javax.swing.JOptionPane.ERROR_MESSAGE
-                    );
+                    javax.swing.JOptionPane.showMessageDialog(this, "Loan term must be greater than 0.", "Invalid Term", javax.swing.JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             } catch (NumberFormatException e) {
-                javax.swing.JOptionPane.showMessageDialog(
-                    this,
-                    "Invalid loan term.",
-                    "Error",
-                    javax.swing.JOptionPane.ERROR_MESSAGE
-                );
+                javax.swing.JOptionPane.showMessageDialog(this, "Invalid loan term.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }
 
-        boolean confirmed = showBreakdownAndConfirm(
-            property,
-            paymentChoice,
-            bankName,
-            loanTerm
-        );
+        boolean confirmed = showBreakdownAndConfirm(property, paymentChoice, bankName, loanTerm);
         if (!confirmed) return;
 
-        homequest.model.Buyer buyer = homequest.HomeQuest.getBuyer();
-        boolean success = buyer.createPurchaseRequest(
-            property,
-            paymentChoice,
-            bankName,
-            loanTerm
-        );
+        boolean success = buyer.createPurchaseRequest(property, paymentChoice, bankName, loanTerm);
 
         if (success) {
-            javax.swing.JOptionPane.showMessageDialog(
-                this,
-                "<html><h3>Purchase Request Submitted</h3>" +
-                    "<p>Property: " +
-                    property.getName() +
-                    "</p>" +
-                    "<p>TCP: ₱" +
-                    String.format("%,.2f", property.getTCP()) +
-                    "</p>" +
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "<html><h3>Purchase Request Submitted</h3>" +
+                    "<p>Property: " + property.getName() + "</p>" +
+                    "<p>TCP: ₱" + String.format("%,.2f", property.getTCP()) + "</p>" +
                     "<p>Status: <b>Pending agent approval</b></p></html>",
-                "Success",
-                javax.swing.JOptionPane.INFORMATION_MESSAGE
-            );
+                    "Success",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
             loadAvailableProperties();
         } else {
-            javax.swing.JOptionPane.showMessageDialog(
-                this,
-                "Failed to submit request. Property may no longer be available.",
-                "Error",
-                javax.swing.JOptionPane.ERROR_MESSAGE
-            );
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Failed to submit request. Property may no longer be available.",
+                    "Error",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private boolean showBreakdownAndConfirm(
-        homequest.model.Property property,
-        int paymentChoice,
-        String bankName,
-        int loanTerm
-    ) {
+    private boolean showBreakdownAndConfirm(homequest.model.Property property, int paymentChoice, String bankName, int loanTerm) {
         double netPrice = property.getBasePrice();
-        double vat = homequest.util.FinancialEngine.calculateVAT(
-            netPrice,
-            false
-        );
-        double otherCharges =
-            homequest.util.FinancialEngine.computeOtherCharges(netPrice);
+        double vat = homequest.util.FinancialEngine.calculateVAT(netPrice, false);
+        double otherCharges = homequest.util.FinancialEngine.computeOtherCharges(netPrice);
         double tcp = property.getTCP();
-        double agentCut =
-            homequest.util.FinancialEngine.calculateAgentCommission(tcp);
+        double agentCut = homequest.util.FinancialEngine.calculateAgentCommission(tcp);
 
         String paymentLabel;
         String financingDetails = "";
@@ -307,81 +297,43 @@ public class PurchaseProperty extends javax.swing.JFrame {
                 break;
             case 3:
                 paymentLabel = "Bank Financing";
-                double bankMonthly =
-                    homequest.util.FinancialEngine.getMonthlyAmortization(
-                        tcp,
-                        loanTerm
-                    );
-                financingDetails =
-                    "<p>Bank: " +
-                    bankName +
-                    "</p>" +
-                    "<p>Loan Term: " +
-                    loanTerm +
-                    " years</p>" +
-                    "<p>Estimated Monthly: ₱" +
-                    String.format("%,.2f", bankMonthly) +
-                    "</p>";
+                double bankMonthly = homequest.util.FinancialEngine.getMonthlyAmortization(tcp, loanTerm);
+                financingDetails = "<p>Bank: " + bankName + "</p>" +
+                        "<p>Loan Term: " + loanTerm + " years</p>" +
+                        "<p>Estimated Monthly: ₱" + String.format("%,.2f", bankMonthly) + "</p>";
                 break;
             case 4:
                 paymentLabel = "Pag-IBIG Financing";
-                double pagibigMonthly =
-                    homequest.util.FinancialEngine.getMonthlyAmortization(
-                        tcp,
-                        loanTerm
-                    );
-                financingDetails =
-                    "<p>Loan Term: " +
-                    loanTerm +
-                    " years</p>" +
-                    "<p>Estimated Monthly: ₱" +
-                    String.format("%,.2f", pagibigMonthly) +
-                    "</p>";
+                double pagibigMonthly = homequest.util.FinancialEngine.getMonthlyAmortization(tcp, loanTerm);
+                financingDetails = "<p>Loan Term: " + loanTerm + " years</p>" +
+                        "<p>Estimated Monthly: ₱" + String.format("%,.2f", pagibigMonthly) + "</p>";
                 break;
             default:
                 paymentLabel = "Unknown";
         }
 
-        String breakdown =
-            "<html><body style='width: 420px'>" +
-            "<h3>Purchase Breakdown</h3>" +
-            "<p><b>Property:</b> " +
-            property.getName() +
-            "</p>" +
-            "<p><b>Block/Lot:</b> " +
-            property.getBlockLot() +
-            "</p>" +
-            "<hr>" +
-            "<p>Base Price: ₱" +
-            String.format("%,.2f", netPrice) +
-            "</p>" +
-            "<p>VAT: ₱" +
-            String.format("%,.2f", vat) +
-            "</p>" +
-            "<p>Other Charges: ₱" +
-            String.format("%,.2f", otherCharges) +
-            "</p>" +
-            "<p><b>Total Contract Price (TCP): ₱" +
-            String.format("%,.2f", tcp) +
-            "</b></p>" +
-            "<p>Agent Cut (10%): ₱" +
-            String.format("%,.2f", agentCut) +
-            "</p>" +
-            "<hr>" +
-            "<p><b>Payment Method:</b> " +
-            paymentLabel +
-            "</p>" +
-            financingDetails +
-            "<p>Continue with this purchase request?</p>" +
-            "</body></html>";
+        String breakdown = "<html><body style='width: 420px'>" +
+                "<h3>Purchase Breakdown</h3>" +
+                "<p><b>Property:</b> " + property.getName() + "</p>" +
+                "<p><b>Block/Lot:</b> " + property.getBlockLot() + "</p>" +
+                "<hr>" +
+                "<p>Base Price: ₱" + String.format("%,.2f", netPrice) + "</p>" +
+                "<p>VAT: ₱" + String.format("%,.2f", vat) + "</p>" +
+                "<p>Other Charges: ₱" + String.format("%,.2f", otherCharges) + "</p>" +
+                "<p><b>Total Contract Price (TCP): ₱" + String.format("%,.2f", tcp) + "</b></p>" +
+                "<p>Agent Cut (10%): ₱" + String.format("%,.2f", agentCut) + "</p>" +
+                "<hr>" +
+                "<p><b>Payment Method:</b> " + paymentLabel + "</p>" +
+                financingDetails +
+                "<p>Continue with this purchase request?</p>" +
+                "</body></html>";
 
         int confirm = javax.swing.JOptionPane.showConfirmDialog(
-            this,
-            breakdown,
-            "Confirm Purchase",
-            javax.swing.JOptionPane.YES_NO_OPTION,
-            javax.swing.JOptionPane.QUESTION_MESSAGE
-        );
+                this,
+                breakdown,
+                "Confirm Purchase",
+                javax.swing.JOptionPane.YES_NO_OPTION,
+                javax.swing.JOptionPane.QUESTION_MESSAGE);
 
         return confirm == javax.swing.JOptionPane.YES_OPTION;
     }
@@ -454,8 +406,7 @@ public class PurchaseProperty extends javax.swing.JFrame {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridheight = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.BASELINE_LEADING;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         Header1.add(HeaderLabel1, gridBagConstraints);
 
@@ -499,8 +450,7 @@ public class PurchaseProperty extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void ReturnActionPerformed(java.awt.event.ActionEvent evt) {
-//GEN-FIRST:event_ReturnActionPerformed
+    private void ReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_ReturnActionPerformed
 
@@ -511,7 +461,7 @@ public class PurchaseProperty extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -520,18 +470,13 @@ public class PurchaseProperty extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (
-            ReflectiveOperationException
-            | javax.swing.UnsupportedLookAndFeelException ex
-        ) {
+        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() ->
-            new PurchaseProperty().setVisible(true)
-        );
+        java.awt.EventQueue.invokeLater(() -> new PurchaseProperty().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

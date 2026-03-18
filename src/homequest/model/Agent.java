@@ -2,6 +2,8 @@ package homequest.model;
 
 import homequest.transaction.*;
 import homequest.util.PropertyStatus;
+import homequest.util.PurchaseRequestStatus;
+import homequest.util.ReservationStatus;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,27 +43,50 @@ public class Agent {
     public List<Property> getReservedProperties(List<Property> allProperties) {
         List<Property> reservedProps = new ArrayList<>();
         for (Property prop : allProperties) {
-            if (prop.getStatus() == PropertyStatus.RESERVED && prop.getPendingBuyer() != null) {
+            if (prop.getStatus() == PropertyStatus.RESERVED && 
+                prop.getReservedBy() != null && 
+                prop.getReservationStatus() == ReservationStatus.ACTIVE) {
                 reservedProps.add(prop);
             }
         }
         return reservedProps;
     }
 
+    public List<Property> getPendingPurchaseRequests(List<Property> allProperties) {
+        List<Property> pendingProps = new ArrayList<>();
+        for (Property prop : allProperties) {
+            if (prop.getStatus() == PropertyStatus.PURCHASE_PENDING && 
+                prop.getPendingBuyer() != null &&
+                prop.getPurchaseRequestStatus() == PurchaseRequestStatus.PENDING) {
+                pendingProps.add(prop);
+            }
+        }
+        return pendingProps;
+    }
+
     public boolean approveTransaction(Property property) {
-        if (property.getPendingBuyer() == null) {
+        if (property.getPendingBuyer() == null || 
+            property.getStatus() != PropertyStatus.PURCHASE_PENDING) {
             return false;
         }
+        property.setPurchaseRequestStatus(PurchaseRequestStatus.APPROVED);
         finalizeTransaction(property, property.getPendingBuyer(), this);
         return true;
     }
 
     public boolean rejectTransaction(Property property) {
-        if (property.getStatus() != PropertyStatus.RESERVED) {
+        if (property.getStatus() != PropertyStatus.PURCHASE_PENDING) {
             return false;
         }
-        property.setStatus(PropertyStatus.AVAILABLE);
+        property.setPurchaseRequestStatus(PurchaseRequestStatus.REJECTED);
         property.clearPendingRequest();
+        
+        // If buyer had a reservation, keep it as RESERVED. Otherwise make AVAILABLE.
+        if (property.getReservedBy() != null && property.getReservationStatus() == ReservationStatus.ACTIVE) {
+            property.setStatus(PropertyStatus.RESERVED);
+        } else {
+            property.setStatus(PropertyStatus.AVAILABLE);
+        }
         return true;
     }
 

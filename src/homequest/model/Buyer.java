@@ -2,6 +2,8 @@ package homequest.model;
 
 import homequest.transaction.Transaction;
 import homequest.util.PropertyStatus;
+import homequest.util.ReservationStatus;
+import homequest.util.PurchaseRequestStatus;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,15 +56,59 @@ public class Buyer {
         return availableProps;
     }
 
-    public boolean createPurchaseRequest(Property property, int paymentMethod, String bankName, int loanTerm) {
+    public List<Property> getReservedProperties(List<Property> allProperties) {
+        List<Property> reservedProps = new ArrayList<>();
+        for (Property prop : allProperties) {
+            if (prop.getStatus() == PropertyStatus.RESERVED && 
+                prop.getReservedBy() == this && 
+                prop.getReservationStatus() == ReservationStatus.ACTIVE) {
+                reservedProps.add(prop);
+            }
+        }
+        return reservedProps;
+    }
+
+    public boolean reserveProperty(Property property) {
+        final double RESERVATION_FEE = 5000.0;
         if (property.getStatus() != PropertyStatus.AVAILABLE) {
             return false;
         }
+        if (!deductFunds(RESERVATION_FEE)) {
+            return false; // Insufficient funds
+        }
+        property.setReservedBy(this);
+        property.setReservationStatus(ReservationStatus.ACTIVE);
+        property.setStatus(PropertyStatus.RESERVED);
+        return true;
+    }
+
+    public boolean cancelReservation(Property property) {
+        final double RESERVATION_FEE = 5000.0;
+        if (property.getStatus() != PropertyStatus.RESERVED || property.getReservedBy() != this) {
+            return false;
+        }
+        property.clearReservation();
+        property.setStatus(PropertyStatus.AVAILABLE);
+        addFunds(RESERVATION_FEE); // Refund reservation fee
+        return true;
+    }
+
+    public boolean createPurchaseRequest(Property property, int paymentMethod, String bankName, int loanTerm) {
+        // Property must be RESERVED or AVAILABLE, and if reserved, must be reserved by this buyer
+        if (property.getStatus() == PropertyStatus.RESERVED) {
+            if (property.getReservedBy() != this) {
+                return false; // Property is reserved by another buyer
+            }
+        } else if (property.getStatus() != PropertyStatus.AVAILABLE) {
+            return false;
+        }
+        
         property.setPendingBuyer(this);
         property.setPendingPaymentMethod(paymentMethod);
         property.setPendingBankName(bankName);
         property.setPendingLoanTerm(loanTerm);
-        property.setStatus(PropertyStatus.RESERVED);
+        property.setPurchaseRequestStatus(PurchaseRequestStatus.PENDING);
+        property.setStatus(PropertyStatus.PURCHASE_PENDING);
         return true;
     }
 

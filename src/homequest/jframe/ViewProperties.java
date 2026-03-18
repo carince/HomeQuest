@@ -58,12 +58,9 @@ public class ViewProperties extends javax.swing.JFrame {
         container.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
         container.setOpaque(false);
 
-        String[] imageFiles = {"elaine.jpg", "eunice.jpg", "nadine.jpg"};
-
         java.util.List<homequest.model.Property> properties = homequest.HomeQuest.getAllProperties();
-        int cardCount = Math.min(imageFiles.length, properties.size());
 
-        if (cardCount == 0) {
+        if (properties.isEmpty()) {
             JLabel emptyLabel = new JLabel("No property data available.");
             emptyLabel.setFont(new java.awt.Font("Segoe UI", 0, 18));
             emptyLabel.setForeground(java.awt.Color.GRAY);
@@ -74,12 +71,12 @@ public class ViewProperties extends javax.swing.JFrame {
             emptyPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
             container.add(emptyPanel);
         } else {
-            for (int i = 0; i < cardCount; i++) {
-                String imageName = imageFiles[i];
+            for (int i = 0; i < properties.size(); i++) {
                 homequest.model.Property property = properties.get(i);
+                String imageName = getImageNameForProperty(property);
                 JPanel card = createImageCard(imageName, property);
                 container.add(card);
-                if (i < cardCount - 1) {
+                if (i < properties.size() - 1) {
                     container.add(Box.createVerticalStrut(8));
                 }
             }
@@ -88,6 +85,30 @@ public class ViewProperties extends javax.swing.JFrame {
         scrollWrapper.setViewportView(container);
         scrollWrapper.revalidate();
         scrollWrapper.repaint();
+    }
+
+    private String getImageNameForProperty(homequest.model.Property property) {
+        String propertyName = property.getName().toLowerCase().trim();
+        String[] imageFiles = {"elaine.jpg", "eunice.jpg", "nadine.jpg"};
+        
+        // Try to find an exact match based on property name
+        for (String imageName : imageFiles) {
+            String imageNameWithoutExt = imageName.substring(0, imageName.lastIndexOf('.')).toLowerCase();
+            if (propertyName.equals(imageNameWithoutExt)) {
+                return imageName;
+            }
+        }
+        
+        // If no exact match, try to find a match with the property name at the start
+        for (String imageName : imageFiles) {
+            String imageNameWithoutExt = imageName.substring(0, imageName.lastIndexOf('.')).toLowerCase();
+            if (propertyName.startsWith(imageNameWithoutExt)) {
+                return imageName;
+            }
+        }
+        
+        // Default to first available image if no match found
+        return imageFiles[0];
     }
 
     private JPanel createImageCard(String imageName, homequest.model.Property property) {
