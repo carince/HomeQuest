@@ -66,15 +66,18 @@ public class Bank extends Transaction {
     }
 
     @Override
-    public void finalizeTransaction() {
-        // Deduct reservation fee if available; proceed with RESERVED status for installments
-        client.deductFunds(RESERVATION_FEE);
+    public boolean finalizeTransaction() {
+        if (!client.deductFunds(RESERVATION_FEE)) {
+            return false;
+        }
+
         if (receivedBy != null) {
             receivedBy.addCommission(FinancialEngine.calculateAgentCommission(targetProperty.getTCP()));
         }
         // Keep as RESERVED while installments are being paid
         targetProperty.setStatus(PropertyStatus.RESERVED);
         client.addTransaction(this);
+        return true;
     }
 
     @Override

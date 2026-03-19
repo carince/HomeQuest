@@ -33,15 +33,18 @@ public abstract class InstallmentPayment extends Transaction {
         return finalLumpsum;
     }
     
-    public void processInstallmentStart() {
-        if (client.deductFunds(FinancialEngine.RESERVATION_FEE)) {
-            targetProperty.setStatus(PropertyStatus.RESERVED);
-            client.addTransaction(this);
+    public boolean processInstallmentStart() {
+        if (!client.deductFunds(FinancialEngine.RESERVATION_FEE)) {
+            return false;
         }
+
+        targetProperty.setStatus(PropertyStatus.RESERVED);
+        client.addTransaction(this);
+        return true;
     }
     
     @Override
-    public void finalizeTransaction() {
-        processInstallmentStart();
+    public boolean finalizeTransaction() {
+        return processInstallmentStart();
     }
 }

@@ -240,6 +240,15 @@ public class PurchaseProperty extends javax.swing.JFrame {
         String bankName = null;
         int loanTerm = 0;
 
+        if ((paymentChoice == 1 || paymentChoice == 2) && buyer.getWalletBalance() < property.getTCP()) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Insufficient wallet balance for " + paymentMethod + ".\n" +
+                "Please add funds first before submitting this purchase request.",
+                "Insufficient Funds",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         if (paymentChoice == 3) {
             bankName = javax.swing.JOptionPane.showInputDialog(this, "Enter bank name:");
             if (bankName == null || bankName.trim().isEmpty()) return;

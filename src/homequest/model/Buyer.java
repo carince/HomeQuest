@@ -99,6 +99,11 @@ public class Buyer {
             return false;
         }
 
+        // Spot cash and check require full TCP amount before request submission.
+        if ((paymentMethod == 1 || paymentMethod == 2) && walletBalance < property.getTCP()) {
+            return false;
+        }
+
         // Property must be RESERVED or AVAILABLE, and if reserved, must be reserved by this buyer
         if (property.getStatus() == PropertyStatus.RESERVED) {
             if (property.getReservedBy() != this) {

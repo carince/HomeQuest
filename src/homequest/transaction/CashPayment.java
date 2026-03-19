@@ -16,15 +16,18 @@ public abstract class CashPayment extends Transaction {
         return totalAmount;
     }
     
-    public void processCashPayment() {
-        if (client.deductFunds(totalAmount)) {
-            targetProperty.setStatus(PropertyStatus.SOLD);
-            client.addTransaction(this);
+    public boolean processCashPayment() {
+        if (!client.deductFunds(totalAmount)) {
+            return false;
         }
+
+        targetProperty.setStatus(PropertyStatus.SOLD);
+        client.addTransaction(this);
+        return true;
     }
     
     @Override
-    public void finalizeTransaction() {
-        processCashPayment();
+    public boolean finalizeTransaction() {
+        return processCashPayment();
     }
 }

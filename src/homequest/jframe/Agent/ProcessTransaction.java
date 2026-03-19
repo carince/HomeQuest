@@ -151,16 +151,24 @@ public class ProcessTransaction extends javax.swing.JFrame {
         if (confirm == javax.swing.JOptionPane.YES_OPTION) {
             homequest.model.Agent agent = homequest.HomeQuest.getAgent();
             int paymentMethod = property.getPendingPaymentMethod();
-            agent.approveTransaction(property);
-            
-            boolean isInstallment = (paymentMethod == 3 || paymentMethod == 4);
-            String finalStatus = isInstallment ? "RESERVED (installment ongoing)" : "SOLD";
-            String note = isInstallment ? "\nBuyer will continue making monthly payments." : "";
-            
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "Transaction approved successfully!\nProperty: " + property.getName() + "\nStatus: " + finalStatus + note,
-                    "Success",
-                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            boolean approved = agent.approveTransaction(property);
+
+            if (approved) {
+                boolean isInstallment = (paymentMethod == 3 || paymentMethod == 4);
+                String finalStatus = isInstallment ? "RESERVED (installment ongoing)" : "SOLD";
+                String note = isInstallment ? "\nBuyer will continue making monthly payments." : "";
+
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Transaction approved successfully!\nProperty: " + property.getName() + "\nStatus: " + finalStatus + note,
+                        "Success",
+                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Approval failed because the buyer has insufficient funds for the selected payment method.\n" +
+                        "The request will remain pending until the buyer adds funds.",
+                        "Approval Failed",
+                        javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
             
             loadPendingRequests();
         }

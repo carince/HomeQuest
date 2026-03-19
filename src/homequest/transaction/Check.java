@@ -31,12 +31,15 @@ public class Check extends Transaction {
     }
 
     @Override
-    public void finalizeTransaction() {
-        if (client.deductFunds(totalAmount)) {
-            targetProperty.setStatus(PropertyStatus.SOLD);
-            client.addTransaction(this);
-            receivedBy.addCommission(FinancialEngine.calculateAgentCommission(totalAmount));
+    public boolean finalizeTransaction() {
+        if (!client.deductFunds(totalAmount)) {
+            return false;
         }
+
+        targetProperty.setStatus(PropertyStatus.SOLD);
+        client.addTransaction(this);
+        receivedBy.addCommission(FinancialEngine.calculateAgentCommission(totalAmount));
+        return true;
     }
 
     @Override

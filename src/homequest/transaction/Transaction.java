@@ -46,7 +46,7 @@ public abstract class Transaction {
         this.dueDates.add(dueDate);
     }
 
-    public abstract void finalizeTransaction();
+    public abstract boolean finalizeTransaction();
 
     @Override
     public String toString() {

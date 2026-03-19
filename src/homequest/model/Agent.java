@@ -75,9 +75,15 @@ public class Agent {
             property.getStatus() != PropertyStatus.PURCHASE_PENDING) {
             return false;
         }
-        property.setPurchaseRequestStatus(PurchaseRequestStatus.APPROVED);
-        finalizeTransaction(property, property.getPendingBuyer(), this);
-        return true;
+
+        boolean success = finalizeTransaction(property, property.getPendingBuyer(), this);
+        if (success) {
+            property.setPurchaseRequestStatus(PurchaseRequestStatus.APPROVED);
+            property.clearPendingRequest();
+        } else {
+            property.setPurchaseRequestStatus(PurchaseRequestStatus.PENDING);
+        }
+        return success;
     }
 
     public boolean rejectTransaction(Property property) {
@@ -96,7 +102,7 @@ public class Agent {
         return true;
     }
 
-    public void finalizeTransaction(Property property, Buyer buyer, Agent agent) {
+    public boolean finalizeTransaction(Property property, Buyer buyer, Agent agent) {
         Transaction transaction = null;
         switch (property.getPendingPaymentMethod()) {
             case 1:
@@ -112,10 +118,11 @@ public class Agent {
                 transaction = new PagIbig(property, buyer, property.getPendingLoanTerm(), agent);
                 break;
         }
-        if (transaction != null) {
-            transaction.finalizeTransaction();
-            property.clearPendingRequest();
+        if (transaction == null) {
+            return false;
         }
+
+        return transaction.finalizeTransaction();
     }
 
     @Override
