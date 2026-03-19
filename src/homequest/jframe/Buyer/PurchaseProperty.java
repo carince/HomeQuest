@@ -239,6 +239,7 @@ public class PurchaseProperty extends javax.swing.JFrame {
         int paymentChoice = java.util.Arrays.asList(paymentOptions).indexOf(paymentMethod) + 1;
         String bankName = null;
         int loanTerm = 0;
+        double downPaymentPercent = 0;
 
         if ((paymentChoice == 1 || paymentChoice == 2) && buyer.getWalletBalance() < property.getTCP()) {
             javax.swing.JOptionPane.showMessageDialog(this,
@@ -253,51 +254,35 @@ public class PurchaseProperty extends javax.swing.JFrame {
             bankName = javax.swing.JOptionPane.showInputDialog(this, "Enter bank name:");
             if (bankName == null || bankName.trim().isEmpty()) return;
 
-            String termStr = javax.swing.JOptionPane.showInputDialog(this, "Enter loan term (years, max " + homequest.model.Buyer.MAX_INSTALLMENT_YEARS + "):");
-            if (termStr == null) return;
-            try {
-                loanTerm = Integer.parseInt(termStr);
-                if (loanTerm <= 0) {
-                    javax.swing.JOptionPane.showMessageDialog(this, "Loan term must be greater than 0.", "Invalid Term", javax.swing.JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                if (loanTerm > homequest.model.Buyer.MAX_INSTALLMENT_YEARS) {
-                    javax.swing.JOptionPane.showMessageDialog(this,
-                            "Loan term cannot exceed " + homequest.model.Buyer.MAX_INSTALLMENT_YEARS + " years.",
-                            "Invalid Term",
-                            javax.swing.JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-            } catch (NumberFormatException e) {
-                javax.swing.JOptionPane.showMessageDialog(this, "Invalid loan term.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            Integer term = promptLoanTerm();
+            if (term == null) {
                 return;
             }
+            loanTerm = term;
+
+            Double downPayment = promptDownPaymentPercent();
+            if (downPayment == null) {
+                return;
+            }
+            downPaymentPercent = downPayment;
         } else if (paymentChoice == 4) {
-            String termStr = javax.swing.JOptionPane.showInputDialog(this, "Enter loan term (years, max " + homequest.model.Buyer.MAX_INSTALLMENT_YEARS + "):");
-            if (termStr == null) return;
-            try {
-                loanTerm = Integer.parseInt(termStr);
-                if (loanTerm <= 0) {
-                    javax.swing.JOptionPane.showMessageDialog(this, "Loan term must be greater than 0.", "Invalid Term", javax.swing.JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                if (loanTerm > homequest.model.Buyer.MAX_INSTALLMENT_YEARS) {
-                    javax.swing.JOptionPane.showMessageDialog(this,
-                            "Loan term cannot exceed " + homequest.model.Buyer.MAX_INSTALLMENT_YEARS + " years.",
-                            "Invalid Term",
-                            javax.swing.JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-            } catch (NumberFormatException e) {
-                javax.swing.JOptionPane.showMessageDialog(this, "Invalid loan term.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            Integer term = promptLoanTerm();
+            if (term == null) {
                 return;
             }
+            loanTerm = term;
+
+            Double downPayment = promptDownPaymentPercent();
+            if (downPayment == null) {
+                return;
+            }
+            downPaymentPercent = downPayment;
         }
 
-        boolean confirmed = showBreakdownAndConfirm(property, paymentChoice, bankName, loanTerm);
+        boolean confirmed = showBreakdownAndConfirm(property, paymentChoice, bankName, loanTerm, downPaymentPercent);
         if (!confirmed) return;
 
-        boolean success = buyer.createPurchaseRequest(property, paymentChoice, bankName, loanTerm);
+        boolean success = buyer.createPurchaseRequest(property, paymentChoice, bankName, loanTerm, downPaymentPercent);
 
         if (success) {
             javax.swing.JOptionPane.showMessageDialog(this,
@@ -316,7 +301,70 @@ public class PurchaseProperty extends javax.swing.JFrame {
         }
     }
 
-    private boolean showBreakdownAndConfirm(homequest.model.Property property, int paymentChoice, String bankName, int loanTerm) {
+    private Integer promptLoanTerm() {
+        String termStr = javax.swing.JOptionPane.showInputDialog(
+                this,
+                "Enter loan term (years, max " + homequest.model.Buyer.MAX_INSTALLMENT_YEARS + "):");
+        if (termStr == null) {
+            return null;
+        }
+
+        try {
+            int loanTerm = Integer.parseInt(termStr.trim());
+            if (loanTerm <= 0) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Loan term must be greater than 0.", "Invalid Term", javax.swing.JOptionPane.ERROR_MESSAGE);
+                return null;
+            }
+            if (loanTerm > homequest.model.Buyer.MAX_INSTALLMENT_YEARS) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Loan term cannot exceed " + homequest.model.Buyer.MAX_INSTALLMENT_YEARS + " years.",
+                        "Invalid Term",
+                        javax.swing.JOptionPane.ERROR_MESSAGE);
+                return null;
+            }
+            return loanTerm;
+        } catch (NumberFormatException e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Invalid loan term. Please enter a whole number.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+    }
+
+    private Double promptDownPaymentPercent() {
+        String prompt = "Enter downpayment (% of TCP, min " +
+                homequest.model.Buyer.MIN_DOWNPAYMENT_PERCENT + "% and max " +
+                homequest.model.Buyer.MAX_DOWNPAYMENT_PERCENT + "%):";
+        String downPaymentStr = javax.swing.JOptionPane.showInputDialog(this, prompt);
+
+        if (downPaymentStr == null) {
+            return null;
+        }
+
+        try {
+            double downPaymentPercent = Double.parseDouble(downPaymentStr.trim());
+            if (Double.isNaN(downPaymentPercent) || Double.isInfinite(downPaymentPercent)) {
+                throw new NumberFormatException("Non-finite value");
+            }
+            if (downPaymentPercent < homequest.model.Buyer.MIN_DOWNPAYMENT_PERCENT
+                    || downPaymentPercent > homequest.model.Buyer.MAX_DOWNPAYMENT_PERCENT) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Downpayment must be between " +
+                                String.format("%.0f", homequest.model.Buyer.MIN_DOWNPAYMENT_PERCENT) + "% and " +
+                                String.format("%.0f", homequest.model.Buyer.MAX_DOWNPAYMENT_PERCENT) + "%.",
+                        "Invalid Downpayment",
+                        javax.swing.JOptionPane.ERROR_MESSAGE);
+                return null;
+            }
+            return downPaymentPercent;
+        } catch (NumberFormatException e) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Invalid downpayment. Please enter a numeric percent value.",
+                    "Invalid Downpayment",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+    }
+
+    private boolean showBreakdownAndConfirm(homequest.model.Property property, int paymentChoice, String bankName, int loanTerm, double downPaymentPercent) {
         double netPrice = property.getBasePrice();
         double vat = homequest.util.FinancialEngine.calculateVAT(netPrice, false);
         double otherCharges = homequest.util.FinancialEngine.computeOtherCharges(netPrice);
@@ -334,15 +382,39 @@ public class PurchaseProperty extends javax.swing.JFrame {
                 break;
             case 3:
                 paymentLabel = "Bank Financing";
-                double bankMonthly = homequest.util.FinancialEngine.getMonthlyAmortization(tcp, loanTerm);
+                double bankDownPaymentAmount = tcp * (downPaymentPercent / 100.0);
+                double bankFinancedAmount = tcp - homequest.transaction.Bank.RESERVATION_FEE - bankDownPaymentAmount;
+                if (bankFinancedAmount <= 0) {
+                    javax.swing.JOptionPane.showMessageDialog(this,
+                        "Computed financed amount is invalid. Please adjust downpayment or contact support.",
+                        "Invalid Financing",
+                        javax.swing.JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+                double bankMonthly = homequest.util.FinancialEngine.getMonthlyAmortization(bankFinancedAmount, loanTerm);
                 financingDetails = "<p>Bank: " + bankName + "</p>" +
                         "<p>Loan Term: " + loanTerm + " years</p>" +
+                    "<p>Reservation Fee: ₱" + String.format("%,.2f", homequest.transaction.Bank.RESERVATION_FEE) + "</p>" +
+                    "<p>Downpayment (" + String.format("%.2f", downPaymentPercent) + "%): ₱" + String.format("%,.2f", bankDownPaymentAmount) + "</p>" +
+                    "<p>Estimated Financed Amount: ₱" + String.format("%,.2f", bankFinancedAmount) + "</p>" +
                         "<p>Estimated Monthly: ₱" + String.format("%,.2f", bankMonthly) + "</p>";
                 break;
             case 4:
                 paymentLabel = "Pag-IBIG Financing";
-                double pagibigMonthly = homequest.util.FinancialEngine.getMonthlyAmortization(tcp, loanTerm);
+                double pagIbigDownPaymentAmount = tcp * (downPaymentPercent / 100.0);
+                double pagIbigFinancedAmount = tcp - homequest.transaction.PagIbig.RESERVATION_FEE - pagIbigDownPaymentAmount;
+                if (pagIbigFinancedAmount <= 0) {
+                    javax.swing.JOptionPane.showMessageDialog(this,
+                        "Computed financed amount is invalid. Please adjust downpayment or contact support.",
+                        "Invalid Financing",
+                        javax.swing.JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+                double pagibigMonthly = homequest.util.FinancialEngine.getMonthlyAmortization(pagIbigFinancedAmount, loanTerm);
                 financingDetails = "<p>Loan Term: " + loanTerm + " years</p>" +
+                    "<p>Reservation Fee: ₱" + String.format("%,.2f", homequest.transaction.PagIbig.RESERVATION_FEE) + "</p>" +
+                    "<p>Downpayment (" + String.format("%.2f", downPaymentPercent) + "%): ₱" + String.format("%,.2f", pagIbigDownPaymentAmount) + "</p>" +
+                    "<p>Estimated Financed Amount: ₱" + String.format("%,.2f", pagIbigFinancedAmount) + "</p>" +
                         "<p>Estimated Monthly: ₱" + String.format("%,.2f", pagibigMonthly) + "</p>";
                 break;
             default:

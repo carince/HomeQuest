@@ -163,6 +163,7 @@ public class ViewPurchaseHistory extends javax.swing.JFrame {
         int termMonths;
         double monthlyDue;
         String paymentType;
+        String downPaymentSummary;
 
         if (transaction instanceof homequest.transaction.Bank) {
             homequest.transaction.Bank bankTransaction =
@@ -170,12 +171,18 @@ public class ViewPurchaseHistory extends javax.swing.JFrame {
             termMonths = bankTransaction.getTermMonths();
             monthlyDue = bankTransaction.getMonthlyInstallment();
             paymentType = "Bank Financing";
+            downPaymentSummary = "<b>Downpayment:</b> " +
+                    String.format("%.2f", bankTransaction.getDownPaymentPercent()) + "% (₱" +
+                    String.format("%,.2f", bankTransaction.getDownPaymentAmount()) + ")";
         } else if (transaction instanceof homequest.transaction.PagIbig) {
             homequest.transaction.PagIbig pagIbigTransaction =
                 (homequest.transaction.PagIbig) transaction;
             termMonths = pagIbigTransaction.getTermMonths();
             monthlyDue = pagIbigTransaction.getMonthlyInstallment();
             paymentType = "Pag-IBIG Financing";
+            downPaymentSummary = "<b>Downpayment:</b> " +
+                    String.format("%.2f", pagIbigTransaction.getDownPaymentPercent()) + "% (₱" +
+                    String.format("%,.2f", pagIbigTransaction.getDownPaymentAmount()) + ")";
         } else {
             return;
         }
@@ -214,6 +221,8 @@ public class ViewPurchaseHistory extends javax.swing.JFrame {
             "<br>" +
             "<b>Monthly Due:</b> ₱" +
             String.format("%,.2f", monthlyDue) +
+            "<br>" +
+            downPaymentSummary +
             "<br>" +
             "<b>Paid:</b> " +
             paidCount +

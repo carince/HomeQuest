@@ -17,6 +17,7 @@ public abstract class Property {
     protected int pendingPaymentMethod;
     protected String pendingBankName;
     protected int pendingLoanTerm;
+    protected double pendingDownPaymentPercent;
 
     public Property(String blockLot, double lotArea, double basePrice) {
         this.blockLot = blockLot;
@@ -112,6 +113,14 @@ public abstract class Property {
         this.pendingLoanTerm = pendingLoanTerm;
     }
 
+    public double getPendingDownPaymentPercent() {
+        return pendingDownPaymentPercent;
+    }
+
+    public void setPendingDownPaymentPercent(double pendingDownPaymentPercent) {
+        this.pendingDownPaymentPercent = pendingDownPaymentPercent;
+    }
+
     public Buyer getReservedBy() {
         return reservedBy;
     }
@@ -142,6 +151,7 @@ public abstract class Property {
         this.pendingPaymentMethod = 0;
         this.pendingBankName = null;
         this.pendingLoanTerm = 0;
+        this.pendingDownPaymentPercent = 0;
     }
 
     public void clearReservation() {

@@ -104,19 +104,36 @@ public class Agent {
 
     public boolean finalizeTransaction(Property property, Buyer buyer, Agent agent) {
         Transaction transaction = null;
-        switch (property.getPendingPaymentMethod()) {
-            case 1:
-                transaction = new Spot(property, buyer, agent);
-                break;
-            case 2:
-                transaction = new Check(property, buyer, agent);
-                break;
-            case 3:
-                transaction = new Bank(property, buyer, property.getPendingLoanTerm(), property.getPendingBankName(), agent);
-                break;
-            case 4:
-                transaction = new PagIbig(property, buyer, property.getPendingLoanTerm(), agent);
-                break;
+        try {
+            switch (property.getPendingPaymentMethod()) {
+                case 1:
+                    transaction = new Spot(property, buyer, agent);
+                    break;
+                case 2:
+                    transaction = new Check(property, buyer, agent);
+                    break;
+                case 3:
+                    transaction = new Bank(
+                            property,
+                            buyer,
+                            property.getPendingLoanTerm(),
+                            property.getPendingBankName(),
+                            property.getPendingDownPaymentPercent(),
+                            agent
+                    );
+                    break;
+                case 4:
+                    transaction = new PagIbig(
+                            property,
+                            buyer,
+                            property.getPendingLoanTerm(),
+                            property.getPendingDownPaymentPercent(),
+                            agent
+                    );
+                    break;
+            }
+        } catch (IllegalArgumentException ex) {
+            return false;
         }
         if (transaction == null) {
             return false;

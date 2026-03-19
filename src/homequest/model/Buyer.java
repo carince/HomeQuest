@@ -10,6 +10,8 @@ import java.util.List;
 public class Buyer {
     public static final double RESERVATION_FEE = 5000.0;
     public static final int MAX_INSTALLMENT_YEARS = 30;
+    public static final double MIN_DOWNPAYMENT_PERCENT = 5.0;
+    public static final double MAX_DOWNPAYMENT_PERCENT = 15.0;
     private String name;
     private double walletBalance;
     private List<Transaction> purchaseHistory;
@@ -93,10 +95,22 @@ public class Buyer {
         return true;
     }
 
-    public boolean createPurchaseRequest(Property property, int paymentMethod, String bankName, int loanTerm) {
+    public boolean createPurchaseRequest(Property property, int paymentMethod, String bankName, int loanTerm, double downPaymentPercent) {
         if ((paymentMethod == 3 || paymentMethod == 4) &&
             (loanTerm <= 0 || loanTerm > MAX_INSTALLMENT_YEARS)) {
             return false;
+        }
+
+        if (paymentMethod == 3 || paymentMethod == 4) {
+            boolean invalidDownPayment = Double.isNaN(downPaymentPercent) ||
+                    Double.isInfinite(downPaymentPercent) ||
+                    downPaymentPercent < MIN_DOWNPAYMENT_PERCENT ||
+                    downPaymentPercent > MAX_DOWNPAYMENT_PERCENT;
+            if (invalidDownPayment) {
+                return false;
+            }
+        } else {
+            downPaymentPercent = 0;
         }
 
         // Spot cash and check require full TCP amount before request submission.
@@ -117,6 +131,7 @@ public class Buyer {
         property.setPendingPaymentMethod(paymentMethod);
         property.setPendingBankName(bankName);
         property.setPendingLoanTerm(loanTerm);
+        property.setPendingDownPaymentPercent(downPaymentPercent);
         property.setPurchaseRequestStatus(PurchaseRequestStatus.PENDING);
         property.setStatus(PropertyStatus.PURCHASE_PENDING);
         return true;

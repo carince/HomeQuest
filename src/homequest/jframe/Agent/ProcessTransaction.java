@@ -134,9 +134,12 @@ public class ProcessTransaction extends javax.swing.JFrame {
             case 2:
                 return "Check";
             case 3:
-                return "Bank Financing (" + property.getPendingBankName() + ", " + property.getPendingLoanTerm() + " years)";
+                return "Bank Financing (" + property.getPendingBankName() + ", " +
+                        property.getPendingLoanTerm() + " years, DP " +
+                        String.format("%.2f", property.getPendingDownPaymentPercent()) + "%)";
             case 4:
-                return "Pag-IBIG Financing (" + property.getPendingLoanTerm() + " years)";
+                return "Pag-IBIG Financing (" + property.getPendingLoanTerm() +
+                        " years, DP " + String.format("%.2f", property.getPendingDownPaymentPercent()) + "%)";
             default:
                 return "Unknown";
         }
